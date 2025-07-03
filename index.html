@@ -192,12 +192,12 @@
                         <textarea id="preserve" rows="3"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="filename">Tên file (không có .html)</label>
-                        <input type="text" id="filename" value="">
-                    </div>
-                    <div class="form-group">
                         <label for="footertext">Nội dung chân trang (footer)</label>
                         <input type="text" id="footertext" value="H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA">
+                    </div>
+                    <div class="form-group">
+                        <label for="filename">Tên file (không có .html)</label>
+                        <input type="text" id="filename" value="">
                     </div>
                     <button type="button" onclick="downloadHTML()">Tải về máy</button>
                     <button type="button" onclick="saveToGithub()">Lưu lên Github</button>
@@ -205,6 +205,12 @@
                     <div id="github-link" style="margin-top:12px;font-size:1.05em;"></div>
                     <div id="qrcode-box" style="margin-top:18px;text-align:center;"></div>
                     <button id="download-qrcode-btn" type="button" style="display:none;margin-top:10px;">Download mã QR</button>
+                    <div class="form-group" style="margin-top:32px;">
+                        <label for="loadfilename">Tải & chỉnh sửa file từ Github</label>
+                        <input type="text" id="loadfilename" placeholder="Nhập tên file (không .html)">
+                        <button type="button" id="loadFromGithubBtn">Tải file từ Github</button>
+                        <span id="load-status" style="margin-left:8px;color:#388e3c;font-size:0.98em;"></span>
+                    </div>
                 </form>
             </div>
             <div class="preview-side">
@@ -234,6 +240,9 @@
         const imgWidthInput = document.getElementById('imgWidth');
         const imgHeightInput = document.getElementById('imgHeight');
         const footerTextInput = document.getElementById('footertext');
+        const loadFilenameInput = document.getElementById('loadfilename');
+        const loadFromGithubBtn = document.getElementById('loadFromGithubBtn');
+        const loadStatus = document.getElementById('load-status');
 
         // Thêm các checkbox ẩn/hiện
         const hideTitle = document.getElementById('hide-title');
@@ -588,7 +597,91 @@
                     githubLinkDiv.innerHTML = "";
                 });
         }
+
+        // Hàm parse HTML và điền vào form
+        function fillFormFromHtml(html) {
+            // Tạo DOM ảo để parse
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            // Lấy các trường
+            const getVal = (selector) => {
+                const el = doc.querySelector(selector);
+                return el ? el.textContent.trim() : '';
+            };
+            const getImg = () => {
+                const img = doc.querySelector('.product-img');
+                return img ? img.src : '';
+            };
+            const getStyle = (selector, prop) => {
+                const el = doc.querySelector(selector);
+                return el && el.style && el.style[prop] ? el.style[prop].replace('px','') : '';
+            };
+            titleInput.value = getVal('h1');
+            highlightInput.value = getVal('.highlight');
+            imageDataUrl = getImg();
+            // Lấy width/height nếu có
+            const img = doc.querySelector('.product-img');
+            if (img) {
+                imgWidthInput.value = img.width || img.style.width.replace('px','') || 420;
+                imgHeightInput.value = img.height || img.style.height.replace('px','') || 420;
+            }
+            priceInput.value = getVal('.price');
+            contactInput.value = '';
+            const contactBtn = doc.querySelector('.contact-btn');
+            if (contactBtn && contactBtn.href && contactBtn.href.startsWith('tel:')) {
+                contactInput.value = contactBtn.href.replace('tel:','');
+            }
+            // Lấy các danh sách
+            const getList = (selector) => {
+                const ul = doc.querySelector(selector + ' ul');
+                if (!ul) return '';
+                return Array.from(ul.querySelectorAll('li')).map(li => li.textContent).join('\n');
+            };
+            originInput.value = getList('.section:nth-of-type(2)');
+            featureInput.value = getList('.section:nth-of-type(3)');
+            benefitInput.value = getList('.section:nth-of-type(4)');
+            usageInput.value = getList('.section:nth-of-type(5)');
+            preserveInput.value = getList('.section:nth-of-type(6)');
+            // Footer
+            const footer = doc.querySelector('.footer');
+            if (footer) {
+                // Tách contactinfo nếu có
+                const txt = footer.textContent.trim();
+                const idx = txt.indexOf(' - ');
+                if (idx >= 0) {
+                    footerTextInput.value = txt.slice(0, idx);
+                    contactInfoInput.value = txt.slice(idx + 3);
+                } else {
+                    footerTextInput.value = txt;
+                    contactInfoInput.value = '';
+                }
+            }
+            // filename
+            filenameInput.value = loadFilenameInput.value.trim();
+            updatePreview();
+        }
+
+        // Nút tải file từ Github
+        loadFromGithubBtn.onclick = function() {
+            const filename = loadFilenameInput.value.trim();
+            if (!filename) {
+                loadStatus.textContent = "Nhập tên file!";
+                return;
+            }
+            loadStatus.textContent = "Đang tải file...";
+            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/${filename}.html`)
+                .then(res => {
+                    if (!res.ok) throw new Error("Không tìm thấy file!");
+                    return res.text();
+                })
+                .then(html => {
+                    fillFormFromHtml(html);
+                    loadStatus.textContent = "Đã tải xong!";
+                })
+                .catch(e => {
+                    loadStatus.textContent = "Lỗi: " + e.message;
+                });
+        };
     </script>
 </body>
-</html>
 </html>
