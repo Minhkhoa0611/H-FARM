@@ -143,7 +143,8 @@
                     <div class="form-group">
                         <label for="image">Chọn hình ảnh</label>
                         <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-image"> Ẩn</label>
-                        <input type="file" id="image" accept="image/*">
+                        <input type="file" id="image" accept="image/*" multiple>
+                        <div id="image-list" style="margin:8px 0 0 0;display:flex;flex-wrap:wrap;gap:10px;"></div>
                         <div class="img-resize-wrap">
                             <span class="img-resize-label">Rộng</span>
                             <input type="number" id="imgWidth" class="img-resize-input" min="50" max="1000" value="420"> px
@@ -155,7 +156,7 @@
                         <label for="price">Giá bán (có thể xuống dòng bằng &lt;br&gt;)</label>
                         <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-price"> Ẩn</label>
                         <textarea id="price" rows="2"></textarea>
-                    </div>
+                    </div>y
                     <div class="form-group">
                         <label for="contact">Số điện thoại liên hệ</label>
                         <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-contact"> Ẩn</label>
@@ -243,6 +244,7 @@
         const loadFilenameInput = document.getElementById('loadfilename');
         const loadFromGithubBtn = document.getElementById('loadFromGithubBtn');
         const loadStatus = document.getElementById('load-status');
+        const imageListDiv = document.getElementById('image-list');
 
         // Thêm các checkbox ẩn/hiện
         const hideTitle = document.getElementById('hide-title');
@@ -257,21 +259,83 @@
         const hideUsage = document.getElementById('hide-usage');
         const hidePreserve = document.getElementById('hide-preserve');
 
-        let imageDataUrl = '';
-        let uploadedImageUrl = ''; // Đường dẫn ảnh trên Github nếu upload file ảnh
+        let imageDataUrls = [];
+        let uploadedImageUrls = []; // Đường dẫn ảnh trên Github nếu upload file ảnh
 
-        // Xử lý chọn ảnh
+        // Xử lý chọn nhiều ảnh, cho phép thêm ảnh mới mà không xóa ảnh cũ
         imageInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    imageDataUrl = evt.target.result;
-                    updatePreview();
-                };
-                reader.readAsDataURL(file);
+            const files = Array.from(e.target.files);
+            if (files.length) {
+                let loaded = 0;
+                let newImages = [];
+                files.forEach((file, idx) => {
+                    const reader = new FileReader();
+                    reader.onload = function(evt) {
+                        newImages[idx] = evt.target.result;
+                        loaded++;
+                        if (loaded === files.length) {
+                            imageDataUrls = imageDataUrls.concat(newImages);
+                            updateImageList();
+                            updatePreview();
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
+            // reset input file để lần sau chọn lại cùng file vẫn được
+            imageInput.value = '';
         });
+
+        // Hiển thị danh sách ảnh đã chọn và nút xóa
+        function updateImageList() {
+            imageListDiv.innerHTML = '';
+            imageDataUrls.forEach((img, idx) => {
+                const wrap = document.createElement('div');
+                wrap.style.position = 'relative';
+                wrap.style.display = 'inline-block';
+                wrap.style.width = '60px';
+                wrap.style.height = '60px';
+                wrap.style.border = '1px solid #b6e5b6';
+                wrap.style.borderRadius = '6px';
+                wrap.style.overflow = 'hidden';
+                wrap.style.background = '#fff';
+                wrap.style.boxShadow = '0 1px 4px #b6e5b6';
+                // Ảnh nhỏ
+                const image = document.createElement('img');
+                image.src = img;
+                image.style.width = '100%';
+                image.style.height = '100%';
+                image.style.objectFit = 'cover';
+                // Nút xóa
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.textContent = '×';
+                btn.title = 'Xóa ảnh này';
+                btn.style.position = 'absolute';
+                btn.style.top = '0';
+                btn.style.right = '0';
+                btn.style.background = '#e53935';
+                btn.style.color = '#fff';
+                btn.style.border = 'none';
+                btn.style.borderRadius = '0 0 0 6px';
+                btn.style.width = '22px';
+                btn.style.height = '22px';
+                btn.style.cursor = 'pointer';
+                btn.style.fontWeight = 'bold';
+                btn.style.fontSize = '18px';
+                btn.style.lineHeight = '18px';
+                btn.onclick = function() {
+                    imageDataUrls.splice(idx, 1);
+                    updateImageList();
+                    updatePreview();
+                    // reset input file nếu không còn ảnh nào
+                    if (imageDataUrls.length === 0) imageInput.value = '';
+                };
+                wrap.appendChild(image);
+                wrap.appendChild(btn);
+                imageListDiv.appendChild(wrap);
+            });
+        }
 
         // Cập nhật preview khi nhập liệu hoặc đổi trạng thái ẩn/hiện
         [
@@ -317,8 +381,15 @@
             let html = '';
             if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>`;
             if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>`;
-            if (!hideImage.checked && imageDataUrl) {
-                html += `<img class="product-img" id="preview-img" src="${imageDataUrl}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;resize:both;overflow:auto;display:block;">`;
+            // Hiển thị ảnh theo hàng, mỗi hàng 3 ảnh
+            if (!hideImage.checked && imageDataUrls.length) {
+                html += `<div class="img-row-wrap" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:18px;">`;
+                imageDataUrls.forEach((img, idx) => {
+                    html += `<div style="flex:0 0 calc(33.333% - 12px);max-width:calc(33.333% - 12px);box-sizing:border-box;display:flex;justify-content:center;">
+                        <img class="product-img" id="preview-img-${idx}" src="${img}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;resize:both;overflow:auto;display:block;">
+                    </div>`;
+                });
+                html += `</div>`;
             }
             if (!hidePrice.checked || !hideContact.checked) {
                 html += `<div class="section" style="text-align:center; margin-bottom: 24px;">`;
@@ -351,9 +422,8 @@
             html += `<div class="footer" style="margin-top:36px;text-align:center;color:#388e3c;font-weight:600;letter-spacing:1px;font-size:1.05em;opacity:0.85;">${footerText}${contactInfo}</div>`;
 
             previewDiv.innerHTML = html;
-
-            // Cho phép kéo chỉnh kích thước ảnh trong preview
-            const previewImg = document.getElementById('preview-img');
+            // Cho phép kéo chỉnh kích thước ảnh đầu tiên trong preview
+            const previewImg = document.getElementById('preview-img-0');
             if (previewImg) {
                 previewImg.style.resize = "both";
                 previewImg.style.overflow = "auto";
@@ -373,12 +443,18 @@
         function getExportHtml() {
             const filename = filenameInput.value.trim() || 'bai-viet-moi';
             let html = '';
-            // Sử dụng uploadedImageUrl nếu có, nếu không dùng base64
-            let imgSrc = uploadedImageUrl || imageDataUrl;
+            // Sử dụng uploadedImageUrls nếu có, nếu không dùng base64
+            let imgSrcs = uploadedImageUrls.length ? uploadedImageUrls : imageDataUrls;
             if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>\n`;
             if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>\n`;
-            if (!hideImage.checked && imgSrc) {
-                html += `<img class="product-img" src="${imgSrc}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;">\n`;
+            if (!hideImage.checked && imgSrcs.length) {
+                html += `<div class="img-row-wrap" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:18px;">`;
+                imgSrcs.forEach(imgSrc => {
+                    html += `<div style="flex:0 0 calc(33.333% - 12px);max-width:calc(33.333% - 12px);box-sizing:border-box;display:flex;justify-content:center;">
+                        <img class="product-img" src="${imgSrc}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;">
+                    </div>`;
+                });
+                html += `</div>\n`;
             }
             if (!hidePrice.checked || !hideContact.checked) {
                 html += `<div class="section" style="text-align:center; margin-bottom: 24px;">\n`;
@@ -499,19 +575,22 @@
             githubProgressDiv.textContent = "Đang lấy token Github...";
             qrcodeBox.innerHTML = ""; // Xóa QR cũ nếu có
             downloadQrBtn.style.display = "none";
-            uploadedImageUrl = ''; // reset
+            uploadedImageUrls = []; // reset
 
-            // Nếu có ảnh lớn hơn 1MB, upload ảnh lên Github trước
-            if (imageDataUrl && imageDataUrl.length > 1200000) {
-                // Lấy extension
-                let ext = '';
-                const match = imageDataUrl.match(/^data:image\/(\w+);base64,/);
-                if (match) ext = '.' + match[1].toLowerCase();
-                else ext = '.png';
-                const imgPath = githubImagePath + ext;
-                const imgUrl = githubImageUrl + ext;
+            // Nếu có ảnh lớn hơn 1MB, upload từng ảnh lên Github
+            if (imageDataUrls.length && imageDataUrls.some(img => img && img.length > 1200000)) {
+                let filesToUpload = imageDataUrls.map((img, idx) => ({
+                    dataUrl: img,
+                    idx
+                })).filter(imgObj => imgObj.dataUrl && imgObj.dataUrl.length > 1200000);
+                let extArr = imageDataUrls.map(img => {
+                    const match = img && img.match(/^data:image\/(\w+);base64,/);
+                    return match ? '.' + match[1].toLowerCase() : '.png';
+                });
+                let imgPaths = extArr.map((ext, idx) => `posts/images/${filenameInput.value.trim() || 'bai-viet-moi'}_image${idx+1}${ext}`);
+                let imgUrls = extArr.map((ext, idx) => `https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/${filenameInput.value.trim() || 'bai-viet-moi'}_image${idx+1}${ext}`);
+                const githubProgressDiv = document.getElementById('github-progress');
                 githubProgressDiv.textContent = "Ảnh lớn, đang upload ảnh lên Github...";
-                // Lấy token
                 fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
                     .then(res => res.text())
                     .then(text => {
@@ -522,51 +601,47 @@
                             githubProgressDiv.textContent = "Không lấy được token Github!";
                             return;
                         }
-                        // Kiểm tra file ảnh đã tồn tại chưa
-                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPath}`, {
-                            headers: { Authorization: `token ${token}` }
-                        })
-                        .then(res => res.ok ? res.json() : null)
-                        .then(fileData => {
-                            const body = {
-                                message: `Add image for post ${filename}`,
-                                content: imageDataUrl.split(',')[1],
-                                branch: "main"
-                            };
-                            if (fileData && fileData.sha) body.sha = fileData.sha;
-                            // Upload ảnh
-                            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPath}`, {
-                                method: "PUT",
-                                headers: {
-                                    "Authorization": `token ${token}`,
-                                    "Content-Type": "application/json"
-                                },
-                                body: JSON.stringify(body)
+                        // Upload từng ảnh
+                        let uploadCount = 0;
+                        uploadedImageUrls = [...imageDataUrls]; // fallback: base64
+                        filesToUpload.forEach((imgObj, i) => {
+                            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPaths[imgObj.idx]}`, {
+                                headers: { Authorization: `token ${token}` }
                             })
-                            .then(r => r.json())
-                            .then(resp => {
-                                if (resp.content && resp.content.download_url) {
-                                    uploadedImageUrl = imgUrl;
-                                    githubProgressDiv.textContent = "Đã upload ảnh, đang lưu HTML...";
-                                    // Sau khi upload ảnh xong, lưu HTML (không nhúng base64 nữa)
-                                    saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn);
-                                } else {
-                                    githubProgressDiv.textContent = "Upload ảnh lên Github thất bại! " + (resp.message || '');
-                                }
-                            })
-                            .catch(() => {
-                                githubProgressDiv.textContent = "Lỗi khi upload ảnh lên Github!";
+                            .then(res => res.ok ? res.json() : null)
+                            .then(fileData => {
+                                const body = {
+                                    message: `Add image for post ${filenameInput.value.trim() || 'bai-viet-moi'}`,
+                                    content: imgObj.dataUrl.split(',')[1],
+                                    branch: "main"
+                                };
+                                if (fileData && fileData.sha) body.sha = fileData.sha;
+                                fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPaths[imgObj.idx]}`, {
+                                    method: "PUT",
+                                    headers: {
+                                        "Authorization": `token ${token}`,
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify(body)
+                                })
+                                .then(r => r.json())
+                                .then(resp => {
+                                    if (resp.content && resp.content.download_url) {
+                                        uploadedImageUrls[imgObj.idx] = imgUrls[imgObj.idx];
+                                    }
+                                    uploadCount++;
+                                    if (uploadCount === filesToUpload.length) {
+                                        githubProgressDiv.textContent = "Đã upload ảnh, đang lưu HTML...";
+                                        saveHtmlWithImage(token, filenameInput.value.trim() || 'bai-viet-moi', `posts/${filenameInput.value.trim() || 'bai-viet-moi'}.html`, `https://minhkhoa0611.github.io/H-FARM/posts/${filenameInput.value.trim() || 'bai-viet-moi'}.html`, document.getElementById('github-link'), githubProgressDiv, document.getElementById('qrcode-box'), document.getElementById('download-qrcode-btn'));
+                                    }
+                                });
                             });
                         });
-                    })
-                    .catch(() => {
-                        githubProgressDiv.textContent = "Không lấy được token Github!";
                     });
                 return;
             }
-
             // Nếu không có ảnh lớn, xử lý như cũ
-            uploadedImageUrl = '';
+            uploadedImageUrls = '';
             // Để tránh lặp code, tách đoạn upload HTML ra hàm riêng:
             fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
                 .then(res => res.text())
@@ -585,7 +660,7 @@
                 });
         }
 
-        // Hàm upload HTML (dùng uploadedImageUrl nếu có)
+        // Hàm upload HTML (dùng uploadedImageUrls nếu có)
         function saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn) {
             githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
             fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
@@ -678,17 +753,14 @@
                 const el = doc.querySelector(selector);
                 return el ? el.textContent.trim() : '';
             };
-            const getImg = () => {
-                const img = doc.querySelector('.product-img');
-                return img ? img.src : '';
-            };
-            const getStyle = (selector, prop) => {
-                const el = doc.querySelector(selector);
-                return el && el.style && el.style[prop] ? el.style[prop].replace('px','') : '';
+            const getImgs = () => {
+                const imgs = doc.querySelectorAll('.product-img');
+                return Array.from(imgs).map(img => img.src);
             };
             titleInput.value = getVal('h1');
             highlightInput.value = getVal('.highlight');
-            imageDataUrl = getImg();
+            imageDataUrls = getImgs();
+            updateImageList();
             // Lấy width/height nếu có
             const img = doc.querySelector('.product-img');
             if (img) {
@@ -701,24 +773,21 @@
             if (contactBtn && contactBtn.href && contactBtn.href.startsWith('tel:')) {
                 contactInput.value = contactBtn.href.replace('tel:','');
             }
-            // Lấy các danh sách
-            const getList = (selector) => {
-                const ul = doc.querySelector(selector + ' ul');
-                if (!ul) return '';
-                return Array.from(ul.querySelectorAll('li')).map(li => li.textContent).join('\n');
-            };
-            originInput.value = getList('.section:nth-of-type(2)');
-            featureInput.value = getList('.section:nth-of-type(3)');
-            benefitInput.value = getList('.section:nth-of-type(4)');
-            usageInput.value = getList('.section:nth-of-type(5)');
-            preserveInput.value = getList('.section:nth-of-type(6)');
+            // Lấy đúng các danh sách section có <ul>
+            const sections = Array.from(doc.querySelectorAll('.section')).filter(sec => sec.querySelector('ul'));
+            originInput.value   = sections[0] ? Array.from(sections[0].querySelectorAll('li')).map(li => li.textContent).join('\n') : '';
+            featureInput.value  = sections[1] ? Array.from(sections[1].querySelectorAll('li')).map(li => li.textContent).join('\n') : '';
+            benefitInput.value  = sections[2] ? Array.from(sections[2].querySelectorAll('li')).map(li => li.textContent).join('\n') : '';
+            usageInput.value    = sections[3] ? Array.from(sections[3].querySelectorAll('li')).map(li => li.textContent).join('\n') : '';
+            preserveInput.value = sections[4] ? Array.from(sections[4].querySelectorAll('li')).map(li => li.textContent).join('\n') : '';
             // Footer
             const footer = doc.querySelector('.footer');
             if (footer) {
-                // Tách contactinfo nếu có
+                // Tách contactinfo nếu có, nhưng KHÔNG lấy nếu là chuỗi rỗng hoặc chỉ có 1 phần
                 const txt = footer.textContent.trim();
+                // Nếu có ' - ' và phía sau còn ký tự, mới gán vào contactInfoInput
                 const idx = txt.indexOf(' - ');
-                if (idx >= 0) {
+                if (idx >= 0 && txt.slice(idx + 3).trim()) {
                     footerTextInput.value = txt.slice(0, idx);
                     contactInfoInput.value = txt.slice(idx + 3);
                 } else {
@@ -754,4 +823,6 @@
         };
     </script>
 </body>
+
 </html>
+Phiên bản phần mềm 1.0 BY MINH KHOA
