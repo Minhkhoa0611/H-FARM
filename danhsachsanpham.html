@@ -11,64 +11,184 @@
             padding: 0;
         }
         .container {
-            max-width: 500px;
+            max-width: 900px;
             margin: 40px auto;
             background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            padding: 32px 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            padding: 32px 32px 24px 32px;
         }
         h1 {
             text-align: center;
             color: #2d7a2d;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
+            letter-spacing: 1px;
         }
-        ul {
-            list-style: none;
-            padding: 0;
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 24px;
         }
-        li {
-            margin-bottom: 14px;
-        }
-        a {
+        .product-card {
+            background: #f9fff9;
+            border-radius: 10px;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+            padding: 20px 16px 16px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.2s;
+            border: 1px solid #e0f2e0;
+            position: relative;
+            cursor: pointer;
             text-decoration: none;
-            color: #1a5e1a;
+        }
+        .product-card:hover {
+            box-shadow: 0 4px 16px rgba(45,122,45,0.10);
+            border-color: #b6e6b6;
+        }
+        .product-title {
             font-size: 1.08em;
-            padding: 10px 16px;
-            display: block;
-            border-radius: 6px;
-            transition: background 0.2s, color 0.2s;
-            background: #f3f9f3;
+            color: #1a5e1a;
+            margin-bottom: 18px;
+            text-align: center;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        a:hover {
+        .cart-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 26px;
+            height: 26px;
+            fill: #2d7a2d;
+            opacity: 0.85;
+            background: #eafbe7;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 1px 3px rgba(45,122,45,0.07);
+            transition: background 0.2s;
+        }
+        .product-card:hover .cart-icon {
             background: #d2f5d2;
-            color: #0d3b0d;
+            opacity: 1;
         }
-    </style>ss
+        @media (max-width: 600px) {
+            .container {
+                padding: 12px 2vw;
+            }
+            .product-title {
+                font-size: 1em;
+                min-height: 36px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>Danh Sách Sản Phẩm</h1>
-        <ul>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/daudauphongnguyenchat.html">Dầu Đậu Phộng Nguyên Chất</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/daumehfarm.html">Đậu Mè HFarm</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/machnhathienbut.html">Mạch Nha Thiên Bút</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamcunen.html">Mật Ong Ngâm Củ Nén</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamhoadududuc.html">Mật Ong Ngâm Hoa Dù Dù Đực</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamkytu.html">Mật Ong Ngâm Kỳ Tử</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamlahe.html">Mật Ong Ngâm Lá Hẹ</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamrung.html">Mật Ong Ngâm Rừng</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtimsen.html">Mật Ong Ngâm Tim Sen</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html">Mật Ong Ngâm Tỏi</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html">Mật Ong Ngâm Tỏi Lý Sơn</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/matongrungnguyenchat.html">Mật Ong Rừng Nguyên Chất</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html">Nấm Lim Xanh Rừng</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html">Nấm Linh Chi Rừng Quảng Nam</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html">Sáp Ong Rừng HFarm</a></li>
-            <li><a href="https://minhkhoa0611.github.io/H-FARM/posts/tieurungquangnam.html">Tiêu Rừng Quảng Nam</a></li>
-        </ul>
+        <div class="product-grid">
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/daudauphongnguyenchat.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Dầu Đậu Phộng Nguyên Chất</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/daumehfarm.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Đậu Mè HFarm</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/machnhathienbut.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mạch Nha Thiên Bút</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamcunen.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Củ Nén</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamhoadududuc.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Hoa Dù Dù Đực</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamkytu.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Kỳ Tử</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamlahe.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Lá Hẹ</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamrung.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Rừng</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtimsen.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Tim Sen</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Tỏi</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Ngâm Tỏi Lý Sơn</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongrungnguyenchat.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Mật Ong Rừng Nguyên Chất</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Nấm Lim Xanh Rừng</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Nấm Linh Chi Rừng Quảng Nam</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Sáp Ong Rừng HFarm</div>
+            </a>
+            <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/tieurungquangnam.html">
+                <svg class="cart-icon" viewBox="0 0 24 24">
+                    <path d="M7 20a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-9.83-2l.03-.12L7.1 17h9.45a2 2 0 0 0 1.98-1.7l1.38-8A2 2 0 0 0 17.94 5H6.21l-.19-1.09A2 2 0 0 0 4.06 2H2v2h2l3.6 16.59A2 2 0 0 0 9.5 22h7v-2h-7l-.16-.84z"></path>
+                </svg>
+                <div class="product-title">Tiêu Rừng Quảng Nam</div>
+            </a>
+        </div>
     </div>
 </body>
 </html>
 
-phien ban 1.0 by minh khoa
+<!-- phien ban 1.0 by minh khoa -->
