@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Trang Chủ - Danh Sách Sản Phẩm</title>
+    <title>Danh Sách Sản Phẩm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,6 +24,25 @@
             color: #2d7a2d;
             margin-bottom: 32px;
             letter-spacing: 1px;
+        }
+        .product-category {
+            margin-bottom: 32px;
+        }
+        .product-category h2 {
+            font-size: 1.5em;
+            color: #2d7a2d;
+            margin-bottom: 16px;
+            text-align: center;
+            position: relative;
+        }
+        .product-category h2::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background: linear-gradient(to right, transparent, #2d7a2d, transparent);
         }
         .product-grid {
             display: grid;
@@ -57,24 +77,12 @@
             align-items: center;
             justify-content: center;
         }
-        .product-category {
-            margin-bottom: 32px;
-        }
-        .product-category h2 {
-            font-size: 1.5em;
-            color: #2d7a2d;
-            margin-bottom: 16px;
+        .product-note {
+            font-size: 0.98em;
+            color: #388e3c;
+            margin-top: 4px;
             text-align: center;
-            position: relative;
-        }
-        .product-category h2::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background: linear-gradient(to right, transparent, #2d7a2d, transparent);
+            opacity: 0.85;
         }
         @media (max-width: 600px) {
             .container {
@@ -106,9 +114,13 @@
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
         <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
-            <a href="https://minhkhoa0611.github.io/H-FARM/" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+            <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
                 TẠO SẢN PHẨM
             </a>
+                <a href="taodanhmuc.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                TẠO DANH MỤC
+            </a>
+
             <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
                 QR SCANNER
             </a>
@@ -120,86 +132,46 @@
     </nav>
     <div class="container">
         <h1>Danh Sách Sản Phẩm</h1>
-
-        <div class="product-category">
-            <h2>Dầu & Mật</h2>
-            <div class="product-grid">
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/daudauphongnguyenchat.html">
-                    <div class="product-title">Dầu Đậu Phộng Nguyên Chất</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/daumehfarm.html">
-                    <div class="product-title">Dầu Mè HFarm</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matmianguyenchat">
-                    <div class="product-title">Mật Mía Nguyên Chất</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/machnhathienbut.html">
-                    <div class="product-title">Mạch Nha Thiên Bút</div>
-                </a>
-            </div>
-        </div>
-
-        <div class="product-category">
-            <h2>Mật Ong Ngâm</h2>
-            <div class="product-grid">
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamcunen.html">
-                    <div class="product-title">Mật Ong Ngâm Củ Nén</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamhoadududuc.html">
-                    <div class="product-title">Mật Ong Ngâm Hoa Dù Dù Đực</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamkytu.html">
-                    <div class="product-title">Mật Ong Ngâm Kỳ Tử</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamlahe.html">
-                    <div class="product-title">Mật Ong Ngâm Lá Hẹ</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamrung.html">
-                    <div class="product-title">Mật Ong Ngâm Rừng</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtimsen.html">
-                    <div class="product-title">Mật Ong Ngâm Tim Sen</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html">
-                    <div class="product-title">Mật Ong Ngâm Tỏi</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html">
-                    <div class="product-title">Mật Ong Ngâm Tỏi Lý Sơn</div>
-                </a>
-            </div>
-        </div>
-
-        <div class="product-category">
-            <h2>Mật Ong & Sáp Ong Rừng</h2>
-            <div class="product-grid">
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/matongrungnguyenchat.html">
-                    <div class="product-title">Mật Ong Rừng Nguyên Chất</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html">
-                    <div class="product-title">Sáp Ong Rừng HFarm</div>
-                </a>
-            </div>
-        </div>
-
-        <div class="product-category">
-            <h2>Nấm & Tiêu</h2>
-            <div class="product-grid">
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html">
-                    <div class="product-title">Nấm Lim Xanh Rừng</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html">
-                    <div class="product-title">Nấm Linh Chi Rừng Quảng Nam</div>
-                </a>
-                <a class="product-card" href="https://minhkhoa0611.github.io/H-FARM/posts/tieurungquangnam.html">
-                    <div class="product-title">Tiêu Rừng Quảng Nam</div>
-                </a>
-            </div>
+        <div id="product-list">
+            <div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải dữ liệu...</div>
         </div>
     </div>
     <footer style="text-align:center; color:#2d7a2d; font-size:1em; margin:28px 0 12px 0; letter-spacing:1px;">
         H'FARM 95 QUẢNG ĐỨC - NHA TRANG  - KHÁNH HÒA<br>
         &copy; 2025 BY Minh Khoa
     </footer>
+    <script>
+        fetch('products.json')
+            .then(res => res.json())
+            .then(data => {
+                if (!Array.isArray(data)) throw new Error("Dữ liệu không hợp lệ");
+                // Gom nhóm theo category
+                const groups = {};
+                data.forEach(prod => {
+                    if (!groups[prod.category]) groups[prod.category] = [];
+                    groups[prod.category].push(prod);
+                });
+                // Tạo HTML
+                let html = '';
+                Object.keys(groups).forEach(cat => {
+                    html += `<div class="product-category">
+                        <h2>${cat}</h2>
+                        <div class="product-grid">`;
+                    groups[cat].forEach(prod => {
+                        html += `
+                            <a class="product-card" href="${prod.link}" target="_blank">
+                                <div class="product-title">${prod.title}</div>
+                                ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
+                            </a>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+                document.getElementById('product-list').innerHTML = html;
+            })
+            .catch(() => {
+                document.getElementById('product-list').innerHTML = '<div style="color:#e53935;text-align:center;">Không tải được dữ liệu sản phẩm!</div>';
+            });
+    </script>
 </body>
 </html>
-

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sản phẩm H-FARM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: 'Be Vietnam Pro', Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+        .container { max-width: 950px; margin: 32px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px #b6e5b6; padding: 32px 24px 24px 24px; }
+        h1 { text-align: center; color: #388e3c; margin-bottom: 24px; }
+        .main-flex { display: flex; gap: 32px; flex-wrap: wrap; }
+        .form-side { flex: 1 1 320px; min-width: 300px; }
+        .list-side { flex: 2 1 400px; min-width: 320px; }
+        .form-group { margin-bottom: 16px; }
+        label { font-weight: 500; display: block; margin-bottom: 6px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #b6e5b6; font-size: 1em; }
+        textarea { min-height: 60px; }
+        button { background: #43a047; color: #fff; font-weight: 600; border: none; border-radius: 6px; padding: 8px 18px; margin-right: 8px; cursor: pointer; font-size: 1em; }
+        button:hover { background: #388e3c; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid #b6e5b6; padding: 8px 6px; text-align: left; }
+        th { background: #e8fbe8; color: #388e3c; }
+        tr:nth-child(even) { background: #f8fff8; }
+        .actions button { margin-right: 4px; }
+        .footer { margin-top: 32px; text-align: center; color: #388e3c; font-weight: 600; letter-spacing: 1px; font-size: 1.05em; opacity: 0.85; }
+        @media (max-width: 900px) {
+            .main-flex { flex-direction: column; gap: 0; }
+            .form-side, .list-side { width: 100%; }
+        }
+        nav { width: 100%; background: #eafbe7; padding: 12px 0 10px 0; box-shadow: 0 2px 8px rgba(45,122,45,0.04); margin-bottom: 12px; }
+        nav div { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+        nav a { color: #217a21; font-weight: bold; text-decoration: none; font-size: 1.08em; padding: 7px 18px; border-radius: 6px; transition: background 0.2s; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div>
+            <a href="https://minhkhoa0611.github.io/H-FARM/">TẠO SẢN PHẨM</a>
+            <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html">QR SCANNER</a>
+            <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton">CANVA THIẾT KẾ</a>
+        </div>
+    </nav>
+    <div class="container">
+        <h1>Quản lý sản phẩm H-FARM</h1>
+        <div class="main-flex">
+            <div class="form-side">
+                <form id="productForm">
+                    <input type="hidden" id="editIndex" value="">
+                    <div class="form-group">
+                        <label for="prodTitle">Tên sản phẩm</label>
+                        <input type="text" id="prodTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prodLink">Đường dẫn (URL)</label>
+                        <input type="text" id="prodLink" placeholder="https://minhkhoa0611.github.io/H-FARM/posts/abc.html" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prodCategory">Danh mục</label>
+                        <input type="text" id="prodCategory" placeholder="Ví dụ: Dầu & Mật" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prodNote">Ghi chú (tuỳ chọn)</label>
+                        <textarea id="prodNote"></textarea>
+                    </div>
+                    <button type="submit" id="saveBtn">Thêm mới</button>
+                    <button type="button" id="resetBtn" style="background:#bdbdbd;color:#333;">Làm lại</button>
+                </form>
+            </div>
+            <div class="list-side">
+                <h2 style="margin-top:0;font-size:1.2em;color:#388e3c;">Danh sách sản phẩm</h2>
+                <table id="productTable">
+                    <thead>
+                        <tr>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Đường dẫn</th>
+                            <th>Ghi chú</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dữ liệu sẽ được render ở đây -->
+                    </tbody>
+                </table>
+                <button type="button" id="saveToGithubBtn" style="margin-top:18px;">Lưu lên Github</button>
+                <div id="github-progress" style="margin-top:8px;color:#388e3c;font-size:1em;"></div>
+                <div id="github-link" style="margin-top:12px;font-size:1.05em;"></div>
+            </div>
+        </div>
+        <div class="footer">H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  - KHÁNH HÒA</div>
+    </div>
+    <script>
+        // --- Đồng bộ dữ liệu từ Github về localStorage ---
+        function syncProductsFromGithub(callback) {
+            fetch('https://minhkhoa0611.github.io/H-FARM/products.json')
+                .then(res => res.json())
+                .then(arr => {
+                    if (Array.isArray(arr)) {
+                        localStorage.setItem('hfarm_products', JSON.stringify(arr));
+                        if (typeof callback === 'function') callback();
+                    }
+                })
+                .catch(() => {
+                    if (typeof callback === 'function') callback();
+                });
+        }
+
+        // Khi load trang, luôn đồng bộ dữ liệu mới nhất từ Github về localStorage trước khi render
+        window.addEventListener('DOMContentLoaded', function() {
+            syncProductsFromGithub(renderTable);
+        });
+
+        // Lưu sản phẩm vào localStorage
+        function getProducts() {
+            return JSON.parse(localStorage.getItem('hfarm_products') || '[]');
+        }
+        function saveProducts(arr) {
+            localStorage.setItem('hfarm_products', JSON.stringify(arr));
+        }
+        function renderTable() {
+            const arr = getProducts();
+            const tbody = document.querySelector('#productTable tbody');
+            tbody.innerHTML = '';
+            arr.forEach((prod, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${prod.title}</td>
+                    <td>${prod.category}</td>
+                    <td><a href="${prod.link}" target="_blank">Xem</a></td>
+                    <td>${prod.note || ''}</td>
+                    <td class="actions">
+                        <button type="button" onclick="editProduct(${idx})">Sửa</button>
+                        <button type="button" onclick="deleteProduct(${idx})" style="background:#e53935;">Xóa</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+        function resetForm() {
+            document.getElementById('editIndex').value = '';
+            document.getElementById('prodTitle').value = '';
+            document.getElementById('prodLink').value = '';
+            document.getElementById('prodCategory').value = '';
+            document.getElementById('prodNote').value = '';
+            document.getElementById('saveBtn').textContent = 'Thêm mới';
+        }
+        document.getElementById('productForm').onsubmit = function(e) {
+            e.preventDefault();
+            const idx = document.getElementById('editIndex').value;
+            const title = document.getElementById('prodTitle').value.trim();
+            const link = document.getElementById('prodLink').value.trim();
+            const category = document.getElementById('prodCategory').value.trim();
+            const note = document.getElementById('prodNote').value.trim();
+            if (!title || !link || !category) return;
+            let arr = getProducts();
+            if (idx === '') {
+                arr.push({ title, link, category, note });
+            } else {
+                arr[idx] = { title, link, category, note };
+            }
+            saveProducts(arr);
+            renderTable();
+            resetForm();
+        };
+        document.getElementById('resetBtn').onclick = resetForm;
+        window.editProduct = function(idx) {
+            const arr = getProducts();
+            const prod = arr[idx];
+            document.getElementById('editIndex').value = idx;
+            document.getElementById('prodTitle').value = prod.title;
+            document.getElementById('prodLink').value = prod.link;
+            document.getElementById('prodCategory').value = prod.category;
+            document.getElementById('prodNote').value = prod.note || '';
+            document.getElementById('saveBtn').textContent = 'Lưu';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        window.deleteProduct = function(idx) {
+            if (!confirm('Bạn chắc chắn muốn xóa sản phẩm này?')) return;
+            let arr = getProducts();
+            arr.splice(idx, 1);
+            saveProducts(arr);
+            renderTable();
+            resetForm();
+        };
+        // Khởi tạo bảng khi load
+        renderTable();
+
+        // --- Lưu lên Github ---
+        document.getElementById('saveToGithubBtn').onclick = function() {
+            const githubProgressDiv = document.getElementById('github-progress');
+            const githubLinkDiv = document.getElementById('github-link');
+            githubProgressDiv.textContent = "Đang lấy token Github...";
+            githubLinkDiv.innerHTML = "";
+            // Lấy token từ Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+                .then(res => res.text())
+                .then(text => {
+                    let token = '';
+                    const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                    if (match) token = match[1];
+                    if (!token) {
+                        githubProgressDiv.textContent = "Không lấy được token Github!";
+                        return;
+                    }
+                    githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
+                    // Lưu dưới dạng JSON, có thể đổi thành HTML nếu muốn
+                    const products = getProducts();
+                    const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
+                    const githubPath = "products.json";
+                    const githubWebUrl = "https://minhkhoa0611.github.io/H-FARM/products.json";
+                    // Kiểm tra file đã tồn tại chưa để lấy sha
+                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                        headers: { Authorization: `token ${token}` }
+                    })
+                    .then(res => res.ok ? res.json() : null)
+                    .then(fileData => {
+                        githubProgressDiv.textContent = "Đang tải file lên Github...";
+                        const body = {
+                            message: "Cập nhật danh sách sản phẩm",
+                            content: content,
+                            branch: "main"
+                        };
+                        if (fileData && fileData.sha) body.sha = fileData.sha;
+                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                            method: "PUT",
+                            headers: {
+                                "Authorization": `token ${token}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(body)
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.content && resp.content.download_url) {
+                                githubProgressDiv.textContent = "Đã lưu lên Github thành công!";
+                                githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem file trên Github</a>`;
+                            } else {
+                                githubProgressDiv.textContent = "Lưu lên Github thất bại! " + (resp.message || '');
+                                githubLinkDiv.innerHTML = "";
+                            }
+                        })
+                        .catch(() => {
+                            githubProgressDiv.textContent = "Lỗi khi tải file lên Github!";
+                            githubLinkDiv.innerHTML = "";
+                        });
+                    });
+                })
+                .catch(() => {
+                    githubProgressDiv.textContent = "Không lấy được token Github!";
+                });
+        };
+    </script>
+</body>
+</html>
