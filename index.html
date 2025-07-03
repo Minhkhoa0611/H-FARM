@@ -258,6 +258,7 @@
         const hidePreserve = document.getElementById('hide-preserve');
 
         let imageDataUrl = '';
+        let uploadedImageUrl = ''; // Đường dẫn ảnh trên Github nếu upload file ảnh
 
         // Xử lý chọn ảnh
         imageInput.addEventListener('change', function(e) {
@@ -372,10 +373,12 @@
         function getExportHtml() {
             const filename = filenameInput.value.trim() || 'bai-viet-moi';
             let html = '';
+            // Sử dụng uploadedImageUrl nếu có, nếu không dùng base64
+            let imgSrc = uploadedImageUrl || imageDataUrl;
             if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>\n`;
             if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>\n`;
-            if (!hideImage.checked && imageDataUrl) {
-                html += `<img class="product-img" src="${imageDataUrl}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;">\n`;
+            if (!hideImage.checked && imgSrc) {
+                html += `<img class="product-img" src="${imgSrc}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;">\n`;
             }
             if (!hidePrice.checked || !hideContact.checked) {
                 html += `<div class="section" style="text-align:center; margin-bottom: 24px;">\n`;
@@ -483,7 +486,8 @@
         // Lưu lên Github qua Google Apps Script
         function saveToGithub() {
             const filename = filenameInput.value.trim() || 'bai-viet-moi';
-            const htmlContent = getExportHtml();
+            const githubImagePath = `posts/images/${filename}_image`;
+            const githubImageUrl = `https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/${filename}_image`;
             const githubPath = `posts/${filename}.html`;
             const githubWebUrl = `https://minhkhoa0611.github.io/H-FARM/posts/${filename}.html`;
             const githubLinkDiv = document.getElementById('github-link');
@@ -495,17 +499,78 @@
             githubProgressDiv.textContent = "Đang lấy token Github...";
             qrcodeBox.innerHTML = ""; // Xóa QR cũ nếu có
             downloadQrBtn.style.display = "none";
+            uploadedImageUrl = ''; // reset
 
-            // Nếu có ảnh, kiểm tra dung lượng base64 (giới hạn Github API ~1MB/file)
+            // Nếu có ảnh lớn hơn 1MB, upload ảnh lên Github trước
             if (imageDataUrl && imageDataUrl.length > 1200000) {
-                githubProgressDiv.textContent = "Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn (dưới 1MB)!";
+                // Lấy extension
+                let ext = '';
+                const match = imageDataUrl.match(/^data:image\/(\w+);base64,/);
+                if (match) ext = '.' + match[1].toLowerCase();
+                else ext = '.png';
+                const imgPath = githubImagePath + ext;
+                const imgUrl = githubImageUrl + ext;
+                githubProgressDiv.textContent = "Ảnh lớn, đang upload ảnh lên Github...";
+                // Lấy token
+                fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+                    .then(res => res.text())
+                    .then(text => {
+                        let token = '';
+                        const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                        if (match) token = match[1];
+                        if (!token) {
+                            githubProgressDiv.textContent = "Không lấy được token Github!";
+                            return;
+                        }
+                        // Kiểm tra file ảnh đã tồn tại chưa
+                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPath}`, {
+                            headers: { Authorization: `token ${token}` }
+                        })
+                        .then(res => res.ok ? res.json() : null)
+                        .then(fileData => {
+                            const body = {
+                                message: `Add image for post ${filename}`,
+                                content: imageDataUrl.split(',')[1],
+                                branch: "main"
+                            };
+                            if (fileData && fileData.sha) body.sha = fileData.sha;
+                            // Upload ảnh
+                            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${imgPath}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Authorization": `token ${token}`,
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(body)
+                            })
+                            .then(r => r.json())
+                            .then(resp => {
+                                if (resp.content && resp.content.download_url) {
+                                    uploadedImageUrl = imgUrl;
+                                    githubProgressDiv.textContent = "Đã upload ảnh, đang lưu HTML...";
+                                    // Sau khi upload ảnh xong, lưu HTML (không nhúng base64 nữa)
+                                    saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn);
+                                } else {
+                                    githubProgressDiv.textContent = "Upload ảnh lên Github thất bại! " + (resp.message || '');
+                                }
+                            })
+                            .catch(() => {
+                                githubProgressDiv.textContent = "Lỗi khi upload ảnh lên Github!";
+                            });
+                        });
+                    })
+                    .catch(() => {
+                        githubProgressDiv.textContent = "Không lấy được token Github!";
+                    });
                 return;
             }
 
+            // Nếu không có ảnh lớn, xử lý như cũ
+            uploadedImageUrl = '';
+            // Để tránh lặp code, tách đoạn upload HTML ra hàm riêng:
             fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
                 .then(res => res.text())
                 .then(text => {
-                    githubProgressDiv.textContent = "Đang xác thực token...";
                     let token = '';
                     const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
                     if (match) token = match[1];
@@ -513,89 +578,94 @@
                         githubProgressDiv.textContent = "Không lấy được token Github!";
                         return;
                     }
-                    githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
-                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
-                        headers: { Authorization: `token ${token}` }
-                    })
-                    .then(res => res.ok ? res.json() : null)
-                    .then (fileData => {
-                        githubProgressDiv.textContent = "Đang tải file lên Github...";
-                        const body = {
-                            message: `Add post ${filename}.html`,
-                            content: btoa(unescape(encodeURIComponent(htmlContent))),
-                            branch: "main"
-                        };
-                        if (fileData && fileData.sha) body.sha = fileData.sha;
-                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
-                            method: "PUT",
-                            headers: {
-                                "Authorization": `token ${token}`,
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify(body)
-                        })
-                        .then(r => r.json())
-                        .then(resp => {
-                            if (resp.content && resp.content.download_url) {
-                                githubProgressDiv.textContent = "Đã lưu lên Github thành công!";
-                                githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem bài viết trên web: ${githubWebUrl}</a>`;
-                                qrcodeBox.innerHTML = ""; // clear cũ
-                                downloadQrBtn.style.display = "none";
-                                // Sử dụng QRCodeStyling nếu có, nếu không fallback QRCode.js
-                                if (window.QRCodeStyling) {
-                                    const qr = new QRCodeStyling({
-                                        width: 220,
-                                        height: 220,
-                                        data: githubWebUrl,
-                                        image: "image.png",
-                                        dotsOptions: { color: "#000000", type: "rounded" },
-                                        backgroundOptions: { color: "#e6f9e6" }, // nền xanh giống trang
-                                        cornersSquareOptions: { type: "extra-rounded", color: "#000000" },
-                                        cornersDotOptions: { type: "dot", color: "#000000" },
-                                        imageOptions: {
-                                            crossOrigin: "anonymous",
-                                            margin: 2,
-                                            imageSize: 0.28,
-                                            hideBackgroundDots: false,
-                                            borderRadius: 16
-                                        }
-                                    });
-                                    qr.append(qrcodeBox);
-                                    downloadQrBtn.style.display = "inline-block";
-                                    downloadQrBtn.onclick = function() {
-                                        qr.download({ name: "qrcode", extension: "png" });
-                                    };
-                                } else if (window.QRCode) {
-                                    new QRCode(qrcodeBox, {
-                                        text: githubWebUrl,
-                                        width: 220,
-                                        height: 220,
-                                        colorDark : "#000000",
-                                        colorLight : "#e6f9e6", // nền xanh giống trang
-                                        correctLevel : QRCode.CorrectLevel.H
-                                    });
-                                    qrcodeBox.innerHTML += '<div style="font-size:0.95em;color:#888;margin-top:4px;">(Không hỗ trợ logo ở giữa)</div>';
-                                    downloadQrBtn.style.display = "none";
-                                }
-                            } else {
-                                githubProgressDiv.textContent = "Lưu lên Github thất bại! " + (resp.message || '');
-                                githubLinkDiv.innerHTML = "";
-                                qrcodeBox.innerHTML = "";
-                                downloadQrBtn.style.display = "none";
-                            }
-                        })
-                        .catch(() => {
-                            githubProgressDiv.textContent = "Lỗi khi tải file lên Github!";
-                            githubLinkDiv.innerHTML = "";
-                            qrcodeBox.innerHTML = "";
-                            downloadQrBtn.style.display = "none";
-                        });
-                    });
+                    saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn);
                 })
                 .catch(() => {
                     githubProgressDiv.textContent = "Không lấy được token Github!";
-                    githubLinkDiv.innerHTML = "";
                 });
+        }
+
+        // Hàm upload HTML (dùng uploadedImageUrl nếu có)
+        function saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn) {
+            githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                headers: { Authorization: `token ${token}` }
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then (fileData => {
+                githubProgressDiv.textContent = "Đang tải file lên Github...";
+                const htmlContent = getExportHtml();
+                const body = {
+                    message: `Add post ${filename}.html`,
+                    content: btoa(unescape(encodeURIComponent(htmlContent))),
+                    branch: "main"
+                };
+                if (fileData && fileData.sha) body.sha = fileData.sha;
+                fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.content && resp.content.download_url) {
+                        githubProgressDiv.textContent = "Đã lưu lên Github thành công!";
+                        githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem bài viết trên web: ${githubWebUrl}</a>`;
+                        qrcodeBox.innerHTML = "";
+                        downloadQrBtn.style.display = "none";
+                        // Sử dụng QRCodeStyling nếu có, nếu không fallback QRCode.js
+                        if (window.QRCodeStyling) {
+                            const qr = new QRCodeStyling({
+                                width: 220,
+                                height: 220,
+                                data: githubWebUrl,
+                                image: "image.png",
+                                dotsOptions: { color: "#000000", type: "rounded" },
+                                backgroundOptions: { color: "#e6f9e6" }, // nền xanh giống trang
+                                cornersSquareOptions: { type: "extra-rounded", color: "#000000" },
+                                cornersDotOptions: { type: "dot", color: "#000000" },
+                                imageOptions: {
+                                    crossOrigin: "anonymous",
+                                    margin: 2,
+                                    imageSize: 0.28,
+                                    hideBackgroundDots: false,
+                                    borderRadius: 16
+                                }
+                            });
+                            qr.append(qrcodeBox);
+                            downloadQrBtn.style.display = "inline-block";
+                            downloadQrBtn.onclick = function() {
+                                qr.download({ name: "qrcode", extension: "png" });
+                            };
+                        } else if (window.QRCode) {
+                            new QRCode(qrcodeBox, {
+                                text: githubWebUrl,
+                                width: 220,
+                                height: 220,
+                                colorDark : "#000000",
+                                colorLight : "#e6f9e6", // nền xanh giống trang
+                                correctLevel : QRCode.CorrectLevel.H
+                            });
+                            qrcodeBox.innerHTML += '<div style="font-size:0.95em;color:#888;margin-top:4px;">(Không hỗ trợ logo ở giữa)</div>';
+                            downloadQrBtn.style.display = "none";
+                        }
+                    } else {
+                        githubProgressDiv.textContent = "Lưu lên Github thất bại! " + (resp.message || '');
+                        githubLinkDiv.innerHTML = "";
+                        qrcodeBox.innerHTML = "";
+                        downloadQrBtn.style.display = "none";
+                    }
+                })
+                .catch(() => {
+                    githubProgressDiv.textContent = "Lỗi khi tải file lên Github!";
+                    githubLinkDiv.innerHTML = "";
+                    qrcodeBox.innerHTML = "";
+                    downloadQrBtn.style.display = "none";
+                });
+            });
         }
 
         // Hàm parse HTML và điền vào form
