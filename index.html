@@ -2,27 +2,39 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>MẬT ONG RỪNG NGUYÊN CHẤT – Tinh túy từ đại ngàn Trường Sơn</title>
+    <title>Tạo bài viết mới - Mật ong rừng</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Be Vietnam Pro', Arial, sans-serif;
-            background: linear-gradient(135deg, #e6f9e6 0%, #b6e5b6 100%);
-            /* Tông xanh lá: #4caf50, #81c784, #b6e5b6, #e6f9e6 */
-            color: #2e3d1f;
+        html, body {
+            height: 100%;
+            width: 100%;
             margin: 0;
             padding: 0;
         }
+        body {
+            font-family: 'Be Vietnam Pro', Arial, sans-serif;
+            background: linear-gradient(135deg, #e6f9e6 0%, #b6e5b6 100%);
+            color: #2e3d1f;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            min-width: 100vw;
+            box-sizing: border-box;
+        }
         .container {
-            max-width: 750px;
-            margin: 40px auto;
+            width: 100vw;
+            min-height: 100vh;
+            margin: 0;
             background: #f8fff8;
-            border-radius: 18px;
-            box-shadow: 0 8px 32px 0 rgba(184,134,11,0.18), 0 1.5px 6px #e0c97f;
-            padding: 36px 28px 32px 28px;
+            border-radius: 0;
+            box-shadow: none;
+            padding: 36px 2vw 32px 2vw;
             position: relative;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
         h1 {
             color: #388e3c;
@@ -33,78 +45,392 @@
             font-weight: 700;
             text-shadow: 0 2px 8px #b6e5b6;
         }
-        .highlight {
-            background: #e8fbe8;
-            color: #388e3c;
-            padding: 6px 12px;
-            border-radius: 8px;
-            display: block;
+        .highlight { background: #e8fbe8; color: #388e3c; padding: 6px 12px; border-radius: 8px; display: block; text-align: center; margin: 0 auto 18px auto; font-size: 1.1em; font-weight: 500; box-shadow: 0 1px 4px #b6e5b6;}
+        .product-img { display: block; margin: 18px auto 28px auto; width: 420px; height: 420px; object-fit: cover; border-radius: 16px; box-shadow: 0 4px 16px #b6e5b6; border: 3px solid #b6e5b6; background: #e8fbe8;}
+        .section { margin-bottom: 28px; background: #e8fbe8; border-radius: 10px; padding: 18px 16px 10px 16px; box-shadow: 0 1px 6px #b6e5b6;}
+        .price { color: #388e3c; font-size: 1.25em; font-weight: bold; margin-top: 10px; margin-bottom: 10px; letter-spacing: 0.5px;}
+        .contact-btn { display: inline-block; background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%); color: #fff; font-weight: 700; font-size: 1.1em; padding: 12px 32px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 8px #b6e5b6; margin-top: 18px;}
+        .contact-btn:hover { background: linear-gradient(90deg, #388e3c 0%, #81c784 100%); transform: translateY(-2px) scale(1.03);}
+        .form-group { margin-bottom: 18px; }
+        label { font-weight: 500; display: block; margin-bottom: 6px; }
+        input[type="text"], textarea { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #b6e5b6; font-size: 1em; }
+        textarea { min-height: 80px; }
+        input[type="file"] { margin-top: 6px; }
+        #preview { margin-top: 0; }
+        .footer {
+            margin-top: 36px;
             text-align: center;
-            margin: 0 auto 18px auto;
-            font-size: 1.1em;
-            font-weight: 500;
-            box-shadow: 0 1px 4px #b6e5b6;
-        }
-        .product-img {
-            display: block;
-            margin: 18px auto 28px auto;
-            width: 420px;
-            height: 420px;
-            object-fit: cover;
-            border-radius: 16px;
-            box-shadow: 0 4px 16px #b6e5b6;
-            border: 3px solid #b6e5b6;
-            background: #e8fbe8;
-            transition: width 0.2s, height 0.2s;
-        }
-        h2 {
-            color: #2e7d32;
-            margin-top: 32px;
-            margin-bottom: 10px;
-            font-size: 1.25em;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        ul {
-            margin: 0 0 16px 24px;
-            padding-left: 18px;
-        }
-        ul li {
-            margin-bottom: 7px;
-            font-size: 1.05em;
-            line-height: 1.6;
-        }
-        .section {
-            margin-bottom: 28px;
-            background: #e8fbe8;
-            border-radius: 10px;
-            padding: 18px 16px 10px 16px;
-            box-shadow: 0 1px 6px #b6e5b6;
-        }
-        .price {
             color: #388e3c;
-            font-size: 1.25em;
-            font-weight: bold;
-            margin-top: 10px;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 1.05em;
+            opacity: 0.85;
         }
-        .contact-btn {
-            display: inline-block;
-            background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: 1.1em;
-            padding: 12px 32px;
-            border-radius: 8px;
-            text-decoration: none;
-            box-shadow: 0 2px 8px #b6e5b6;
-            margin-top: 18px;
-            transition: background 0.2s, transform 0.2s;
+        .main-flex {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            flex: 1 1 0;
         }
-        .contact-btn:hover {
-            background: linear-gradient(90deg, #388e3c 0%, #81c784 100%);
-            transform: translateY(-2px) scale(1.03);
+        .form-side {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .preview-side {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .preview-box {
+            background: #e8fbe8;
+            border: 2px solid #b6e5b6;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #b6e5b6;
+            padding: 24px 18px;
+            margin-top: 0;
+            min-height: 200px;
+        }
+        .img-resize-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .img-resize-label {
+            font-size: 0.98em;
+            color: #388e3c;
+            font-weight: 500;
+            margin-right: 6px;
+        }
+        .img-resize-input {
+            width: 60px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            border: 1px solid #b6e5b6;
+            font-size: 1em;
+        }
+        @media (max-width: 900px) {
+            .main-flex { flex-direction: column; gap: 0; }
+            .form-side, .preview-side { width: 100%; }
+            #preview { margin-top: 36px; }
+        }
+        @media (max-width: 600px) {
+            .container { padding: 14px 4vw 18px 4vw; }
+            h1 { font-size: 1.4em; }
+            .product-img { width: 180px; height: 180px; }
+            .section { padding: 10px 6px 6px 6px; }
+        }
+    </style>
+    <!-- Thêm thư viện QRCode.js và QRCodeStyling -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Tạo bài viết mới</h1>
+        <div class="main-flex">
+            <div class="form-side">
+                <form id="postForm">
+                    <div class="form-group">
+                        <label for="title">Tiêu đề bài viết</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-title"> Ẩn</label>
+                        <input type="text" id="title" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="highlight">Dòng phụ đề (highlight)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-highlight"> Ẩn</label>
+                        <input type="text" id="highlight" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Chọn hình ảnh</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-image"> Ẩn</label>
+                        <input type="file" id="image" accept="image/*">
+                        <div class="img-resize-wrap">
+                            <span class="img-resize-label">Rộng</span>
+                            <input type="number" id="imgWidth" class="img-resize-input" min="50" max="1000" value="420"> px
+                            <span class="img-resize-label" style="margin-left:16px;">Cao</span>
+                            <input type="number" id="imgHeight" class="img-resize-input" min="50" max="1000" value="420"> px
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Giá bán (có thể xuống dòng bằng &lt;br&gt;)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-price"> Ẩn</label>
+                        <textarea id="price" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Số điện thoại liên hệ</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-contact"> Ẩn</label>
+                        <input type="text" id="contact" value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="contactinfo">Thông tin liên hệ khác (hiển thị dưới chân trang, có thể để trống)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-contactinfo"> Ẩn</label>
+                        <textarea id="contactinfo" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="origin">Nguồn gốc (mỗi ý 1 dòng, sẽ tự động thành danh sách)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-origin"> Ẩn</label>
+                        <textarea id="origin" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="feature">Đặc điểm nổi bật (mỗi ý 1 dòng)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-feature"> Ẩn</label>
+                        <textarea id="feature" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="benefit">Công dụng tuyệt vời (mỗi ý 1 dòng)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-benefit"> Ẩn</label>
+                        <textarea id="benefit" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="usage">Cách sử dụng (mỗi ý 1 dòng)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-usage"> Ẩn</label>
+                        <textarea id="usage" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="preserve">Bảo quản (mỗi ý 1 dòng)</label>
+                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-preserve"> Ẩn</label>
+                        <textarea id="preserve" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="filename">Tên file (không có .html)</label>
+                        <input type="text" id="filename" value="">
+                    </div>
+                    <button type="button" onclick="downloadHTML()">Tải về máy</button>
+                    <button type="button" onclick="saveToGithub()">Lưu lên Github</button>
+                    <div id="github-progress" style="margin-top:8px;color:#388e3c;font-size:1em;"></div>
+                    <div id="github-link" style="margin-top:12px;font-size:1.05em;"></div>
+                    <div id="qrcode-box" style="margin-top:18px;text-align:center;"></div>
+                    <button id="download-qrcode-btn" type="button" style="display:none;margin-top:10px;">Download mã QR</button>
+                </form>
+            </div>
+            <div class="preview-side">
+                <h2 style="margin-top:0;">Preview</h2>
+                <div class="preview-box">
+                    <div id="preview"></div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA <span id="footer-contactinfo"></span></div>
+    </div>
+    <script>
+        // Lấy các trường nhập liệu
+        const titleInput = document.getElementById('title');
+        const highlightInput = document.getElementById('highlight');
+        const imageInput = document.getElementById('image');
+        const priceInput = document.getElementById('price');
+        const contactInput = document.getElementById('contact');
+        const originInput = document.getElementById('origin');
+        const featureInput = document.getElementById('feature');
+        const benefitInput = document.getElementById('benefit');
+        const usageInput = document.getElementById('usage');
+        const preserveInput = document.getElementById('preserve');
+        const filenameInput = document.getElementById('filename');
+        const previewDiv = document.getElementById('preview');
+        const contactInfoInput = document.getElementById('contactinfo');
+        const imgWidthInput = document.getElementById('imgWidth');
+        const imgHeightInput = document.getElementById('imgHeight');
+
+        // Thêm các checkbox ẩn/hiện
+        const hideTitle = document.getElementById('hide-title');
+        const hideHighlight = document.getElementById('hide-highlight');
+        const hideImage = document.getElementById('hide-image');
+        const hidePrice = document.getElementById('hide-price');
+        const hideContact = document.getElementById('hide-contact');
+        const hideContactInfo = document.getElementById('hide-contactinfo');
+        const hideOrigin = document.getElementById('hide-origin');
+        const hideFeature = document.getElementById('hide-feature');
+        const hideBenefit = document.getElementById('hide-benefit');
+        const hideUsage = document.getElementById('hide-usage');
+        const hidePreserve = document.getElementById('hide-preserve');
+
+        let imageDataUrl = '';
+
+        // Xử lý chọn ảnh
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    imageDataUrl = evt.target.result;
+                    updatePreview();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Cập nhật preview khi nhập liệu hoặc đổi trạng thái ẩn/hiện
+        [
+            titleInput, highlightInput, priceInput, contactInput,
+            originInput, featureInput, benefitInput, usageInput, preserveInput, contactInfoInput,
+            imgWidthInput, imgHeightInput,
+            hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+            hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve
+        ].forEach(input => {
+            input.addEventListener('input', updatePreview);
+            input.addEventListener('change', updatePreview);
+        });
+
+        // Lưu trạng thái ẩn/hiện vào localStorage khi thay đổi
+        [
+            hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+            hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve
+        ].forEach(input => {
+            input.addEventListener('change', () => {
+                localStorage.setItem('hfarm_hide_' + input.id, input.checked ? '1' : '0');
+            });
+        });
+
+        // Khi load trang, khôi phục trạng thái ẩn/hiện từ localStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            [
+                hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+                hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve
+            ].forEach(input => {
+                const val = localStorage.getItem('hfarm_hide_' + input.id);
+                if (val === '1') input.checked = true;
+                else if (val === '0') input.checked = false;
+            });
+            updatePreview();
+        });
+
+        function toList(text) {
+            return text.split('\n').filter(x => x.trim()).map(x => `<li>${x.trim()}</li>`).join('');
+        }
+
+        function updatePreview() {
+            let html = '';
+            if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>`;
+            if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>`;
+            if (!hideImage.checked && imageDataUrl) {
+                html += `<img class="product-img" id="preview-img" src="${imageDataUrl}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;resize:both;overflow:auto;display:block;">`;
+            }
+            if (!hidePrice.checked || !hideContact.checked) {
+                html += `<div class="section" style="text-align:center; margin-bottom: 24px;">`;
+                if (!hidePrice.checked) {
+                    html += `<h2>💰 GIÁ BÁN</h2><div class="price">${priceInput.value}</div>`;
+                }
+                if (!hideContact.checked) {
+                    html += `<a class="contact-btn" href="tel:${contactInput.value}">Liên hệ mua hàng</a>`;
+                }
+                html += `</div>`;
+            }
+            if (!hideOrigin.checked) {
+                html += `<div class="section"><h2>🏞️ NGUỒN GỐC</h2><ul>${toList(originInput.value)}</ul></div>`;
+            }
+            if (!hideFeature.checked) {
+                html += `<div class="section"><h2>💎 ĐẶC ĐIỂM NỔI BẬT</h2><ul>${toList(featureInput.value)}</ul></div>`;
+            }
+            if (!hideBenefit.checked) {
+                html += `<div class="section"><h2>✅ CÔNG DỤNG TUYỆT VỜI</h2><ul>${toList(benefitInput.value)}</ul></div>`;
+            }
+            if (!hideUsage.checked) {
+                html += `<div class="section"><h2>👌 CÁCH SỬ DỤNG</h2><ul>${toList(usageInput.value)}</ul></div>`;
+            }
+            if (!hidePreserve.checked) {
+                html += `<div class="section"><h2>📦 BẢO QUẢN</h2><ul>${toList(preserveInput.value)}</ul></div>`;
+            }
+            previewDiv.innerHTML = html;
+            document.getElementById('footer-contactinfo').textContent =
+                (!hideContactInfo.checked && contactInfoInput.value) ? ' - ' + contactInfoInput.value : '';
+
+            // Cho phép kéo chỉnh kích thước ảnh trong preview
+            const previewImg = document.getElementById('preview-img');
+            if (previewImg) {
+                previewImg.style.resize = "both";
+                previewImg.style.overflow = "auto";
+                previewImg.onmouseup = function () {
+                    setTimeout(() => {
+                        imgWidthInput.value = previewImg.offsetWidth;
+                        imgHeightInput.value = previewImg.offsetHeight;
+                    }, 10);
+                };
+            }
+        }
+
+        // Khởi tạo preview ban đầu
+        updatePreview();
+
+        // Hàm lấy nội dung HTML xuất file
+        function getExportHtml() {
+            const filename = filenameInput.value.trim() || 'bai-viet-moi';
+            let html = '';
+            if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>\n`;
+            if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>\n`;
+            if (!hideImage.checked && imageDataUrl) {
+                html += `<img class="product-img" src="${imageDataUrl}" alt="Ảnh sản phẩm" style="width:${imgWidthInput.value}px;height:${imgHeightInput.value}px;">\n`;
+            }
+            if (!hidePrice.checked || !hideContact.checked) {
+                html += `<div class="section" style="text-align:center; margin-bottom: 24px;">\n`;
+                if (!hidePrice.checked) {
+                    html += `<h2>💰 GIÁ BÁN</h2>\n<div class="price">${priceInput.value}</div>\n`;
+                }
+                if (!hideContact.checked) {
+                    html += `<a class="contact-btn" href="tel:${contactInput.value}">Liên hệ mua hàng</a>\n`;
+                }
+                html += `</div>\n`;
+            }
+            if (!hideOrigin.checked) {
+                html += `<div class="section">\n<h2>🏞️ NGUỒN GỐC</h2>\n<ul>${toList(originInput.value)}</ul>\n</div>\n`;
+            }
+            if (!hideFeature.checked) {
+                html += `<div class="section">\n<h2>💎 ĐẶC ĐIỂM NỔI BẬT</h2>\n<ul>${toList(featureInput.value)}</ul>\n</div>\n`;
+            }
+            if (!hideBenefit.checked) {
+                html += `<div class="section">\n<h2>✅ CÔNG DỤNG TUYỆT VỜI</h2>\n<ul>${toList(benefitInput.value)}</ul>\n</div>\n`;
+            }
+            if (!hideUsage.checked) {
+                html += `<div class="section">\n<h2>👌 CÁCH SỬ DỤNG</h2>\n<ul>${toList(usageInput.value)}</ul>\n</div>\n`;
+            }
+            if (!hidePreserve.checked) {
+                html += `<div class="section">\n<h2>📦 BẢO QUẢN</h2>\n<ul>${toList(preserveInput.value)}</ul>\n</div>\n`;
+            }
+            const contactInfo = (!hideContactInfo.checked && contactInfoInput.value) ? ' - ' + contactInfoInput.value : '';
+            return `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>${!hideTitle.checked ? titleInput.value : ''} – ${!hideHighlight.checked ? highlightInput.value : ''}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ...copy style từ trên... */
+        body { font-family: 'Be Vietnam Pro', Arial, sans-serif; background: linear-gradient(135deg, #e6f9e6 0%, #b6e5b6 100%); color: #2e3d1f; margin: 0; padding: 0;}
+        .container { max-width: 750px; margin: 40px auto; background: #f8fff8; border-radius: 18px; box-shadow: 0 8px 32px 0 rgba(184,134,11,0.18), 0 1.5px 6px #e0c97f; padding: 36px 28px 32px 28px; position: relative;}
+        h1 { color: #388e3c; margin-bottom: 0; font-size: 2.3em; letter-spacing: 1px; text-align: center; font-weight: 700; text-shadow: 0 2px 8px #b6e5b6;}
+        .highlight { background: #e8fbe8; color: #388e3c; padding: 6px 12px; border-radius: 8px; display: block; text-align: center; margin: 0 auto 18px auto; font-size: 1.1em; font-weight: 500; box-shadow: 0 1px 4px #b6e5b6;}
+        .product-img { display: block; margin: 18px auto 28px auto; object-fit: cover; border-radius: 16px; box-shadow: 0 4px 16px #b6e5b6; border: 3px solid #b6e5b6; background: #e8fbe8;}
+        .section { margin-bottom: 28px; background: #e8fbe8; border-radius: 10px; padding: 18px 16px 10px 16px; box-shadow: 0 1px 6px #b6e5b6;}
+        .price { color: #388e3c; font-size: 1.25em; font-weight: bold; margin-top: 10px; margin-bottom: 10px; letter-spacing: 0.5px;}
+        .contact-btn { display: inline-block; background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%); color: #fff; font-weight: 700; font-size: 1.1em; padding: 12px 32px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 8px #b6e5b6; margin-top: 18px;}
+        .contact-btn:hover { background: linear-gradient(90deg, #388e3c 0%, #81c784 100%); transform: translateY(-2px) scale(1.03);}
+        .footer { margin-top: 36px; text-align: center; color: #388e3c; font-weight: 600; letter-spacing: 1px; font-size: 1.05em; opacity: 0.85;}
+        .main-flex {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+        }
+        .form-side {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .preview-side {
+            flex: 1 1 0;
+            min-width: 0;
+        }
+        .preview-box {
+            background: #e8fbe8;
+            border: 2px solid #b6e5b6;
+            border-radius: 14px;
+            box-shadow: 0 2px 12px #b6e5b6;
+            padding: 24px 18px;
+            margin-top: 0;
+            min-height: 200px;
+        }
+        @media (max-width: 900px) {
+            .main-flex { flex-direction: column; gap: 0; }
+            .form-side, .preview-side { width: 100%; }
+            #preview { margin-top: 36px; }
         }
         @media (max-width: 600px) {
             .container { padding: 14px 4vw 18px 4vw; }
@@ -116,64 +442,142 @@
 </head>
 <body>
     <div class="container">
-        <h1>MẬT ONG RỪNG NGUYÊN CHẤT</h1>
-        <div class="highlight">– Tinh túy từ đại ngàn Trường Sơn –</div>
-        <img class="product-img" src="matong.jpg" alt="Mật ong rừng nguyên chất">
-        <div class="section" style="text-align:center; margin-bottom: 24px;">
-            <h2>💰 GIÁ BÁN</h2>
-            <div class="price">
-                450.000đ / chai 500ml<br>
-                900.000đ / chai 1L<br>
-                79.000đ / chai 100ml
-            </div>
-            <a class="contact-btn" href="tel:0123456789">Liên hệ mua hàng</a>
-        </div>
-        <div class="section">
-            <h2>🏞️ NGUỒN GỐC</h2>
-            <ul>
-                <li>Khai thác tự nhiên 100% từ các khu rừng nguyên sinh thuộc huyện Nam Giang, Phước Sơn, Tây Giang, Đông Giang… của tỉnh Quảng Nam.</li>
-                <li>Thu hoạch thủ công bởi đồng bào dân tộc thiểu số như Cơ Tu, Xê Đăng – những người có kinh nghiệm lâu năm trong việc “ăn ong” truyền thống.</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>💎 ĐẶC ĐIỂM NỔI BẬT</h2>
-            <ul>
-                <li>Màu sắc vàng đậm, đôi khi ánh đỏ nâu – đặc trưng của mật ong rừng.</li>
-                <li>Hương thơm tự nhiên, vị ngọt thanh, hơi chua nhẹ – hậu vị đậm đà và không gắt như mật nuôi.</li>
-                <li>Sánh đặc, không lẫn tạp chất, không pha đường, không qua xử lý nhiệt.</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>✅ CÔNG DỤNG TUYỆT VỜI</h2>
-            <ul>
-                <li>Tăng đề kháng, bổ sung năng lượng tự nhiên.</li>
-                <li>Hỗ trợ tiêu hóa, giảm ho, viêm họng.</li>
-                <li>Giúp ngủ ngon, giải độc gan, làm đẹp da.</li>
-                <li>Dùng ngâm các vị thuốc nam như tỏi, gừng, nghệ, đu đủ đực, tâm sen…</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>👌 CÁCH SỬ DỤNG</h2>
-            <ul>
-                <li>Uống mỗi sáng 1–2 thìa mật ong pha với nước ấm.</li>
-                <li>Dùng làm nguyên liệu ngâm thảo dược.</li>
-                <li>Pha trà, làm bánh, đắp mặt nạ dưỡng da…</li>
-            </ul>
-        </div>
-
-        <div class="section">
-            <h2>📦 BẢO QUẢN</h2>
-            <ul>
-                <li>Sau khi nhận hàng, quý khách hàng vui lòng mở nắp chai cho mật ong thở. Đậy nắp hờ trong quá trình sử dụng, vì mật ong rừng nguyên chất dễ tạo gas.</li>
-                <li>Để nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp.</li>
-                <li>Mật có thể kết tinh khi trời lạnh – không ảnh hưởng chất lượng.</li>
-                <li>HSD: Trong vòng 2 năm</li>
-            </ul>
-        </div>
+        ${html}
+        <div class="footer">H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA${contactInfo}</div>
     </div>
 </body>
 </html>
+            `.trim();
+        }
+
+        // Tạo file HTML và tải về
+        function downloadHTML() {
+            const filename = filenameInput.value.trim() || 'bai-viet-moi';
+            const htmlContent = getExportHtml();
+            const blob = new Blob([htmlContent], {type: 'text/html'});
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = filename + '.html';
+            link.click();
+        }
+
+        // Lưu lên Github qua Google Apps Script
+        function saveToGithub() {
+            const filename = filenameInput.value.trim() || 'bai-viet-moi';
+            const htmlContent = getExportHtml();
+            const githubPath = `posts/${filename}.html`;
+            const githubWebUrl = `https://minhkhoa0611.github.io/H-FARM/posts/${filename}.html`;
+            const githubLinkDiv = document.getElementById('github-link');
+            const githubProgressDiv = document.getElementById('github-progress');
+            const qrcodeBox = document.getElementById('qrcode-box');
+            const downloadQrBtn = document.getElementById('download-qrcode-btn');
+
+            githubLinkDiv.innerHTML = "";
+            githubProgressDiv.textContent = "Đang lấy token Github...";
+            qrcodeBox.innerHTML = ""; // Xóa QR cũ nếu có
+            downloadQrBtn.style.display = "none";
+
+            // Nếu có ảnh, kiểm tra dung lượng base64 (giới hạn Github API ~1MB/file)
+            if (imageDataUrl && imageDataUrl.length > 1200000) {
+                githubProgressDiv.textContent = "Ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn (dưới 1MB)!";
+                return;
+            }
+
+            fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+                .then(res => res.text())
+                .then(text => {
+                    githubProgressDiv.textContent = "Đang xác thực token...";
+                    let token = '';
+                    const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                    if (match) token = match[1];
+                    if (!token) {
+                        githubProgressDiv.textContent = "Không lấy được token Github!";
+                        return;
+                    }
+                    githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
+                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                        headers: { Authorization: `token ${token}` }
+                    })
+                    .then(res => res.ok ? res.json() : null)
+                    .then(fileData => {
+                        githubProgressDiv.textContent = "Đang tải file lên Github...";
+                        const body = {
+                            message: `Add post ${filename}.html`,
+                            content: btoa(unescape(encodeURIComponent(htmlContent))),
+                            branch: "main"
+                        };
+                        if (fileData && fileData.sha) body.sha = fileData.sha;
+                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                            method: "PUT",
+                            headers: {
+                                "Authorization": `token ${token}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(body)
+                        })
+                        .then(r => r.json())
+                        .then(resp => {
+                            if (resp.content && resp.content.download_url) {
+                                githubProgressDiv.textContent = "Đã lưu lên Github thành công!";
+                                githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem bài viết trên web: ${githubWebUrl}</a>`;
+                                qrcodeBox.innerHTML = ""; // clear cũ
+                                downloadQrBtn.style.display = "none";
+                                // Sử dụng QRCodeStyling nếu có, nếu không fallback QRCode.js
+                                if (window.QRCodeStyling) {
+                                    const qr = new QRCodeStyling({
+                                        width: 220,
+                                        height: 220,
+                                        data: githubWebUrl,
+                                        image: "image.png",
+                                        dotsOptions: { color: "#000000", type: "rounded" },
+                                        backgroundOptions: { color: "#e6f9e6" }, // nền xanh giống trang
+                                        cornersSquareOptions: { type: "extra-rounded", color: "#000000" },
+                                        cornersDotOptions: { type: "dot", color: "#000000" },
+                                        imageOptions: {
+                                            crossOrigin: "anonymous",
+                                            margin: 2,
+                                            imageSize: 0.28,
+                                            hideBackgroundDots: false,
+                                            borderRadius: 16
+                                        }
+                                    });
+                                    qr.append(qrcodeBox);
+                                    downloadQrBtn.style.display = "inline-block";
+                                    downloadQrBtn.onclick = function() {
+                                        qr.download({ name: "qrcode", extension: "png" });
+                                    };
+                                } else if (window.QRCode) {
+                                    new QRCode(qrcodeBox, {
+                                        text: githubWebUrl,
+                                        width: 220,
+                                        height: 220,
+                                        colorDark : "#000000",
+                                        colorLight : "#e6f9e6", // nền xanh giống trang
+                                        correctLevel : QRCode.CorrectLevel.H
+                                    });
+                                    qrcodeBox.innerHTML += '<div style="font-size:0.95em;color:#888;margin-top:4px;">(Không hỗ trợ logo ở giữa)</div>';
+                                    downloadQrBtn.style.display = "none";
+                                }
+                            } else {
+                                githubProgressDiv.textContent = "Lưu lên Github thất bại! " + (resp.message || '');
+                                githubLinkDiv.innerHTML = "";
+                                qrcodeBox.innerHTML = "";
+                                downloadQrBtn.style.display = "none";
+                            }
+                        })
+                        .catch(() => {
+                            githubProgressDiv.textContent = "Lỗi khi tải file lên Github!";
+                            githubLinkDiv.innerHTML = "";
+                            qrcodeBox.innerHTML = "";
+                            downloadQrBtn.style.display = "none";
+                        });
+                    });
+                })
+                .catch(() => {
+                    githubProgressDiv.textContent = "Không lấy được token Github!";
+                    githubLinkDiv.innerHTML = "";
+                });
+        }
+    </script>
+</body>
 </html>
