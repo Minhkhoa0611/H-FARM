@@ -619,8 +619,8 @@
                         // Sử dụng QRCodeStyling nếu có, nếu không fallback QRCode.js
                         if (window.QRCodeStyling) {
                             const qr = new QRCodeStyling({
-                                width: 220,
-                                height: 220,
+                                width: 400,
+                                height: 400,
                                 data: githubWebUrl,
                                 image: "image.png",
                                 dotsOptions: { color: "#000000", type: "rounded" },
@@ -643,8 +643,8 @@
                         } else if (window.QRCode) {
                             new QRCode(qrcodeBox, {
                                 text: githubWebUrl,
-                                width: 220,
-                                height: 220,
+                                width: 400,
+                                height: 400,
                                 colorDark : "#000000",
                                 colorLight : "#e6f9e6", // nền xanh giống trang
                                 correctLevel : QRCode.CorrectLevel.H
