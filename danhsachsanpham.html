@@ -62,6 +62,7 @@
             position: relative;
             cursor: pointer;
             text-decoration: none;
+            text-align: center;
         }
         .product-card:hover {
             box-shadow: 0 4px 16px rgba(45,122,45,0.10);
@@ -84,35 +85,67 @@
             text-align: center;
             opacity: 0.85;
         }
+        /* MOBILE FRIENDLY */
+        @media (max-width: 900px) {
+            .container {
+                padding: 10px 2vw 10px 2vw;
+                margin: 0;
+            }
+            .product-grid {
+                gap: 10px;
+            }
+        }
         @media (max-width: 600px) {
             .container {
-                padding: 8px 0.5vw;
+                padding: 4px 0.5vw;
+                margin: 0;
+                border-radius: 0;
+                box-shadow: none;
             }
             h1 {
-                font-size: 1.3em;
-                margin-bottom: 18px;
+                font-size: 1em;
+                margin-bottom: 8px;
             }
             .product-category h2 {
-                font-size: 1.1em;
-                margin-bottom: 10px;
+                font-size: 0.98em;
+                margin-bottom: 6px;
             }
             .product-grid {
                 grid-template-columns: 1fr;
-                gap: 12px;
+                gap: 6px;
             }
             .product-card {
-                padding: 14px 8px 12px 8px;
+                padding: 8px 2px 8px 2px;
+                min-height: 44px;
             }
             .product-title {
-                font-size: 1em;
-                min-height: 28px;
-                margin-bottom: 8px;
+                font-size: 0.95em;
+                min-height: 18px;
+                margin-bottom: 2px;
+            }
+            .product-note {
+                font-size: 0.9em;
+            }
+            nav div {
+                flex-direction: column;
+                gap: 2px;
+                align-items: stretch;
+            }
+            nav a {
+                font-size: 0.98em !important;
+                padding: 6px 0 !important;
+                border-radius: 0 !important;
+                text-align: center;
             }
         }
     </style>
 </head>
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
+            <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
+            <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                DANH MỤC SẢN PHẨM
+            </a>
         <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
             <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
                 TẠO SẢN PHẨM
@@ -159,9 +192,9 @@
                         <div class="product-grid">`;
                     groups[cat].forEach(prod => {
                         html += `
-                            <a class="product-card" href="${prod.link}" target="_blank">
-                                <div class="product-title">${prod.title}</div>
-                                ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
+                            <a class="product-card" href="${prod.link}" target="_blank" style="text-align:center;">
+                                <div class="product-title" style="text-align:center;">${prod.title}</div>
+                                ${prod.note ? `<div class="product-note" style="text-align:center;">${prod.note}</div>` : ''}
                             </a>
                         `;
                     });
