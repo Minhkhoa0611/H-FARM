@@ -193,6 +193,7 @@
                     groups[cat].forEach(prod => {
                         html += `
                             <a class="product-card" href="${prod.link}" target="_blank" style="text-align:center;">
+                                ${prod.image ? `<img src="${prod.image}" alt="${prod.title}" style="max-width:260px;max-height:260px;margin-bottom:10px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">` : ''}
                                 <div class="product-title" style="text-align:center;">${prod.title}</div>
                                 ${prod.note ? `<div class="product-note" style="text-align:center;">${prod.note}</div>` : ''}
                             </a>

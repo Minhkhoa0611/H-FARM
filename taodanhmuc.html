@@ -60,7 +60,7 @@
         <h1>Quản lý sản phẩm H-FARM</h1>
         <div class="main-flex">
             <div class="form-side">
-                <form id="productForm">
+                <form id="productForm" enctype="multipart/form-data">
                     <input type="hidden" id="editIndex" value="">
                     <div class="form-group">
                         <label for="prodTitle">Tên sản phẩm</label>
@@ -78,6 +78,11 @@
                         <label for="prodNote">Ghi chú (tuỳ chọn)</label>
                         <textarea id="prodNote"></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="prodImage">Hình ảnh (tuỳ chọn)</label>
+                        <input type="file" id="prodImage" accept="image/*">
+                        <div id="prodImagePreview" style="margin-top:8px;"></div>
+                    </div>
                     <button type="submit" id="saveBtn">Thêm mới</button>
                     <button type="button" id="resetBtn" style="background:#bdbdbd;color:#333;">Làm lại</button>
                 </form>
@@ -94,7 +99,7 @@
                             <th>Danh mục</th>
                             <th>Đường dẫn</th>
                             <th>Ghi chú</th>
-                            <th>Mã QR</th>
+                            <th>Hình ảnh</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -159,6 +164,9 @@
                     <td>${prod.category}</td>
                     <td><a href="${prod.link}" target="_blank">Xem</a></td>
                     <td>${prod.note || ''}</td>
+                    <td>
+                        ${prod.image ? `<img src="${prod.image}" alt="Ảnh" style="max-width:60px;max-height:60px;border-radius:6px;border:1px solid #b6e5b6;">` : ''}
+                    </td>
                     <td style="text-align:center;">
                         <button type="button" onclick="showQR(${idx})" style="background:#fff;color:#217a21;border:1px solid #b6e5b6;padding:4px 10px;font-size:0.98em;">Lấy mã QR</button>
                     </td>
@@ -170,12 +178,32 @@
                 tbody.appendChild(tr);
             });
         }
+        // Xử lý chọn ảnh và preview
+let prodImageData = '';
+document.getElementById('prodImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            prodImageData = evt.target.result;
+            document.getElementById('prodImagePreview').innerHTML =
+                `<img src="${prodImageData}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        prodImageData = '';
+        document.getElementById('prodImagePreview').innerHTML = '';
+    }
+});
         function resetForm() {
             document.getElementById('editIndex').value = '';
             document.getElementById('prodTitle').value = '';
             document.getElementById('prodLink').value = '';
             document.getElementById('prodCategory').value = '';
             document.getElementById('prodNote').value = '';
+            document.getElementById('prodImage').value = '';
+            prodImageData = '';
+            document.getElementById('prodImagePreview').innerHTML = '';
             document.getElementById('saveBtn').textContent = 'Thêm mới';
         }
         document.getElementById('productForm').onsubmit = function(e) {
@@ -185,12 +213,13 @@
             const link = document.getElementById('prodLink').value.trim();
             const category = document.getElementById('prodCategory').value.trim();
             const note = document.getElementById('prodNote').value.trim();
+            const image = prodImageData || '';
             if (!title || !link || !category) return;
             let arr = getProducts();
             if (idx === '') {
-                arr.push({ title, link, category, note });
+                arr.push({ title, link, category, note, image });
             } else {
-                arr[idx] = { title, link, category, note };
+                arr[idx] = { title, link, category, note, image };
             }
             saveProducts(arr);
             renderTable();
@@ -205,6 +234,11 @@
             document.getElementById('prodLink').value = prod.link;
             document.getElementById('prodCategory').value = prod.category;
             document.getElementById('prodNote').value = prod.note || '';
+            prodImageData = prod.image || '';
+            document.getElementById('prodImage').value = '';
+            document.getElementById('prodImagePreview').innerHTML = prod.image
+                ? `<img src="${prod.image}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`
+                : '';
             document.getElementById('saveBtn').textContent = 'Lưu';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
