@@ -134,5 +134,21 @@
         "price": "350.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "TIÊU RỪNG QUẢNG NAM H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/tieurungquangnam.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751708164691_4826.jpg",
+    "prices": [
+      {
+        "size": "200g",
+        "price": "100.000 VNĐ"
+      },
+      {
+        "size": "300g",
+        "price": "150.000 VNĐ"
+      }
+    ]
   }
 ]
