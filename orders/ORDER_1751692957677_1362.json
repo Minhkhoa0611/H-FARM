@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "NM__TIU_NM_LINH_CHI_RNG_QUNG_NAM_HFARM_1",
+      "title": "NẤM LINH CHI RỪNG QUẢNG NAM H-FARM",
+      "price": "",
+      "qty": 1
+    }
+  ],
+  "total": 0,
+  "created": "2025-07-05T05:22:35.806Z"
+}
