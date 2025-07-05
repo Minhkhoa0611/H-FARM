@@ -46,12 +46,35 @@
     "title": "MẠCH NHA THIÊN BÚT H-FARM",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/machnhathienbut.html",
     "category": "DẦU & MẬT",
-    "note": ""
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751699550041_9151.jpg",
+    "prices": [
+      {
+        "size": "Hủ",
+        "price": "30.000 VNĐ"
+      }
+    ]
   },
   {
     "title": "MẬT ONG NGÂM CỦ NÉN",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamcunen.html",
-    "category": "MẬT ONG NGÂM"
+    "category": "MẬT ONG NGÂM",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751699609390_8021.png",
+    "prices": [
+      {
+        "size": "100 ml",
+        "price": "90.000"
+      },
+      {
+        "size": "200 ml",
+        "price": "180.000"
+      },
+      {
+        "size": "350 ml",
+        "price": "320.000"
+      }
+    ]
   },
   {
     "title": "MẬT ONG NGÂM HOA ĐU ĐỦ ĐỰC H-FARM",
