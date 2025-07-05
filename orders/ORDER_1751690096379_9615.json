@@ -1,0 +1,29 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "DU__MT_DU_U_PHNG_NGUYN_CHT_HFARM_0",
+      "title": "DẦU ĐẬU PHỘNG NGUYÊN CHẤT H-FARM",
+      "price": "90.000",
+      "qty": 1
+    },
+    {
+      "id": "DU__MT_DU_U_PHNG_NGUYN_CHT_HFARM_0",
+      "title": "DẦU ĐẬU PHỘNG NGUYÊN CHẤT H-FARM",
+      "price": "180.000",
+      "qty": 1
+    },
+    {
+      "id": "MNG_RNG_NGM_T_MNG_RNG_NGM_T_HFARM_0",
+      "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+      "price": "70.000 VND",
+      "qty": 1
+    }
+  ],
+  "total": 340000,
+  "created": "2025-07-05T04:34:52.936Z"
+}
