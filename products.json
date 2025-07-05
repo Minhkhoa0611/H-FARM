@@ -80,7 +80,22 @@
     "title": "MẬT ONG NGÂM HOA ĐU ĐỦ ĐỰC H-FARM",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamhoadududuc.html",
     "category": "MẬT ONG NGÂM",
-    "note": ""
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751699757807_8419.png",
+    "prices": [
+      {
+        "size": "100ml",
+        "price": "100.000 VNĐ"
+      },
+      {
+        "size": "200ml",
+        "price": "200.000 VNĐ"
+      },
+      {
+        "size": "350ml",
+        "price": "350.000 VNĐ"
+      }
+    ]
   },
   {
     "title": "MẬT ONG NGÂM KỲ TỬ H-FARM",
