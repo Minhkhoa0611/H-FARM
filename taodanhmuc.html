@@ -105,6 +105,7 @@
                             <th>Tên sản phẩm</th>
                             <th>Danh mục</th>
                             <th>Đường dẫn</th>
+                            <th>Tên file</th>
                             <th>Ghi chú</th>
                             <th>Hình ảnh</th>
                             <th>Giá</th>
@@ -169,11 +170,23 @@
                 const priceHtml = Array.isArray(prod.prices) && prod.prices.length
                     ? prod.prices.map(p => `<div>${p.size}: <b>${p.price}</b></div>`).join('')
                     : '';
+                // Lấy tên file từ link, bỏ .html nếu có
+                let fileName = '';
+                if (prod.link) {
+                    try {
+                        let url = prod.link;
+                        // Nếu là URL đầy đủ, lấy phần cuối
+                        let parts = url.split('/');
+                        fileName = parts[parts.length - 1] || '';
+                        if (fileName.endsWith('.html')) fileName = fileName.slice(0, -5);
+                    } catch {}
+                }
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${prod.title}</td>
                     <td>${prod.category}</td>
                     <td><a href="${prod.link}" target="_blank">Xem</a></td>
+                    <td>${fileName}</td>
                     <td>${prod.note || ''}</td>
                     <td>
                         ${prod.image ? `<img src="${prod.image}" alt="Ảnh" style="max-width:60px;max-height:60px;border-radius:6px;border:1px solid #b6e5b6;">` : ''}
