@@ -58,7 +58,7 @@
             padding: 20px 16px 16px 16px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: stretch; /* Đảm bảo các phần tử con kéo full chiều ngang */
             transition: box-shadow 0.2s;
             border: 1px solid #e0f2e0;
             position: relative;
@@ -66,18 +66,43 @@
             text-decoration: none;
             text-align: center;
             width: 100%;
-            min-height: 340px;
+            min-height: 420px; /* Đặt chiều cao tối thiểu cố định cho card */
             box-sizing: border-box;
             justify-content: flex-start;
+            /* Đảm bảo các card cùng chiều cao */
+            height: 100%;
         }
         .product-card img.product-img {
             max-width: 220px;
             max-height: 220px;
+            width: 220px;
+            height: 220px;
             margin-bottom: 12px;
             border-radius: 8px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.07);
             object-fit: cover;
             background: #f5f5f5;
+            display: block;
+            align-self: center;
+        }
+        .product-card-content {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 0;
+            align-items: stretch;
+            justify-content: flex-start;
+            height: 100%;
+        }
+        .product-title,
+        .product-price-list,
+        .product-note,
+        .product-card .add-to-cart-btn,
+        .product-card .product-detail-link {
+            width: 100%;
+            text-align: center;
+            margin-left: 0;
+            margin-right: 0;
+            align-self: stretch;
         }
         .product-title {
             font-size: 1.08em;
@@ -103,20 +128,6 @@
             gap: 8px;
             margin-bottom: 2px;
         }
-        .product-price-select {
-            margin: 0 0 8px 0;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #b6e5b6;
-            font-size: 1em;
-            width: 100%;
-            max-width: 210px;
-        }
-        .cart-item-price {
-            color: #1a5e1a;
-            font-weight: bold;
-            margin-left: 6px;
-        }
         .product-note {
             font-size: 0.98em;
             color: #388e3c;
@@ -124,6 +135,22 @@
             text-align: center;
             opacity: 0.85;
             min-height: 24px;
+            min-height: 24px;
+            margin-bottom: 8px;
+        }
+        .product-card > div,
+        .product-card > a,
+        .product-card > button {
+            /* Đảm bảo các phần tử con không bị kéo dãn bất thường */
+            flex-shrink: 0;
+        }
+        .product-card .product-detail-link {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+        .product-card .add-to-cart-btn {
+            margin-top: 12px;
+            margin-bottom: 0;
         }
         /* Nếu có bảng danh sách sản phẩm với cột QR/thao tác, thêm CSS này: */
         .product-table th,
@@ -184,15 +211,18 @@
                 gap: 14px 8px;
                 grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             }
-            .product-table th.qr-col,
-            .product-table td.qr-col,
-            .product-table th.action-col,
-            .product-table td.action-col {
-                width: 60px;
-                min-width: 60px;
-                max-width: 70px;
-                font-size: 0.95em;
-                padding: 6px 2px;
+            .product-card {
+                min-height: 340px;
+                height: 100%;
+            }
+            .product-card img.product-img {
+                max-width: 140px;
+                max-height: 140px;
+                width: 140px;
+                height: 140px;
+            }
+            .product-card-content {
+                min-height: 180px;
             }
         }
         @media (max-width: 600px) {
@@ -215,18 +245,18 @@
                 gap: 8px;
             }
             .product-card {
+                min-height: 220px;
+                height: 100%;
                 padding: 8px 2px 8px 2px;
-                min-height: 44px;
             }
-            .product-title {
-                font-size: 0.95em;
-                min-height: 18px;
-                margin-bottom: 2px;
-                height: auto;
+            .product-card img.product-img {
+                max-width: 100px;
+                max-height: 100px;
+                width: 100px;
+                height: 100px;
             }
-            .product-note {
-                font-size: 0.9em;
-                min-height: 16px;
+            .product-card-content {
+                min-height: 100px;
             }
         }
         /* Popup chọn giá */
@@ -540,58 +570,55 @@
         updateCartCount();
         // --- END CART LOGIC ---
 
-        fetch('products.json')
+        fetch('https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/products.json')
             .then(res => res.json())
             .then(data => {
                 if (!Array.isArray(data)) throw new Error("Dữ liệu không hợp lệ");
-                // Gom nhóm theo category
-                const groups = {};
-                data.forEach(prod => {
-                    if (!groups[prod.category]) groups[prod.category] = [];
-                    groups[prod.category].push(prod);
+                // Sắp xếp sản phẩm theo tên A-Z (không phân nhóm danh mục)
+                data.sort((a, b) => {
+                    const ta = (a.title || '').toLowerCase();
+                    const tb = (b.title || '').toLowerCase();
+                    if (ta < tb) return -1;
+                    if (ta > tb) return 1;
+                    return 0;
                 });
                 // Tạo HTML
-                let html = '';
-                Object.keys(groups).forEach(cat => {
-                    html += `<div class="product-category">
-                        <h2>${cat}</h2>
-                        <div class="product-grid">`;
-                    groups[cat].forEach((prod, idx) => {
-                        const prodId = prod.id || (prod.category + '_' + prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                        const safeImage = prod.image ? prod.image : '';
-                        const safeLink = prod.link ? prod.link : '';
-                        const safeTitle = prod.title ? prod.title : '';
-                        let priceHtml = '';
-                        if (Array.isArray(prod.prices) && prod.prices.length) {
-                            priceHtml = `<div class="product-price-list">` +
-                                prod.prices.map(p =>
-                                    `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
-                                ).join('') +
-                                `</div>`;
-                        }
-                        html += `
-                            <div class="product-card">
-                                ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
+                let html = '<div class="product-grid">';
+                data.forEach((prod, idx) => {
+                    const prodId = prod.id || (prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                    const safeImage = prod.image ? prod.image : '';
+                    const safeLink = prod.link ? prod.link : '';
+                    const safeTitle = prod.title ? prod.title : '';
+                    let priceHtml = '';
+                    if (Array.isArray(prod.prices) && prod.prices.length) {
+                        priceHtml = `<div class="product-price-list">` +
+                            prod.prices.map(p =>
+                                `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
+                            ).join('') +
+                            `</div>`;
+                    }
+                    html += `
+                        <div class="product-card">
+                            ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
+                            <div class="product-card-content">
                                 <div class="product-title">${safeTitle}</div>
                                 ${priceHtml}
                                 ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
-                                <div style="margin-top:10px;">
-                                    <a href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
-                                </div>
+                                <a class="product-detail-link" href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
                                 <button class="add-to-cart-btn"
                                     data-id="${prodId}"
                                     data-title="${encodeURIComponent(safeTitle)}"
                                     data-image="${encodeURIComponent(safeImage)}"
                                     data-link="${encodeURIComponent(safeLink)}"
                                     data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
-                                    style="margin-top:8px;background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
+                                    style="background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
                                     Thêm vào giỏ
                                 </button>
                             </div>
-                        `;
-                    });
-                    html += `</div></div>`;
+                        </div>
+                    `;
                 });
+                html += '</div>';
                 document.getElementById('product-list').innerHTML = html;
 
                 // Gán sự kiện cho nút Thêm vào giỏ

@@ -217,8 +217,11 @@
                         <label for="filename">Tên file (không có .html)</label>
                         <input type="text" id="filename" value="">
                     </div>
-                    <button type="button" onclick="downloadHTML()">Tải về máy</button>
-                    <button type="button" onclick="saveToGithub()">Tải lên hệ thống</button>
+                    <div class="form-group">
+                        <button type="button" onclick="downloadHTML()">Tải về máy</button>
+                        <button type="button" onclick="saveToGithub()">Tải lên hệ thống</button>
+                        <button type="button" id="create-category-btn" style="background:#81c784;color:#fff;margin-left:8px;">Tạo danh mục từ bài viết này</button>
+                    </div>
                     <div id="github-progress" style="margin-top:8px;color:#388e3c;font-size:1em;"></div>
                     <div id="github-link" style="margin-top:12px;font-size:1.05em;"></div>
                     <div id="qrcode-box" style="margin-top:18px;text-align:center;"></div>
@@ -872,6 +875,77 @@
                 .catch(err => {
                     loadStatus.textContent = err.message || "Lỗi khi tải file từ hệ thống!";
                 });
+        };
+
+        // Hàm tách giá thành các mức giá (dung tích và tiền) - nhận diện linh hoạt
+        function parsePrices(priceText) {
+            // Mỗi dòng là 1 mức giá, ví dụ: "500ml: 120.000đ" hoặc "120.000đ - 500ml"
+            return priceText.split('\n').map(line => {
+                let txt = line.trim();
+                if (!txt) return null;
+                // Tách theo các dấu phân cách
+                let parts = txt.split(/:|,|-|–|—/).map(x => x.trim()).filter(Boolean);
+                if (parts.length === 2) {
+                    // Xác định đâu là giá, đâu là dung tích
+                    let a = parts[0], b = parts[1];
+                    // Nếu a chứa số và có đơn vị tiền hoặc chữ "đ", thì a là giá
+                    if (/[0-9]+.*(đ|vnđ|₫)/i.test(a)) {
+                        return { size: b, price: a };
+                    }
+                    // Nếu b chứa số và có đơn vị tiền hoặc chữ "đ", thì b là giá
+                    if (/[0-9]+.*(đ|vnđ|₫)/i.test(b)) {
+                        return { size: a, price: b };
+                    }
+                    // Nếu a có đơn vị ml/lít/kg/g thì a là size
+                    if (/\d+\s*(ml|l|lít|kg|g)/i.test(a)) {
+                        return { size: a, price: b };
+                    }
+                    if (/\d+\s*(ml|l|lít|kg|g)/i.test(b)) {
+                        return { size: b, price: a };
+                    }
+                    // Nếu không rõ, mặc định a là size, b là giá
+                    return { size: a, price: b };
+                }
+                // Nếu chỉ có 1 phần, thử tách số và chữ
+                let m = txt.match(/([0-9.,]+.*(đ|vnđ|₫))\s*(.*)/i);
+                if (m) {
+                    // Giá trước, dung tích sau
+                    return { size: m[3].trim(), price: m[1].trim() };
+                }
+                m = txt.match(/(.*)\s*([0-9.,]+.*(đ|vnđ|₫))/i);
+                if (m) {
+                    // Dung tích trước, giá sau
+                    return { size: m[1].trim(), price: m[2].trim() };
+                }
+                // Nếu không tách được, để size rỗng, price là toàn bộ
+                return { size: '', price: txt };
+            }).filter(x => x && x.price);
+        }
+
+        // Xử lý nút "Tạo danh mục từ bài viết này"
+        document.getElementById('create-category-btn').onclick = function() {
+            // Lấy dữ liệu
+            const title = titleInput.value.trim();
+            const priceArr = parsePrices(priceInput.value);
+            // Lấy ảnh đầu tiên (ưu tiên uploadedImageUrls nếu có, không thì base64)
+            let img = '';
+            if (uploadedImageUrls && uploadedImageUrls.length && uploadedImageUrls[0]) img = uploadedImageUrls[0];
+            else if (imageDataUrls && imageDataUrls.length && imageDataUrls[0]) img = imageDataUrls[0];
+            // Tạo link nếu có tên file
+            let link = '';
+            const filename = filenameInput.value.trim();
+            if (filename) {
+                link = `https://minhkhoa0611.github.io/H-FARM/posts/${filename}.html`;
+            }
+            // Tạo object
+            const data = {
+                title,
+                prices: priceArr,
+                image: img,
+                link // truyền thêm link
+            };
+            localStorage.setItem('hfarm_category_from_index', JSON.stringify(data));
+            window.location.href = 'taodanhmuc.html?from=index';
         };
     </script>
 </body>

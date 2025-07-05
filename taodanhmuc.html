@@ -70,10 +70,7 @@
                         <label for="prodLink">Đường dẫn (URL)</label>
                         <input type="text" id="prodLink" placeholder="https://minhkhoa0611.github.io/H-FARM/posts/abc.html" required>
                     </div>
-                    <div class="form-group">
-                        <label for="prodCategory">Danh mục</label>
-                        <input type="text" id="prodCategory" placeholder="Ví dụ: Dầu & Mật" required>
-                    </div>
+                    <!-- Bỏ trường danh mục -->
                     <div class="form-group">
                         <label for="prodNote">Ghi chú (tuỳ chọn)</label>
                         <textarea id="prodNote"></textarea>
@@ -96,20 +93,21 @@
             </div>
             <div class="list-side">
                 <h2 style="margin-top:0;font-size:1.2em;color:#388e3c;">Danh sách sản phẩm</h2>
-                <button type="button" id="saveToGithubBtn" style="margin-bottom:18px;">Lưu Lên Máy Chủ</button>
+                <!-- Bỏ nút Lưu Lên Máy Chủ -->
                 <div id="github-progress" style="margin-bottom:8px;color:#388e3c;font-size:1em;"></div>
                 <div id="github-link" style="margin-bottom:12px;font-size:1.05em;"></div>
                 <table id="productTable">
                     <thead>
                         <tr>
                             <th>Tên sản phẩm</th>
-                            <th>Danh mục</th>
+                            <!-- <th>Danh mục</th> -->
                             <th>Đường dẫn</th>
                             <th>Tên file</th>
                             <th>Ghi chú</th>
                             <th>Hình ảnh</th>
                             <th>Giá</th>
                             <th>Thao tác</th>
+                            <th>Trạng thái</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,10 +148,35 @@
                 });
         }
 
-        // Khi load trang, luôn đồng bộ dữ liệu mới nhất từ Github về localStorage trước khi render
+        // Khi load trang, luôn đồng bộ dữ liệu mới nhất từ Github về localStorage (chỉ khi chưa có dữ liệu local)
         window.addEventListener('DOMContentLoaded', function() {
-            syncProductsFromGithub(renderTable);
-        });
+    // Nếu chưa có dữ liệu local thì sync từ server, còn nếu đã có thì giữ nguyên
+    if (!localStorage.getItem('hfarm_products_local')) {
+        fetch('https://minhkhoa0611.github.io/H-FARM/products.json')
+            .then(res => res.json())
+            .then(arr => {
+                if (Array.isArray(arr)) {
+                    localStorage.setItem('hfarm_products_local', JSON.stringify(arr));
+                }
+                renderTable();
+            })
+            .catch(() => {
+                renderTable();
+            });
+    } else {
+        renderTable();
+    }
+});
+
+        // Lưu sản phẩm vào localStorage
+function getProducts() {
+    // Ưu tiên lấy từ localStorage, nếu chưa có thì trả về mảng rỗng
+    return JSON.parse(localStorage.getItem('hfarm_products_local') || '[]');
+}
+function saveProducts(arr) {
+    // Luôn lưu vào localStorage (hfarm_products_local)
+    localStorage.setItem('hfarm_products_local', JSON.stringify(arr));
+}
 
         // Lưu sản phẩm vào localStorage
         function getProducts() {
@@ -180,10 +203,19 @@
                         if (fileName.endsWith('.html')) fileName = fileName.slice(0, -5);
                     } catch {}
                 }
+                // Xác định trạng thái: nếu có trong server thì là "server", nếu chỉ local thì "local"
+                let status = 'local';
+                let serverArr = [];
+                try {
+                    serverArr = JSON.parse(localStorage.getItem('hfarm_products')) || [];
+                } catch {}
+                if (serverArr.some(item => item.link === prod.link && prod.link)) {
+                    status = 'server';
+                }
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${prod.title}</td>
-                    <td>${prod.category}</td>
+                    <!--<td>${prod.category}</td>-->
                     <td><a href="${prod.link}" target="_blank">Xem</a></td>
                     <td style="text-align:center;">
                         <span style="font-family:Consolas,Menlo,monospace;color:#217a21;">${fileName}</span>
@@ -199,6 +231,9 @@
                     <td>${priceHtml}</td>
                     <td style="text-align:center;">
                         <button type="button" onclick="showQR(${idx})" style="background:#fff;color:#217a21;border:1px solid #b6e5b6;padding:4px 10px;font-size:0.98em;">Lấy mã QR</button>
+                    </td>
+                    <td style="text-align:center;">
+                        <span style="padding:2px 8px;border-radius:6px;font-weight:600;${status==='server'?'background:#e8fbe8;color:#388e3c;':'background:#ffe082;color:#bfa100;'}">${status === 'server' ? 'server' : 'local'}</span>
                     </td>
                     <td class="actions">
                         <button type="button" onclick="editProduct(${idx})">Sửa</button>
@@ -225,12 +260,14 @@
         // Xử lý chọn ảnh và preview, upload lên Github nếu có file
 let prodImageData = '';
 let prodImageGithubUrl = '';
+let prodImageFromIndex = false; // Đánh dấu ảnh lấy từ index (base64 hoặc url)
 document.getElementById('prodImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function(evt) {
             prodImageData = evt.target.result;
+            prodImageFromIndex = false; // Người dùng đã chọn lại ảnh
             document.getElementById('prodImagePreview').innerHTML =
                 `<img src="${prodImageData}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`;
             // Tải ảnh lên Github
@@ -248,6 +285,7 @@ document.getElementById('prodImage').addEventListener('change', function(e) {
     } else {
         prodImageData = '';
         prodImageGithubUrl = '';
+        prodImageFromIndex = false;
         document.getElementById('prodImagePreview').innerHTML = '';
     }
 });
@@ -337,7 +375,7 @@ document.getElementById('addPriceBtn').onclick = function() {
             document.getElementById('editIndex').value = '';
             document.getElementById('prodTitle').value = '';
             document.getElementById('prodLink').value = '';
-            document.getElementById('prodCategory').value = '';
+            // document.getElementById('prodCategory').value = ''; // Bỏ danh mục
             document.getElementById('prodNote').value = '';
             document.getElementById('prodImage').value = '';
             prodImageData = '';
@@ -352,22 +390,89 @@ document.getElementById('addPriceBtn').onclick = function() {
             const idx = document.getElementById('editIndex').value;
             const title = document.getElementById('prodTitle').value.trim();
             const link = document.getElementById('prodLink').value.trim();
-            const category = document.getElementById('prodCategory').value.trim();
+            // const category = document.getElementById('prodCategory').value.trim(); // Bỏ danh mục
             const note = document.getElementById('prodNote').value.trim();
-            // Ghi link ảnh Github vào json, không ghi base64
-            const image = prodImageGithubUrl || '';
-            if (!title || !link || !category) return;
-            // Lọc các mức giá hợp lệ
             const prices = priceArr.filter(x => x.size.trim() && x.price.trim());
-            let arr = getProducts();
-            if (idx === '') {
-                arr.push({ title, link, category, note, image, prices });
-            } else {
-                arr[idx] = { title, link, category, note, image, prices };
+            if (!title || !link /*|| !category*/) return;
+
+            function saveProductWithImage(imageUrl) {
+                let arr = getProducts();
+                const image = imageUrl || '';
+                if (idx === '') {
+                    arr.push({ title, /*category,*/ link, note, image, prices });
+                } else {
+                    arr[idx] = { title, /*category,*/ link, note, image, prices };
+                }
+                saveProducts(arr);
+                renderTable();
+                resetForm();
+                // Lưu lên Github luôn khi thêm/sửa
+                saveProductsToGithub(arr);
             }
-            saveProducts(arr);
-            renderTable();
-            resetForm();
+
+            // Nếu đã có link ảnh Github thì lưu luôn
+            if (prodImageGithubUrl) {
+                saveProductWithImage(prodImageGithubUrl);
+            } else if (prodImageData && prodImageData.startsWith('data:')) {
+                // Nếu là base64 thì upload lên Github
+                // Tạo tên file duy nhất
+                const extMatch = prodImageData.match(/^data:image\/(\w+);base64,/);
+                const ext = extMatch ? extMatch[1] : 'png';
+                const imgName = 'img_' + Date.now() + '_' + Math.floor(Math.random()*10000) + '.' + ext;
+                const githubPath = `posts/images/${imgName}`;
+                const githubUrl = `https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/${imgName}`;
+                // Lấy token từ Google Apps Script
+                fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+                    .then(res => res.text())
+                    .then(text => {
+                        let token = '';
+                        const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                        if (match) token = match[1];
+                        if (!token) {
+                            alert('Không lấy được token Github để upload ảnh!');
+                            return;
+                        }
+                        // Kiểm tra file đã tồn tại chưa để lấy sha
+                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                            headers: { Authorization: `token ${token}` }
+                        })
+                        .then(res => res.ok ? res.json() : null)
+                        .then(fileData => {
+                            const body = {
+                                message: "Upload image for product",
+                                content: prodImageData.split(',')[1],
+                                branch: "main"
+                            };
+                            if (fileData && fileData.sha) body.sha = fileData.sha;
+                            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                                method: "PUT",
+                                headers: {
+                                    "Authorization": `token ${token}`,
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify(body)
+                            })
+                            .then(r => r.json())
+                            .then(resp => {
+                                if (resp.content && resp.content.download_url) {
+                                    prodImageGithubUrl = githubUrl;
+                                    saveProductWithImage(githubUrl);
+                                } else {
+                                    alert('Upload ảnh thất bại!');
+                                }
+                            })
+                            .catch(() => {
+                                alert('Lỗi khi upload ảnh!');
+                            });
+                        });
+                    });
+            } else if (prodImageData && prodImageData.startsWith('http')) {
+                // Nếu là link ảnh (đã là url) thì lưu luôn
+                saveProductWithImage(prodImageData);
+            } else {
+                // Không có ảnh
+                saveProductWithImage('');
+            }
         };
         document.getElementById('resetBtn').onclick = resetForm;
         window.editProduct = function(idx) {
@@ -376,7 +481,7 @@ document.getElementById('addPriceBtn').onclick = function() {
             document.getElementById('editIndex').value = idx;
             document.getElementById('prodTitle').value = prod.title;
             document.getElementById('prodLink').value = prod.link;
-            document.getElementById('prodCategory').value = prod.category;
+            // document.getElementById('prodCategory').value = prod.category; // Bỏ danh mục
             document.getElementById('prodNote').value = prod.note || '';
             prodImageData = '';
             prodImageGithubUrl = prod.image || '';
@@ -400,13 +505,12 @@ document.getElementById('addPriceBtn').onclick = function() {
         // Khởi tạo bảng khi load
         renderTable();
 
-        // --- Lưu lên Github ---
-        document.getElementById('saveToGithubBtn').onclick = function() {
+        // --- Lưu lên Github khi thêm mới hoặc sửa ---
+        function saveProductsToGithub(products, callback) {
             const githubProgressDiv = document.getElementById('github-progress');
             const githubLinkDiv = document.getElementById('github-link');
             githubProgressDiv.textContent = "Đang lưu lên máy chủ...";
             githubLinkDiv.innerHTML = "";
-            // Lấy token từ Google Apps Script
             fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
                 .then(res => res.text())
                 .then(text => {
@@ -415,15 +519,13 @@ document.getElementById('addPriceBtn').onclick = function() {
                     if (match) token = match[1];
                     if (!token) {
                         githubProgressDiv.textContent = "Không lấy được token máy chủ!";
+                        if (callback) callback(false);
                         return;
                     }
                     githubProgressDiv.textContent = "Đang kiểm tra file trên máy chủ...";
-                    // Lưu dưới dạng JSON, có thể đổi thành HTML nếu muốn
-                    const products = getProducts();
                     const content = btoa(unescape(encodeURIComponent(JSON.stringify(products, null, 2))));
                     const githubPath = "products.json";
                     const githubWebUrl = "https://minhkhoa0611.github.io/H-FARM/products.json";
-                    // Kiểm tra file đã tồn tại chưa để lấy sha
                     fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
                         headers: { Authorization: `token ${token}` }
                     })
@@ -449,21 +551,26 @@ document.getElementById('addPriceBtn').onclick = function() {
                             if (resp.content && resp.content.download_url) {
                                 githubProgressDiv.textContent = "Đã lưu lên máy chủ thành công!";
                                 githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem file trên máy chủ</a>`;
+                                localStorage.setItem('hfarm_products_local', JSON.stringify(products));
+                                if (callback) callback(true);
                             } else {
                                 githubProgressDiv.textContent = "Lưu lên máy chủ thất bại! " + (resp.message || '');
                                 githubLinkDiv.innerHTML = "";
+                                if (callback) callback(false);
                             }
                         })
                         .catch(() => {
                             githubProgressDiv.textContent = "Lỗi khi tải file lên máy chủ!";
                             githubLinkDiv.innerHTML = "";
+                            if (callback) callback(false);
                         });
                     });
                 })
                 .catch(() => {
                     githubProgressDiv.textContent = "Không lấy được token máy chủ!";
+                    if (callback) callback(false);
                 });
-        };
+        }
 
         // QR Modal logic
         window.showQR = function(idx) {
@@ -527,6 +634,38 @@ document.getElementById('addPriceBtn').onclick = function() {
                 document.getElementById('qrCode').innerHTML = '';
             }
         };
+// --- Nhận dữ liệu từ index.html nếu có ---
+window.addEventListener('DOMContentLoaded', function() {
+    // ...existing code...
+    const catDataStr = localStorage.getItem('hfarm_category_from_index');
+    if (catDataStr) {
+        try {
+            const catData = JSON.parse(catDataStr);
+            document.getElementById('prodTitle').value = catData.title || '';
+            // Thêm tự động điền link nếu có
+            if (catData.link) {
+                document.getElementById('prodLink').value = catData.link;
+            }
+            if (catData.image) {
+                prodImageData = catData.image;
+                prodImageGithubUrl = '';
+                prodImageFromIndex = true; // Đánh dấu là ảnh lấy từ index
+                document.getElementById('prodImagePreview').innerHTML =
+                    `<img src="${catData.image}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`;
+            }
+            if (Array.isArray(catData.prices)) {
+                priceArr = catData.prices.map(x => ({...x}));
+                renderPriceInputs();
+            }
+            localStorage.removeItem('hfarm_category_from_index');
+        } catch(e) {}
+    }
+});
+    </script>
+</body>
+
+</html>
+});
     </script>
 </body>
 
