@@ -38,5 +38,21 @@
         "price": "350.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "DẦU PHỘNG ÉP NGUYÊN CHẤT H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/daudauphongnguyenchat.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751728271698_2812.jpeg",
+    "prices": [
+      {
+        "size": "500ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "1000ml",
+        "price": "180.000 VNĐ"
+      }
+    ]
   }
 ]
