@@ -13,5 +13,17 @@
     }
   ],
   "total": 0,
-  "created": "2025-07-05T04:51:52.678Z"
+  "created": "2025-07-05T04:51:52.678Z",
+  "status_history": [
+    {
+      "status": "Đã hoàn thành",
+      "shipper": "",
+      "tracking": "",
+      "updated": "2025-07-05T04:53:22.730Z"
+    }
+  ],
+  "status": "Đã hoàn thành",
+  "shipper": "",
+  "tracking": "",
+  "status_updated": "2025-07-05T04:53:22.730Z"
 }
