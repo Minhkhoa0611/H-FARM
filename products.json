@@ -8,24 +8,39 @@
     "prices": [
       {
         "size": "500ml",
-        "price": "90.000"
+        "price": "90.000 VNĐ"
       },
       {
         "size": "1000ml",
-        "price": "180.000"
+        "price": "180.000 VNĐ"
       }
     ]
   },
   {
     "title": "DẦU MÈ HFARM",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/daumehfarm.html",
-    "category": "DẦU & MẬT"
+    "category": "DẦU & MẬT",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751699482725_2239.jpg",
+    "prices": [
+      {
+        "size": "500ml",
+        "price": "400.000 VNĐ"
+      }
+    ]
   },
   {
     "title": "MẬT MÍA NGUYÊN CHẤT H-FARM",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/matmianguyenchat.html",
     "category": "DẦU & MẬT",
-    "note": ""
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751699522230_6629.jpg",
+    "prices": [
+      {
+        "size": "1000ml",
+        "price": "46.000 VNĐ"
+      }
+    ]
   },
   {
     "title": "MẠCH NHA THIÊN BÚT H-FARM",
