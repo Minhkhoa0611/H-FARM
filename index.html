@@ -160,7 +160,7 @@
                     <div class="form-group">
                         <label for="highlight">Dòng phụ đề (highlight)</label>
                         <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-highlight"> Ẩn</label>
-                        <input type="text" id="highlight" value="">
+                        <textarea id="highlight" rows="2"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="image">Chọn hình ảnh</label>
@@ -183,11 +183,6 @@
                         <label for="contact">Số điện thoại liên hệ</label>
                         <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-contact"> Ẩn</label>
                         <input type="text" id="contact" value="">
-                    </div>
-                    <div class="form-group">
-                        <label for="contactinfo">Thông tin liên hệ khác (hiển thị dưới chân trang, có thể để trống)</label>
-                        <label style="font-size:0.95em;display:inline;"><input type="checkbox" id="hide-contactinfo"> Ẩn</label>
-                        <textarea id="contactinfo" rows="2"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="origin">Nguồn gốc (mỗi ý 1 dòng, sẽ tự động thành danh sách)</label>
@@ -216,7 +211,7 @@
                     </div>
                     <div class="form-group">
                         <label for="footertext">Nội dung chân trang (footer)</label>
-                        <input type="text" id="footertext" value="H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA">
+                        <input type="text" id="footertext" value="H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA | Liên hệ:0969 167 555 & 0868 442 054">
                     </div>
                     <div class="form-group">
                         <label for="filename">Tên file (không có .html)</label>
@@ -259,7 +254,7 @@
         const preserveInput = document.getElementById('preserve');
         const filenameInput = document.getElementById('filename');
         const previewDiv = document.getElementById('preview');
-        const contactInfoInput = document.getElementById('contactinfo');
+        // const contactInfoInput = document.getElementById('contactinfo'); // BỎ
         const imgWidthInput = document.getElementById('imgWidth');
         const imgHeightInput = document.getElementById('imgHeight');
         const footerTextInput = document.getElementById('footertext');
@@ -274,7 +269,7 @@
         const hideImage = document.getElementById('hide-image');
         const hidePrice = document.getElementById('hide-price');
         const hideContact = document.getElementById('hide-contact');
-        const hideContactInfo = document.getElementById('hide-contactinfo');
+        // const hideContactInfo = document.getElementById('hide-contactinfo'); // BỎ
         const hideOrigin = document.getElementById('hide-origin');
         const hideFeature = document.getElementById('hide-feature');
         const hideBenefit = document.getElementById('hide-benefit');
@@ -362,9 +357,11 @@
         // Cập nhật preview khi nhập liệu hoặc đổi trạng thái ẩn/hiện
         [
             titleInput, highlightInput, priceInput, contactInput,
-            originInput, featureInput, benefitInput, usageInput, preserveInput, contactInfoInput,
+            originInput, featureInput, benefitInput, usageInput, preserveInput,
+            // contactInfoInput, // BỎ
             imgWidthInput, imgHeightInput,
-            hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+            hideTitle, hideHighlight, hideImage, hidePrice, hideContact,
+            // hideContactInfo, // BỎ
             hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve,
             footerTextInput // thêm vào đây để cập nhật preview khi đổi chân trang
         ].forEach(input => {
@@ -374,7 +371,8 @@
 
         // Lưu trạng thái ẩn/hiện vào localStorage khi thay đổi
         [
-            hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+            hideTitle, hideHighlight, hideImage, hidePrice, hideContact,
+            // hideContactInfo, // BỎ
             hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve
         ].forEach(input => {
             input.addEventListener('change', () => {
@@ -385,7 +383,8 @@
         // Khi load trang, khôi phục trạng thái ẩn/hiện từ localStorage
         window.addEventListener('DOMContentLoaded', () => {
             [
-                hideTitle, hideHighlight, hideImage, hidePrice, hideContact, hideContactInfo,
+                hideTitle, hideHighlight, hideImage, hidePrice, hideContact,
+                // hideContactInfo, // BỎ
                 hideOrigin, hideFeature, hideBenefit, hideUsage, hidePreserve
             ].forEach(input => {
                 const val = localStorage.getItem('hfarm_hide_' + input.id);
@@ -402,7 +401,11 @@
         function updatePreview() {
             let html = '';
             if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>`;
-            if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>`;
+            // Mỗi dòng phụ đề là một ý
+            if (!hideHighlight.checked) {
+                const highlightLines = highlightInput.value.split('\n').filter(x => x.trim()).map(x => `<div>${x.trim()}</div>`).join('');
+                html += `<div class="highlight">${highlightLines}</div>`;
+            }
             // Hiển thị ảnh theo hàng, mỗi hàng 3 ảnh
             if (!hideImage.checked && imageDataUrls.length) {
                 html += `<div class="img-row-wrap" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:18px;">`;
@@ -416,7 +419,9 @@
             if (!hidePrice.checked || !hideContact.checked) {
                 html += `<div class="section" style="text-align:center; margin-bottom: 24px;">`;
                 if (!hidePrice.checked) {
-                    html += `<h2>💰 GIÁ BÁN</h2><div class="price">${priceInput.value}</div>`;
+                    // Mỗi dòng giá là một ý
+                    const priceLines = priceInput.value.split('\n').filter(x => x.trim()).map(x => `<div>${x.trim()}</div>`).join('');
+                    html += `<h2>💰 GIÁ BÁN</h2><div class="price">${priceLines}</div>`;
                 }
                 if (!hideContact.checked) {
                     html += `<a class="contact-btn" href="tel:${contactInput.value}">Liên hệ mua hàng</a>`;
@@ -439,9 +444,11 @@
                 html += `<div class="section"><h2>📦 BẢO QUẢN</h2><ul>${toList(preserveInput.value)}</ul></div>`;
             }
             // Thêm phần chân trang vào preview
-            const footerText = footerTextInput.value || '';
-            const contactInfo = (!hideContactInfo.checked && contactInfoInput.value) ? ' - ' + contactInfoInput.value : '';
-            html += `<div class="footer" style="margin-top:36px;text-align:center;color:#388e3c;font-weight:600;letter-spacing:1px;font-size:1.05em;opacity:0.85;">${footerText}${contactInfo}</div>`;
+            let footerText = footerTextInput.value || '';
+            // Tự động xuống dòng trước "Liên hệ:"
+            footerText = footerText.replace(/\s*[\|\-]\s*Liên hệ:/i, '<br>Liên hệ:');
+            const defaultContact = ''; // Đã có trong value
+            html += `<div class="footer" style="margin-top:36px;text-align:center;color:#388e3c;font-weight:600;letter-spacing:1px;font-size:1.05em;opacity:0.85;">${footerText}${defaultContact}</div>`;
 
             previewDiv.innerHTML = html;
             // Cho phép kéo chỉnh kích thước ảnh đầu tiên trong preview
@@ -468,7 +475,11 @@
             // Sử dụng uploadedImageUrls nếu có, nếu không dùng base64
             let imgSrcs = uploadedImageUrls.length ? uploadedImageUrls : imageDataUrls;
             if (!hideTitle.checked) html += `<h1>${titleInput.value}</h1>\n`;
-            if (!hideHighlight.checked) html += `<div class="highlight">${highlightInput.value}</div>\n`;
+            if (!hideHighlight.checked) {
+                // Mỗi dòng phụ đề là một ý
+                const highlightLines = highlightInput.value.split('\n').filter(x => x.trim()).map(x => `<div>${x.trim()}</div>`).join('');
+                html += `<div class="highlight">${highlightLines}</div>\n`;
+            }
             if (!hideImage.checked && imgSrcs.length) {
                 html += `<div class="img-row-wrap" style="display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin-bottom:18px;">`;
                 imgSrcs.forEach(imgSrc => {
@@ -481,7 +492,9 @@
             if (!hidePrice.checked || !hideContact.checked) {
                 html += `<div class="section" style="text-align:center; margin-bottom: 24px;">\n`;
                 if (!hidePrice.checked) {
-                    html += `<h2>💰 GIÁ BÁN</h2>\n<div class="price">${priceInput.value}</div>\n`;
+                    // Mỗi dòng giá là một ý
+                    const priceLines = priceInput.value.split('\n').filter(x => x.trim()).map(x => `<div>${x.trim()}</div>`).join('');
+                    html += `<h2>💰 GIÁ BÁN</h2>\n<div class="price">${priceLines}</div>\n`;
                 }
                 if (!hideContact.checked) {
                     html += `<a class="contact-btn" href="tel:${contactInput.value}">Liên hệ mua hàng</a>\n`;
@@ -503,8 +516,10 @@
             if (!hidePreserve.checked) {
                 html += `<div class="section">\n<h2>📦 BẢO QUẢN</h2>\n<ul>${toList(preserveInput.value)}</ul>\n</div>\n`;
             }
-            const contactInfo = (!hideContactInfo.checked && contactInfoInput.value) ? ' - ' + contactInfoInput.value : '';
-            const footerText = footerTextInput.value || '';
+            let footerText = footerTextInput.value || '';
+            // Tự động xuống dòng trước "Liên hệ:"
+            footerText = footerText.replace(/\s*[\|\-]\s*Liên hệ:/i, '<br>Liên hệ:');
+            const defaultContact = '';
             return `
 <!DOCTYPE html>
 <html lang="vi">
@@ -563,7 +578,7 @@
 <body>
     <div class="container">
         ${html}
-        <div class="footer">${footerText}${contactInfo}</div>
+        <div class="footer">${footerText}${defaultContact}</div>
     </div>
 </body>
 </html>
@@ -805,17 +820,23 @@
             // Footer
             const footer = doc.querySelector('.footer');
             if (footer) {
-                // Tách contactinfo nếu có, nhưng KHÔNG lấy nếu là chuỗi rỗng hoặc chỉ có 1 phần
                 const txt = footer.textContent.trim();
-                // Nếu có ' - ' và phía sau còn ký tự, mới gán vào contactInfoInput
-                const idx = txt.indexOf(' - ');
-                if (idx >= 0 && txt.slice(idx + 3).trim()) {
-                    footerTextInput.value = txt.slice(0, idx);
-                    contactInfoInput.value = txt.slice(idx + 3);
+                let defaultFooter = "H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA | Liên hệ:0969 167 555 & 0868 442 054";
+                // Nếu không có "Liên hệ:" thì gán mặc định
+                if (!/Liên hệ:/i.test(txt)) {
+                    footerTextInput.value = defaultFooter;
                 } else {
-                    footerTextInput.value = txt;
-                    contactInfoInput.value = '';
+                    // Tách phần trước "Liên hệ:" và ghép lại mặc định
+                    let before = txt.replace(/Liên hệ:.*$/, '').trim();
+                    if (before) {
+                        footerTextInput.value = before + " | Liên hệ:0969 167 555 & 0868 442 054";
+                    } else {
+                        footerTextInput.value = defaultFooter;
+                    }
                 }
+            } else {
+                // Nếu không có footer thì cũng gán mặc định
+                footerTextInput.value = "H'FARM - 95 QUẢNG ĐỨC - NHA TRANG  -KHÁNH HÒA | Liên hệ:0969 167 555 & 0868 442 054";
             }
             // filename
             filenameInput.value = loadFilenameInput.value.trim();
@@ -830,7 +851,7 @@
                 return;
             }
             loadStatus.textContent = "Đang tải file...";
-            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/${filename}.html`)
+            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/${filename}.html?${Date.now()}`)
                 .then(res => {
                     if (!res.ok) throw new Error("Không tìm thấy file!");
                     return res.text();
