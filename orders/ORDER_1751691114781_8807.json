@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "DU__MT_MT_MA_NGUYN_CHT_HFARM_2",
+      "title": "MẬT MÍA NGUYÊN CHẤT H-FARM",
+      "price": "",
+      "qty": 1
+    }
+  ],
+  "total": 0,
+  "created": "2025-07-05T04:51:52.678Z"
+}
