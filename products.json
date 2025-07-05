@@ -150,5 +150,109 @@
         "price": "150.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "🐝 SÁP ONG RỪNG NGUYÊN CHẤT H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/sapongrunghfarm_image1.jpeg",
+    "prices": [
+      {
+        "size": "500g",
+        "price": "50.000 VNĐ"
+      },
+      {
+        "size": "1kg",
+        "price": "135.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "NẤM LINH CHI RỪNG QUẢNG NAM  H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/namlinhchirungquangnam_image1.jpeg",
+    "prices": [
+      {
+        "size": "1kg",
+        "price": "1.200.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "NẤM LIM XANH RỪNG H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751708853694_133.jpeg",
+    "prices": [
+      {
+        "size": "200g",
+        "price": "520.000 VNĐ"
+      },
+      {
+        "size": "1kg",
+        "price": "2.600.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "MẬT ONG NGÂM TỎI LÝ SƠN H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751708909072_1828.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "265.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "333.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "MẬT ONG RỪNG NGUYÊN CHẤT H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongrungnguyenchat.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751708962723_3594.jpeg",
+    "prices": [
+      {
+        "size": "100ml",
+        "price": "79.000 VNĐ"
+      },
+      {
+        "size": "500ml",
+        "price": "450.000 VNĐ"
+      },
+      {
+        "size": "1000ml",
+        "price": "900.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "MẬT ONG NGÂM TỎI H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751709206842_7975.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "190.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "320.000 VNĐ"
+      }
+    ]
   }
 ]
