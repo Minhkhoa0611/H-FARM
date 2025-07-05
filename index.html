@@ -218,15 +218,15 @@
                         <input type="text" id="filename" value="">
                     </div>
                     <button type="button" onclick="downloadHTML()">Tải về máy</button>
-                    <button type="button" onclick="saveToGithub()">Lưu lên Github</button>
+                    <button type="button" onclick="saveToGithub()">Tải lên hệ thống</button>
                     <div id="github-progress" style="margin-top:8px;color:#388e3c;font-size:1em;"></div>
                     <div id="github-link" style="margin-top:12px;font-size:1.05em;"></div>
                     <div id="qrcode-box" style="margin-top:18px;text-align:center;"></div>
                     <button id="download-qrcode-btn" type="button" style="display:none;margin-top:10px;">Download mã QR</button>
                     <div class="form-group" style="margin-top:32px;">
-                        <label for="loadfilename">Tải & chỉnh sửa file từ Github</label>
+                        <label for="loadfilename">Tải & chỉnh sửa file từ hệ thống</label>
                         <input type="text" id="loadfilename" placeholder="Nhập tên file (không .html)">
-                        <button type="button" id="loadFromGithubBtn">Tải file từ Github</button>
+                        <button type="button" id="loadFromGithubBtn">Tải file từ hệ thống</button>
                         <span id="load-status" style="margin-left:8px;color:#388e3c;font-size:0.98em;"></span>
                     </div>
                 </form>
@@ -617,7 +617,7 @@
             const downloadQrBtn = document.getElementById('download-qrcode-btn');
 
             githubLinkDiv.innerHTML = "";
-            githubProgressDiv.textContent = "Đang lấy token Github...";
+            githubProgressDiv.textContent = "Đang lấy token hệ thống...";
             qrcodeBox.innerHTML = ""; // Xóa QR cũ nếu có
             downloadQrBtn.style.display = "none";
             uploadedImageUrls = []; // reset
@@ -635,7 +635,7 @@
                 let imgPaths = extArr.map((ext, idx) => `posts/images/${filenameInput.value.trim() || 'bai-viet-moi'}_image${idx+1}${ext}`);
                 let imgUrls = extArr.map((ext, idx) => `https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/${filenameInput.value.trim() || 'bai-viet-moi'}_image${idx+1}${ext}`);
                 const githubProgressDiv = document.getElementById('github-progress');
-                githubProgressDiv.textContent = "Ảnh lớn, đang upload ảnh lên Github...";
+                githubProgressDiv.textContent = "Ảnh lớn, đang upload ảnh lên hệ thống...";
                 fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
                     .then(res => res.text())
                     .then(text => {
@@ -643,7 +643,7 @@
                         const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
                         if (match) token = match[1];
                         if (!token) {
-                            githubProgressDiv.textContent = "Không lấy được token Github!";
+                            githubProgressDiv.textContent = "Không lấy được token hệ thống!";
                             return;
                         }
                         // Upload từng ảnh
@@ -695,25 +695,25 @@
                     const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
                     if (match) token = match[1];
                     if (!token) {
-                        githubProgressDiv.textContent = "Không lấy được token Github!";
+                        githubProgressDiv.textContent = "Không lấy được token hệ thống!";
                         return;
                     }
                     saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn);
                 })
                 .catch(() => {
-                    githubProgressDiv.textContent = "Không lấy được token Github!";
+                    githubProgressDiv.textContent = "Không lấy được token hệ thống!";
                 });
         }
 
         // Hàm upload HTML (dùng uploadedImageUrls nếu có)
         function saveHtmlWithImage(token, filename, githubPath, githubWebUrl, githubLinkDiv, githubProgressDiv, qrcodeBox, downloadQrBtn) {
-            githubProgressDiv.textContent = "Đang kiểm tra file trên Github...";
+            githubProgressDiv.textContent = "Đang kiểm tra file trên hệ thống...";
             fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
                 headers: { Authorization: `token ${token}` }
             })
             .then(res => res.ok ? res.json() : null)
             .then (fileData => {
-                githubProgressDiv.textContent = "Đang tải file lên Github...";
+                githubProgressDiv.textContent = "Đang tải file lên hệ thống...";
                 const htmlContent = getExportHtml();
                 const body = {
                     message: `Add post ${filename}.html`,
@@ -732,7 +732,7 @@
                 .then(r => r.json())
                 .then(resp => {
                     if (resp.content && resp.content.download_url) {
-                        githubProgressDiv.textContent = "Đã lưu lên Github thành công!";
+                        githubProgressDiv.textContent = "Đã lưu lên hệ thống thành công!";
                         githubLinkDiv.innerHTML = `<a href="${githubWebUrl}" target="_blank" style="color:#388e3c;font-weight:600;text-decoration:underline;">Xem bài viết trên web: ${githubWebUrl}</a>`;
                         qrcodeBox.innerHTML = "";
                         downloadQrBtn.style.display = "none";
@@ -773,14 +773,14 @@
                             downloadQrBtn.style.display = "none";
                         }
                     } else {
-                        githubProgressDiv.textContent = "Lưu lên Github thất bại! " + (resp.message || '');
+                        githubProgressDiv.textContent = "Lưu lên hệ thống thất bại! " + (resp.message || '');
                         githubLinkDiv.innerHTML = "";
                         qrcodeBox.innerHTML = "";
                         downloadQrBtn.style.display = "none";
                     }
                 })
                 .catch(() => {
-                    githubProgressDiv.textContent = "Lỗi khi tải file lên Github!";
+                    githubProgressDiv.textContent = "Lỗi khi tải file lên hệ thống!";
                     githubLinkDiv.innerHTML = "";
                     qrcodeBox.innerHTML = "";
                     downloadQrBtn.style.display = "none";
@@ -851,21 +851,26 @@
             updatePreview();
         }
 
-        // Nút tải file từ Github
+        // Nút tải file từ hệ thống
         loadFromGithubBtn.onclick = function() {
             const filename = loadFilenameInput.value.trim();
             if (!filename) {
                 loadStatus.textContent = "Nhập tên file!";
                 return;
             }
-            loadStatus.textContent = "Đang tải file...";
+            loadStatus.textContent = "Đang tải file từ hệ thống...";
             fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/${filename}.html?${Date.now()}`)
                 .then(res => {
-                    if (!res.ok) throw new Error("Không tìm thấy file!");
+                    if (!res.ok) throw new Error("Không tìm thấy file trên hệ thống!");
                     return res.text();
                 })
                 .then(html => {
                     fillFormFromHtml(html);
+                    loadStatus.textContent = "Tải xong!";
+                    setTimeout(() => { loadStatus.textContent = ""; }, 2000);
+                })
+                .catch(err => {
+                    loadStatus.textContent = err.message || "Lỗi khi tải file từ hệ thống!";
                 });
         };
     </script>
