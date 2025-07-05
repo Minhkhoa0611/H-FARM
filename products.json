@@ -178,5 +178,18 @@
         "price": "135.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG NGÂM KỶ TỬ H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamkytu.html",
+    "category": "121",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751702235276_4612.jpeg",
+    "prices": [
+      {
+        "size": "",
+        "price": "-Chai 100ml: 100.000đ-Chai 200ml: 200.000đ-Chai 350ml: 350.000đ"
+      }
+    ]
   }
 ]
