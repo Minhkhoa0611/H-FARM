@@ -46,8 +46,10 @@
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px 28px;
+            justify-items: stretch;
+            align-items: stretch;
         }
         .product-card {
             background: #f9fff9;
@@ -63,20 +65,57 @@
             cursor: pointer;
             text-decoration: none;
             text-align: center;
+            width: 100%;
+            min-height: 340px;
+            box-sizing: border-box;
+            justify-content: flex-start;
         }
-        .product-card:hover {
-            box-shadow: 0 4px 16px rgba(45,122,45,0.10);
-            border-color: #b6e6b6;
+        .product-card img.product-img {
+            max-width: 220px;
+            max-height: 220px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+            object-fit: cover;
+            background: #f5f5f5;
         }
         .product-title {
             font-size: 1.08em;
             color: #1a5e1a;
-            margin-bottom: 18px;
+            margin-bottom: 10px;
             text-align: center;
-            min-height: 48px;
+            min-height: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-weight: bold;
+        }
+        .product-price-list {
+            margin-bottom: 8px;
+            width: 100%;
+        }
+        .product-price-list .price-row {
+            font-size: 1em;
+            color: #217a21;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+        .product-price-select {
+            margin: 0 0 8px 0;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #b6e5b6;
+            font-size: 1em;
+            width: 100%;
+            max-width: 210px;
+        }
+        .cart-item-price {
+            color: #1a5e1a;
+            font-weight: bold;
+            margin-left: 6px;
         }
         .product-note {
             font-size: 0.98em;
@@ -84,15 +123,76 @@
             margin-top: 4px;
             text-align: center;
             opacity: 0.85;
+            min-height: 24px;
         }
-        /* MOBILE FRIENDLY */
+        /* Nếu có bảng danh sách sản phẩm với cột QR/thao tác, thêm CSS này: */
+        .product-table th,
+        .product-table td {
+            padding: 12px 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .product-table th.qr-col,
+        .product-table td.qr-col {
+            width: 80px;
+            min-width: 80px;
+            max-width: 90px;
+        }
+        .product-table th.action-col,
+        .product-table td.action-col {
+            width: 110px;
+            min-width: 90px;
+            max-width: 120px;
+        }
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        .cart-table th, .cart-table td {
+            border: 1px solid #b6e5b6;
+            padding: 6px 8px;
+            text-align: center;
+            font-size: 1em;
+        }
+        .cart-table th {
+            background: #eafbe7;
+            color: #217a21;
+        }
+        .cart-total-row td {
+            font-weight: bold;
+            color: #1a5e1a;
+            background: #f5fff5;
+        }
+        .cart-buy-btn {
+            background: #2d7a2d;
+            color: #fff;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 6px;
+            font-size: 1.08em;
+            cursor: pointer;
+            margin: 10px auto 0 auto;
+            display: block;
+        }
         @media (max-width: 900px) {
             .container {
                 padding: 10px 2vw 10px 2vw;
                 margin: 0;
             }
             .product-grid {
-                gap: 10px;
+                gap: 14px 8px;
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+            .product-table th.qr-col,
+            .product-table td.qr-col,
+            .product-table th.action-col,
+            .product-table td.action-col {
+                width: 60px;
+                min-width: 60px;
+                max-width: 70px;
+                font-size: 0.95em;
+                padding: 6px 2px;
             }
         }
         @media (max-width: 600px) {
@@ -112,7 +212,7 @@
             }
             .product-grid {
                 grid-template-columns: 1fr;
-                gap: 6px;
+                gap: 8px;
             }
             .product-card {
                 padding: 8px 2px 8px 2px;
@@ -122,51 +222,125 @@
                 font-size: 0.95em;
                 min-height: 18px;
                 margin-bottom: 2px;
+                height: auto;
             }
             .product-note {
                 font-size: 0.9em;
+                min-height: 16px;
             }
-            nav div {
-                flex-direction: column;
-                gap: 2px;
-                align-items: stretch;
-            }
-            nav a {
-                font-size: 0.98em !important;
-                padding: 6px 0 !important;
-                border-radius: 0 !important;
-                text-align: center;
-            }
+        }
+        /* Popup chọn giá */
+        .price-popup-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.18);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .price-popup {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(45,122,45,0.18);
+            padding: 28px 24px 18px 24px;
+            min-width: 260px;
+            max-width: 90vw;
+            text-align: center;
+        }
+        .price-popup h3 {
+            color: #217a21;
+            margin-bottom: 18px;
+            font-size: 1.15em;
+        }
+        .price-popup select {
+            margin-bottom: 18px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #b6e5b6;
+            font-size: 1.08em;
+            width: 100%;
+            max-width: 220px;
+        }
+        .price-popup button {
+            background: #2d7a2d;
+            color: #fff;
+            border: none;
+            padding: 7px 22px;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 0 8px;
+        }
+        .price-popup .cancel-btn {
+            background: #bdbdbd;
+            color: #333;
         }
     </style>
 </head>
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
-            <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
+        <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
             <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
                 DANH MỤC SẢN PHẨM
             </a>
-        <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
-            <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                TẠO SẢN PHẨM
-            </a>
+            <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
+                <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    TẠO SẢN PHẨM
+                </a>
                 <a href="taodanhmuc.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                TẠO DANH MỤC
-            </a>
-
-            <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                QR SCANNER
-            </a>
-            <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
-               style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                CANVA THIẾT KẾ
-            </a>
+                    TẠO DANH MỤC
+                </a>
+                <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    QR SCANNER
+                </a>
+                <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+                   style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    CANVA THIẾT KẾ
+                </a>
+                <!-- Nút xem đơn đã đặt và icon giỏ hàng -->
+                <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;">
+                    <span style="font-size:1.35em;vertical-align:middle;">🚚</span>
+                    <span style="color:#217a21;font-weight:bold;font-size:1.08em;">Đơn của tôi</span>
+                </button>
+                <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    🛒 <span id="cart-count" style="background:#2d7a2d;color:#fff;border-radius:50%;padding:2px 7px;font-size:0.9em;position:absolute;top:2px;right:2px;">0</span>
+                </a>
+            </div>
         </div>
     </nav>
+    <!-- Cart Popup -->
+    <div id="cart-popup" style="display:none;position:fixed;top:70px;right:20px;z-index:9999;background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:18px 18px 10px 18px;min-width:270px;max-width:90vw;">
+        <div style="font-weight:bold;color:#217a21;font-size:1.1em;margin-bottom:10px;">Giỏ hàng</div>
+        <div id="cart-items"></div>
+        <button id="close-cart" style="margin-top:10px;background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;">Đóng</button>
+    </div>
     <div class="container">
         <h1>Danh Sách Sản Phẩm</h1>
         <div id="product-list">
             <div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải dữ liệu...</div>
+        </div>
+        <!-- Xóa nút XEM ĐƠN ĐÃ ĐẶT CỦA TÔI ở đây, vì đã đưa lên nav -->
+    </div>
+    <!-- Popup chọn giá -->
+    <div id="price-popup-overlay" class="price-popup-overlay" style="display:none;">
+        <div class="price-popup">
+            <h3>Chọn dung tích/giá</h3>
+            <select id="popup-price-select"></select>
+            <div style="margin-top:10px;">
+                <button id="popup-add-cart-btn">Thêm vào giỏ</button>
+                <button class="cancel-btn" id="popup-cancel-btn">Hủy</button>
+            </div>
+        </div>
+    </div>
+    <!-- Popup xem đơn đã đặt -->
+    <div id="my-orders-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:rgba(0,0,0,0.22);align-items:center;justify-content:center;">
+        <div style="background:#fff;padding:32px 22px 18px 22px;border-radius:16px;box-shadow:0 4px 32px #b6e5b6;min-width:340px;max-width:98vw;max-height:92vh;overflow:auto;position:relative;">
+            <div style="font-weight:bold;color:#217a21;font-size:1.18em;margin-bottom:18px;text-align:center;letter-spacing:1px;">
+                <span style="font-size:1.25em;">🧾</span> ĐƠN ĐÃ ĐẶT CỦA TÔI
+            </div>
+            <div id="my-orders-list"></div>
+            <button id="close-my-orders-btn" style="margin-top:16px;background:#e53935;color:#fff;border:none;padding:8px 28px;border-radius:8px;cursor:pointer;font-size:1.08em;display:block;margin-left:auto;margin-right:auto;">Đóng</button>
         </div>
     </div>
     <footer style="text-align:center; color:#2d7a2d; font-size:1em; margin:28px 0 12px 0; letter-spacing:1px;">
@@ -174,6 +348,198 @@
         &copy; 2025 BY Minh Khoa
     </footer>
     <script>
+        // --- CART LOGIC ---
+        function getCart() {
+            return JSON.parse(localStorage.getItem('cart') || '[]');
+        }
+        function setCart(cart) {
+            try {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+            } catch (e) {
+                if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                    alert('Giỏ hàng đã đầy hoặc trình duyệt không cho phép lưu thêm. Vui lòng xóa bớt sản phẩm trong giỏ hoặc dùng trình duyệt khác.');
+                } else {
+                    throw e;
+                }
+            }
+        }
+        function addToCart(product) {
+            let cart = getCart();
+            let cartId = product.id + (product.price ? '_' + product.price : '');
+            let idx = cart.findIndex(p => (p.id + (p.price ? '_' + p.price : '')) === cartId);
+            if (idx > -1) {
+                cart[idx].qty += 1;
+            } else {
+                cart.push({...product, qty: 1});
+            }
+            setCart(cart);
+            if (document.getElementById('cart-popup').style.display === 'block') {
+                renderCartPopup();
+            }
+        }
+        function removeFromCart(id) {
+            let cart = getCart().filter(p => {
+                let cartId = p.id + (p.price ? '_' + encodeURIComponent(p.price) : '');
+                return cartId !== id;
+            });
+            setCart(cart);
+            renderCartPopup();
+        }
+        function updateCartCount() {
+            let cart = getCart();
+            document.getElementById('cart-count').textContent = cart.reduce((sum, p) => sum + p.qty, 0);
+        }
+        function renderCartPopup() {
+            let cart = getCart();
+            let html = '';
+            if (cart.length === 0) {
+                html = '<div style="color:#888;text-align:center;">Giỏ hàng trống.</div>';
+            } else {
+                let total = 0;
+                html = `<table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>TÊN HÀNG</th>
+                            <th>DUNG TÍCH</th>
+                            <th>GIÁ</th>
+                            <th>SỐ LƯỢNG</th>
+                            <th>XÓA</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+                cart.forEach((item, idx) => {
+                    let size = '';
+                    let priceVal = '';
+                    if (item.price) {
+                        const match = item.price.match(/^(.+?):\s*(.+)$/);
+                        if (match) {
+                            size = match[1];
+                            priceVal = match[2];
+                        } else {
+                            priceVal = item.price;
+                        }
+                    }
+                    let priceNum = 0;
+                    let priceStr = priceVal.replace(/[^\d]/g, '');
+                    if (priceStr) priceNum = parseInt(priceStr, 10);
+                    total += priceNum * (item.qty || 1);
+
+                    html += `<tr>
+                        <td>${idx + 1}</td>
+                        <td style="text-align:left;">${item.title}</td>
+                        <td>${size}</td>
+                        <td>${priceVal ? `<span class="cart-item-price">${priceVal}</span>` : ''}</td>
+                        <td>
+                            <input type="number" min="1" value="${item.qty}" style="width:48px;text-align:center;" data-cart-idx="${idx}" class="cart-qty-input">
+                        </td>
+                        <td>
+                            <button onclick="removeFromCart('${item.id}${item.price ? '_' + encodeURIComponent(item.price) : ''}')" style="background:#e53935;color:#fff;border:none;padding:2px 8px;border-radius:4px;cursor:pointer;">Xóa</button>
+                        </td>
+                    </tr>`;
+                });
+                html += `</tbody>
+                    <tfoot>
+                        <tr class="cart-total-row">
+                            <td colspan="3">TỔNG CỘNG</td>
+                            <td colspan="3" style="text-align:left;font-size:1.1em;">
+                                <span id="cart-total">${total.toLocaleString('vi-VN')} đ</span>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <button class="cart-buy-btn" id="cart-buy-btn">MUA HÀNG</button>
+                `;
+            }
+            document.getElementById('cart-items').innerHTML = html;
+
+            // Gán sự kiện thay đổi số lượng
+            document.querySelectorAll('.cart-qty-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    let idx = parseInt(this.getAttribute('data-cart-idx'));
+                    let val = parseInt(this.value);
+                    if (isNaN(val) || val < 1) val = 1;
+                    let cart = getCart();
+                    cart[idx].qty = val;
+                    setCart(cart);
+                    renderCartPopup();
+                });
+            });
+
+            // Gán sự kiện gửi đơn hàng qua Zalo và lưu Github
+            const buyBtn = document.getElementById('cart-buy-btn');
+            if (buyBtn) {
+                buyBtn.onclick = function() {
+                    let cart = getCart();
+                    if (!cart.length) return;
+                    let customer = getCustomerInfo();
+                    function doOrder() {
+                        customer = getCustomerInfo();
+                        let msg = 'ĐƠN HÀNG H-FARM%0A';
+                        msg += cart.map((item, idx) => {
+                            let size = '';
+                            let priceVal = '';
+                            if (item.price) {
+                                const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                if (match) {
+                                    size = match[1];
+                                    priceVal = match[2];
+                                } else {
+                                    priceVal = item.price;
+                                }
+                            }
+                            return `${idx + 1}. ${item.title}${size ? ' - ' + size : ''} - ${priceVal ? priceVal : ''} x${item.qty}`;
+                        }).join('%0A');
+                        let total = 0;
+                        cart.forEach(item => {
+                            let priceVal = '';
+                            if (item.price) {
+                                const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                if (match) priceVal = match[2];
+                                else priceVal = item.price;
+                            }
+                            let priceNum = 0;
+                            let priceStr = priceVal.replace(/[^\d]/g, '');
+                            if (priceStr) priceNum = parseInt(priceStr, 10);
+                            total += priceNum * (item.qty || 1);
+                        });
+                        msg += `%0A--------------------%0ATổng cộng: ${total.toLocaleString('vi-VN')} đ`;
+                        msg += `%0A--------------------%0A${customer.name} - ${customer.phone}${customer.address ? ' - ' + customer.address : ''}`;
+                        // Lưu đơn lên Github
+                        saveOrderToGithub({
+                            customer,
+                            items: cart,
+                            total,
+                            created: new Date().toISOString()
+                        }, function(success, orderId) {
+                            if (success) {
+                                let zaloUrl = `https://zalo.me/0867544809?text=${msg}%0A(Mã đơn: ${orderId})`;
+                                window.open(zaloUrl, '_blank');
+                                // Xóa giỏ hàng sau khi đặt
+                                setCart([]);
+                                renderCartPopup();
+                            }
+                        });
+                    }
+                    if (!customer || !customer.name || !customer.phone) {
+                        showCustomerInfoPopup(doOrder);
+                    } else {
+                        doOrder();
+                    }
+                };
+            }
+        }
+        document.getElementById('cart-btn').onclick = function() {
+            renderCartPopup();
+            document.getElementById('cart-popup').style.display = 'block';
+        };
+        document.getElementById('close-cart').onclick = function() {
+            document.getElementById('cart-popup').style.display = 'none';
+        };
+        updateCartCount();
+        // --- END CART LOGIC ---
+
         fetch('products.json')
             .then(res => res.json())
             .then(data => {
@@ -190,22 +556,365 @@
                     html += `<div class="product-category">
                         <h2>${cat}</h2>
                         <div class="product-grid">`;
-                    groups[cat].forEach(prod => {
+                    groups[cat].forEach((prod, idx) => {
+                        const prodId = prod.id || (prod.category + '_' + prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                        const safeImage = prod.image ? prod.image : '';
+                        const safeLink = prod.link ? prod.link : '';
+                        const safeTitle = prod.title ? prod.title : '';
+                        let priceHtml = '';
+                        if (Array.isArray(prod.prices) && prod.prices.length) {
+                            priceHtml = `<div class="product-price-list">` +
+                                prod.prices.map(p =>
+                                    `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
+                                ).join('') +
+                                `</div>`;
+                        }
                         html += `
-                            <a class="product-card" href="${prod.link}" target="_blank" style="text-align:center;">
-                                ${prod.image ? `<img src="${prod.image}" alt="${prod.title}" style="max-width:260px;max-height:260px;margin-bottom:10px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.07);">` : ''}
-                                <div class="product-title" style="text-align:center;">${prod.title}</div>
-                                ${prod.note ? `<div class="product-note" style="text-align:center;">${prod.note}</div>` : ''}
-                            </a>
+                            <div class="product-card">
+                                ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
+                                <div class="product-title">${safeTitle}</div>
+                                ${priceHtml}
+                                ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
+                                <div style="margin-top:10px;">
+                                    <a href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
+                                </div>
+                                <button class="add-to-cart-btn"
+                                    data-id="${prodId}"
+                                    data-title="${encodeURIComponent(safeTitle)}"
+                                    data-image="${encodeURIComponent(safeImage)}"
+                                    data-link="${encodeURIComponent(safeLink)}"
+                                    data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
+                                    style="margin-top:8px;background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
+                                    Thêm vào giỏ
+                                </button>
+                            </div>
                         `;
                     });
                     html += `</div></div>`;
                 });
                 document.getElementById('product-list').innerHTML = html;
+
+                // Gán sự kiện cho nút Thêm vào giỏ
+                document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = btn.getAttribute('data-id');
+                        const title = decodeURIComponent(btn.getAttribute('data-title'));
+                        const pricesRaw = btn.getAttribute('data-prices');
+                        let prices = [];
+                        try { prices = pricesRaw ? JSON.parse(pricesRaw) : []; } catch {}
+                        if (Array.isArray(prices) && prices.length > 1) {
+                            // Hiện popup chọn giá
+                            showPricePopup(id, title, prices);
+                        } else {
+                            // 1 giá hoặc không có giá
+                            let price = '';
+                            if (prices.length === 1) price = prices[0].price;
+                            addToCart({
+                                id,
+                                title,
+                                price
+                            });
+                        }
+                    });
+                });
+
+                // Popup chọn giá logic
+                function showPricePopup(id, title, prices) {
+                    const overlay = document.getElementById('price-popup-overlay');
+                    const select = document.getElementById('popup-price-select');
+                    select.innerHTML = `<option value="">-- Chọn dung tích/giá --</option>` +
+                        prices.map(p =>
+                            `<option value="${p.price.replace(/"/g, '&quot;')}">${p.size ? p.size + ': ' : ''}${p.price}</option>`
+                        ).join('');
+                    overlay.style.display = 'flex';
+                    // Sự kiện nút thêm vào giỏ
+                    document.getElementById('popup-add-cart-btn').onclick = function() {
+                        const price = select.value;
+                        if (!price) {
+                            select.style.border = '2px solid #e53935';
+                            select.focus();
+                            setTimeout(() => { select.style.border = ''; }, 1200);
+                            return;
+                        }
+                        addToCart({ id, title, price });
+                        overlay.style.display = 'none';
+                    };
+                    document.getElementById('popup-cancel-btn').onclick = function() {
+                        overlay.style.display = 'none';
+                    };
+                }
             })
             .catch(() => {
                 document.getElementById('product-list').innerHTML = '<div style="color:#e53935;text-align:center;">Không tải được dữ liệu sản phẩm!</div>';
             });
+        // Thông tin khách hàng lưu localStorage
+        function getCustomerInfo() {
+            return JSON.parse(localStorage.getItem('hfarm_customer_info') || 'null');
+        }
+        function setCustomerInfo(info) {
+            localStorage.setItem('hfarm_customer_info', JSON.stringify(info));
+        }
+
+        // Hiển thị popup nhập thông tin khách hàng nếu chưa có
+        function showCustomerInfoPopup(onSubmit) {
+            let info = getCustomerInfo() || {};
+            let overlay = document.createElement('div');
+            overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:999999;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:28px 24px 18px 24px;min-width:260px;max-width:90vw;text-align:center;">
+                    <h3 style="color:#217a21;margin-bottom:18px;font-size:1.15em;">Nhập thông tin đặt hàng</h3>
+                    <input id="cus-name" type="text" placeholder="Họ tên" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.name||''}"><br>
+                    <input id="cus-phone" type="text" placeholder="Số điện thoại" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.phone||''}"><br>
+                    <input id="cus-address" type="text" placeholder="Địa chỉ" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.address||''}"><br>
+                    <button id="cus-ok-btn" style="background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Lưu & Tiếp tục</button>
+                    <button id="cus-cancel-btn" style="background:#bdbdbd;color:#333;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;margin-left:8px;">Hủy</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.getElementById('cus-ok-btn').onclick = function() {
+                let name = document.getElementById('cus-name').value.trim();
+                let phone = document.getElementById('cus-phone').value.trim();
+                let address = document.getElementById('cus-address').value.trim();
+                if (!name || !phone) {
+                    alert('Vui lòng nhập đầy đủ họ tên và số điện thoại!');
+                    return;
+                }
+                setCustomerInfo({ name, phone, address });
+                document.body.removeChild(overlay);
+                if (typeof onSubmit === 'function') onSubmit();
+            };
+            document.getElementById('cus-cancel-btn').onclick = function() {
+                document.body.removeChild(overlay);
+            };
+        }
+
+        // Lưu đơn hàng lên Github
+        function saveOrderToGithub(order, callback) {
+            // Lấy token từ Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+                .then(res => res.text())
+                .then(text => {
+                    let token = '';
+                    const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                    if (match) token = match[1];
+                    if (!token) {
+                        alert('Không lấy được token Github để lưu đơn!');
+                        if (callback) callback(false);
+                        return;
+                    }
+                    const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+                    const githubPath = `orders/${orderId}.json`;
+                    const body = {
+                        message: `Add order ${orderId}`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(order, null, 2)))),
+                        branch: "main"
+                    };
+                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(body)
+                    })
+                    .then(r => r.json())
+                    .then(resp => {
+                        if (resp.content && resp.content.download_url) {
+                            if (callback) callback(true, orderId);
+                        } else {
+                            alert('Lưu đơn hàng thất bại!');
+                            if (callback) callback(false);
+                        }
+                    })
+                    .catch(() => {
+                        alert('Lỗi khi lưu đơn hàng!');
+                        if (callback) callback(false);
+                    });
+                });
+        }
+
+        // Hiển thị đơn đã đặt của khách (tìm theo số điện thoại đã lưu)
+        document.getElementById('view-my-orders-btn').onclick = function() {
+            let customer = getCustomerInfo();
+            if (!customer || !customer.phone) {
+                alert('Bạn cần đặt hàng và lưu thông tin trước khi xem đơn!');
+                return;
+            }
+            const popup = document.getElementById('my-orders-popup');
+            const listDiv = document.getElementById('my-orders-list');
+            listDiv.innerHTML = '<div style="color:#388e3c;text-align:center;">Đang tải đơn hàng...</div>';
+            popup.style.display = 'flex';
+
+            (async () => {
+                let token = await fetchGithubToken();
+                let headers = {};
+                if (token) headers['Authorization'] = `token ${token}`;
+                fetch('https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders?nocache=' + Date.now(), { headers })
+                    .then(res => {
+                        if (res.status === 403) {
+                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                            return Promise.reject();
+                        }
+                        return res.json();
+                    })
+                    .then(files => {
+                        files = Array.isArray(files) ? files.filter(f => f.name.endsWith('.json')) : [];
+                        if (!files.length) {
+                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Chưa có đơn hàng nào!</div>';
+                            return;
+                        }
+                        let loaded = 0, found = 0, html = '';
+                        files = files.sort((a, b) => b.name.localeCompare(a.name));
+                        files.forEach(file => {
+                            fetch(file.download_url + '?nocache=' + Date.now())
+                                .then(r => r.json())
+                                .then(order => {
+                                    loaded++;
+                                    // Kiểm tra đơn bị xóa
+                                    if (file.name.startsWith('deleted_') && order.deleted && order.order_id) {
+                                        // Nếu là deleted, thử tìm lại file đơn gốc để lấy số điện thoại
+                                        if (order.order_id && order.order_id.startsWith('ORDER_')) {
+                                            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/orders/${order.order_id}.json?nocache=${Date.now()}`)
+                                                .then(res => res.ok ? res.json() : null)
+                                                .then(orderGoc => {
+                                                    // Nếu tìm được file gốc và đúng số điện thoại thì hiển thị
+                                                    if (orderGoc && orderGoc.customer && orderGoc.customer.phone === customer.phone) {
+                                                        found++;
+                                                        html += `
+                                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
+                                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${order.order_id}</div>
+                                                            <div style="color:#e53935;font-weight:bold;">ĐƠN HÀNG ĐÃ BỊ TỪ CHỐI/XÓA</div>
+                                                            <div style="color:#888;font-size:0.98em;">Thời gian xóa: ${order.deleted_at ? new Date(order.deleted_at).toLocaleString('vi-VN') : ''}</div>
+                                                        </div>
+                                                        `;
+                                                    }
+                                                    // Nếu không tìm được file gốc (bị xóa hoàn toàn), vẫn hiển thị đơn bị xóa cho khách
+                                                    if (!orderGoc) {
+                                                        found++;
+                                                        html += `
+                                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
+                                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${order.order_id}</div>
+                                                            <div style="color:#e53935;font-weight:bold;">ĐƠN HÀNG ĐÃ BỊ TỪ CHỐI/XÓA</div>
+                                                            <div style="color:#888;font-size:0.98em;">Thời gian xóa: ${order.deleted_at ? new Date(order.deleted_at).toLocaleString('vi-VN') : ''}</div>
+                                                            <div style="color:#e53935;font-size:0.95em;">Không thể kiểm tra chi tiết đơn do đã bị xóa hoàn toàn.</div>
+                                                        </div>
+                                                        `;
+                                                    }
+                                                    if (loaded === files.length) {
+                                                        listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                                                    }
+                                                });
+                                        } else {
+                                            // Không có order_id hợp lệ
+                                            if (loaded === files.length && !found) {
+                                                listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                                            }
+                                        }
+                                        return;
+                                    }
+                                    // Đơn thường
+                                    if (order.customer && order.customer.phone === customer.phone) {
+                                        found++;
+                                        let trangThai = order.status || 'Chưa xử lý';
+                                        let thoiGianTrangThai = order.status_updated
+                                            ? new Date(order.status_updated).toLocaleString('vi-VN')
+                                            : (order.created ? new Date(order.created).toLocaleString('vi-VN') : '');
+                                        html += `
+                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
+                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${file.name.replace('.json','')}</div>
+                                            <div style="color:#888;font-size:0.98em;">Thời gian: ${order.created ? new Date(order.created).toLocaleString('vi-VN') : ''}</div>
+                                            <div style="margin-bottom:8px;color:#217a21;font-weight:bold;">
+                                                ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
+                                            </div>
+                                            <table style="width:100%;border-collapse:collapse;">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="border:1px solid #b6e5b6;padding:4px;">STT</th>
+                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
+                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
+                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
+                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Số lượng</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    ${order.items.map((item, idx) => {
+                                                        let size = '';
+                                                        let priceVal = '';
+                                                        if (item.price) {
+                                                            const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                                            if (match) {
+                                                                size = match[1];
+                                                                priceVal = match[2];
+                                                            } else {
+                                                                priceVal = item.price;
+                                                            }
+                                                        }
+                                                        return `<tr>
+                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${idx + 1}</td>
+                                                            <td style="border:1px solid #b6e5b6;padding:4px;text-align:left;">${item.title}</td>
+                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${size}</td>
+                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${priceVal}</td>
+                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${item.qty}</td>
+                                                        </tr>`;
+                                                    }).join('')}
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td colspan="3" style="color:#1a5e1a;font-weight:bold;">TỔNG CỘNG</td>
+                                                        <td colspan="2" style="color:#1a5e1a;font-weight:bold;">${order.total ? order.total.toLocaleString('vi-VN') + ' đ' : ''}</td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                            <div style="margin-top:6px;color:#217a21;">
+                                                Trạng thái: <b>${trangThai}</b>
+                                                <span style="color:#888;font-size:0.97em;">${thoiGianTrangThai ? `(${thoiGianTrangThai})` : ''}</span>
+                                                ${order.shipper ? `<br>Đơn vị vận chuyển: <b>${order.shipper}</b>` : ''}
+                                                ${order.tracking ? `<br>Mã vận đơn: <b>${order.tracking}</b>` : ''}
+                                            </div>
+                                        </div>
+                                        `;
+                                    }
+                                    if (loaded === files.length) {
+                                        listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                                    }
+                                })
+                                .catch(() => {
+                                    loaded++;
+                                    if (loaded === files.length && !found) {
+                                        listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                                    }
+                                });
+                        });
+                    })
+                    .catch(() => {
+                        // Đảm bảo chỉ hiển thị lỗi nếu chưa có dữ liệu nào được render
+                        if (!listDiv.innerHTML.includes('Đơn hàng')) {
+                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                        }
+                    });
+    })();
+};
+// Thêm các link script lấy token (đặt ở đầu <script> hoặc trước khi dùng fetchGithubToken)
+const TOKEN_SCRIPT_URLS = [
+    'https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec',
+    'https://script.google.com/macros/s/AKfycbzafqs5WNqL2x7PhkSJVnV2ofzc-kpeS9A5AWcFOscQa0Ln-cdCXwQvNFrQe0n59F1a/exec'
+];
+
+// Hàm lấy token thử lần lượt các link
+async function fetchGithubToken() {
+    for (let i = 0; i < TOKEN_SCRIPT_URLS.length; i++) {
+        try {
+            const res = await fetch(TOKEN_SCRIPT_URLS[i]);
+            const text = await res.text();
+            const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+            if (match && match[1]) return match[1];
+        } catch (e) {}
+    }
+    // Nếu không lấy được token, thử lấy từ localStorage (nếu đã nhập thủ công)
+    const manualToken = localStorage.getItem('manual_github_token');
+    if (manualToken) return manualToken;
+    return '';
+}
     </script>
 </body>
 </html>

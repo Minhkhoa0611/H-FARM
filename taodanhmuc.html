@@ -83,6 +83,13 @@
                         <input type="file" id="prodImage" accept="image/*">
                         <div id="prodImagePreview" style="margin-top:8px;"></div>
                     </div>
+                    <div class="form-group">
+                        <label>Giá bán (có thể nhập nhiều mức giá/dung tích)</label>
+                        <div id="price-list">
+                            <!-- Các dòng giá sẽ được thêm ở đây -->
+                        </div>
+                        <button type="button" id="addPriceBtn" style="background:#81c784;color:#fff;margin-top:6px;">+ Thêm mức giá</button>
+                    </div>
                     <button type="submit" id="saveBtn">Thêm mới</button>
                     <button type="button" id="resetBtn" style="background:#bdbdbd;color:#333;">Làm lại</button>
                 </form>
@@ -100,6 +107,7 @@
                             <th>Đường dẫn</th>
                             <th>Ghi chú</th>
                             <th>Hình ảnh</th>
+                            <th>Giá</th>
                             <th>Thao tác</th>
                         </tr>
                     </thead>
@@ -158,6 +166,9 @@
             const tbody = document.querySelector('#productTable tbody');
             tbody.innerHTML = '';
             arr.forEach((prod, idx) => {
+                const priceHtml = Array.isArray(prod.prices) && prod.prices.length
+                    ? prod.prices.map(p => `<div>${p.size}: <b>${p.price}</b></div>`).join('')
+                    : '';
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${prod.title}</td>
@@ -167,6 +178,7 @@
                     <td>
                         ${prod.image ? `<img src="${prod.image}" alt="Ảnh" style="max-width:60px;max-height:60px;border-radius:6px;border:1px solid #b6e5b6;">` : ''}
                     </td>
+                    <td>${priceHtml}</td>
                     <td style="text-align:center;">
                         <button type="button" onclick="showQR(${idx})" style="background:#fff;color:#217a21;border:1px solid #b6e5b6;padding:4px 10px;font-size:0.98em;">Lấy mã QR</button>
                     </td>
@@ -178,8 +190,9 @@
                 tbody.appendChild(tr);
             });
         }
-        // Xử lý chọn ảnh và preview
+        // Xử lý chọn ảnh và preview, upload lên Github nếu có file
 let prodImageData = '';
+let prodImageGithubUrl = '';
 document.getElementById('prodImage').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (file) {
@@ -188,13 +201,106 @@ document.getElementById('prodImage').addEventListener('change', function(e) {
             prodImageData = evt.target.result;
             document.getElementById('prodImagePreview').innerHTML =
                 `<img src="${prodImageData}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`;
+            // Tải ảnh lên Github
+            uploadImageToGithub(file, prodImageData, function(url) {
+                if (url) {
+                    prodImageGithubUrl = url;
+                    document.getElementById('prodImagePreview').innerHTML =
+                        `<img src="${prodImageGithubUrl}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`;
+                } else {
+                    prodImageGithubUrl = '';
+                }
+            });
         };
         reader.readAsDataURL(file);
     } else {
         prodImageData = '';
+        prodImageGithubUrl = '';
         document.getElementById('prodImagePreview').innerHTML = '';
     }
 });
+
+// Hàm upload ảnh lên Github, trả về URL qua callback
+function uploadImageToGithub(file, dataUrl, callback) {
+    // Lấy token từ Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+        .then(res => res.text())
+        .then(text => {
+            let token = '';
+            const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+            if (match) token = match[1];
+            if (!token) {
+                alert('Không lấy được token Github để upload ảnh!');
+                return;
+            }
+            // Tạo tên file duy nhất
+            const ext = file.name.split('.').pop().toLowerCase();
+            const imgName = 'img_' + Date.now() + '_' + Math.floor(Math.random()*10000) + '.' + ext;
+            const githubPath = `posts/images/${imgName}`;
+            const githubUrl = `https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/${imgName}`;
+            // Kiểm tra file đã tồn tại chưa để lấy sha
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                headers: { Authorization: `token ${token}` }
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(fileData => {
+                const body = {
+                    message: "Upload image for product",
+                    content: dataUrl.split(',')[1],
+                    branch: "main"
+                };
+                if (fileData && fileData.sha) body.sha = fileData.sha;
+                fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.content && resp.content.download_url) {
+                        callback(githubUrl);
+                    } else {
+                        alert('Upload ảnh thất bại!');
+                        callback('');
+                    }
+                })
+                .catch(() => {
+                    alert('Lỗi khi upload ảnh!');
+                    callback('');
+                });
+            });
+        });
+}
+
+        // Giá động
+let priceArr = [];
+function renderPriceInputs() {
+    const priceList = document.getElementById('price-list');
+    priceList.innerHTML = '';
+    priceArr.forEach((item, idx) => {
+        const wrap = document.createElement('div');
+        wrap.style.display = 'flex';
+        wrap.style.gap = '8px';
+        wrap.style.marginBottom = '4px';
+        wrap.innerHTML = `
+            <input type="text" placeholder="Dung tích (vd: 500ml)" value="${item.size}" style="flex:1;">
+            <input type="text" placeholder="Giá (vd: 120.000đ)" value="${item.price}" style="flex:1;">
+            <button type="button" style="background:#e53935;color:#fff;" title="Xóa">×</button>
+        `;
+        // Xử lý sự kiện
+        wrap.children[0].oninput = e => { priceArr[idx].size = e.target.value; };
+        wrap.children[1].oninput = e => { priceArr[idx].price = e.target.value; };
+        wrap.children[2].onclick = () => { priceArr.splice(idx,1); renderPriceInputs(); };
+        priceList.appendChild(wrap);
+    });
+}
+document.getElementById('addPriceBtn').onclick = function() {
+    priceArr.push({size:'', price:''});
+    renderPriceInputs();
+};
         function resetForm() {
             document.getElementById('editIndex').value = '';
             document.getElementById('prodTitle').value = '';
@@ -203,8 +309,11 @@ document.getElementById('prodImage').addEventListener('change', function(e) {
             document.getElementById('prodNote').value = '';
             document.getElementById('prodImage').value = '';
             prodImageData = '';
+            prodImageGithubUrl = '';
             document.getElementById('prodImagePreview').innerHTML = '';
             document.getElementById('saveBtn').textContent = 'Thêm mới';
+            priceArr = [];
+            renderPriceInputs();
         }
         document.getElementById('productForm').onsubmit = function(e) {
             e.preventDefault();
@@ -213,13 +322,16 @@ document.getElementById('prodImage').addEventListener('change', function(e) {
             const link = document.getElementById('prodLink').value.trim();
             const category = document.getElementById('prodCategory').value.trim();
             const note = document.getElementById('prodNote').value.trim();
-            const image = prodImageData || '';
+            // Ghi link ảnh Github vào json, không ghi base64
+            const image = prodImageGithubUrl || '';
             if (!title || !link || !category) return;
+            // Lọc các mức giá hợp lệ
+            const prices = priceArr.filter(x => x.size.trim() && x.price.trim());
             let arr = getProducts();
             if (idx === '') {
-                arr.push({ title, link, category, note, image });
+                arr.push({ title, link, category, note, image, prices });
             } else {
-                arr[idx] = { title, link, category, note, image };
+                arr[idx] = { title, link, category, note, image, prices };
             }
             saveProducts(arr);
             renderTable();
@@ -234,11 +346,14 @@ document.getElementById('prodImage').addEventListener('change', function(e) {
             document.getElementById('prodLink').value = prod.link;
             document.getElementById('prodCategory').value = prod.category;
             document.getElementById('prodNote').value = prod.note || '';
-            prodImageData = prod.image || '';
+            prodImageData = '';
+            prodImageGithubUrl = prod.image || '';
             document.getElementById('prodImage').value = '';
             document.getElementById('prodImagePreview').innerHTML = prod.image
                 ? `<img src="${prod.image}" style="max-width:100px;max-height:100px;border-radius:8px;border:1px solid #b6e5b6;">`
                 : '';
+            priceArr = Array.isArray(prod.prices) ? prod.prices.map(x => ({...x})) : [];
+            renderPriceInputs();
             document.getElementById('saveBtn').textContent = 'Lưu';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };

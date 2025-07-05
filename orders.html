@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng khách đặt - H-FARM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: Arial, sans-serif; background: #f8f8f8; margin: 0; padding: 0; }
+        .container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.10); padding: 32px 32px 24px 32px; }
+        h1 { text-align: center; color: #2d7a2d; margin-bottom: 32px; letter-spacing: 1px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+        th, td { border: 1px solid #b6e5b6; padding: 8px 10px; text-align: center; }
+        th { background: #eafbe7; color: #217a21; }
+        tr:nth-child(even) { background: #f8fff8; }
+        .customer-info { margin-bottom: 8px; color: #217a21; font-weight: bold; }
+        .order-id { color: #888; font-size: 0.98em; }
+        .order-time { color: #888; font-size: 0.98em; }
+        .total { color: #1a5e1a; font-weight: bold; }
+        .empty { color: #e53935; text-align: center; margin: 40px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ĐƠN HÀNG KHÁCH ĐẶT</h1>
+        <div id="orders-list">
+            <div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải đơn hàng...</div>
+        </div>
+    </div>
+    <script>
+        // Lấy danh sách file đơn hàng từ Github API
+        async function fetchOrderFiles() {
+            let token = await fetchGithubToken();
+            let headers = {};
+            if (token) headers['Authorization'] = `token ${token}`;
+            try {
+                const res = await fetch('https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders?nocache=' + Date.now(), {
+                    headers
+                });
+                if (res.status === 403) {
+                    // Nếu có token mà vẫn 403 thì token không hợp lệ hoặc không đủ quyền
+                    if (token) {
+                        document.getElementById('orders-list').innerHTML = '<div class="empty">Token Github không hợp lệ hoặc không đủ quyền truy cập.<br>Vui lòng kiểm tra lại token hoặc <a href="#" onclick="promptForManualToken();return false;">nhập token khác</a>.</div>';
+                    } else {
+                        document.getElementById('orders-list').innerHTML = '<div class="empty">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút hoặc <a href="#" onclick="promptForManualToken();return false;">nhập token Github</a>.</div>';
+                    }
+                    return [];
+                }
+                if (!res.ok) return [];
+                const files = await res.json();
+                return files.filter(f => f.name.endsWith('.json'));
+            } catch (e) {
+                document.getElementById('orders-list').innerHTML = '<div class="empty">Không thể kết nối tới máy chủ để tải đơn hàng!</div>';
+                return [];
+            }
+        }
+        // Lấy nội dung từng đơn hàng
+        async function fetchOrderContent(url) {
+            try {
+                const res = await fetch(url + '?nocache=' + Date.now());
+                if (!res.ok) return null;
+                return await res.json();
+            } catch (e) {
+                return null;
+            }
+        }
+        // Lưu trạng thái đơn hàng vào localStorage (chỉ lưu phía client)
+        function getOrderStatus(orderId) {
+            return JSON.parse(localStorage.getItem('order_status_' + orderId) || 'null');
+        }
+        function setOrderStatus(orderId, statusObj) {
+            localStorage.setItem('order_status_' + orderId, JSON.stringify(statusObj));
+            // Gửi cập nhật trạng thái lên Github (ghi vào file order tương ứng)
+            updateOrderStatusOnGithub(orderId, statusObj);
+        }
+
+        // Danh sách các link script để lấy token
+        const TOKEN_SCRIPT_URLS = [
+            'https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec',
+            'https://script.google.com/macros/s/AKfycbzafqs5WNqL2x7PhkSJVnV2ofzc-kpeS9A5AWcFOscQa0Ln-cdCXwQvNFrQe0n59F1a/exec'
+        ];
+
+        // Hàm lấy token thử lần lượt các link
+        async function fetchGithubToken() {
+            for (let i = 0; i < TOKEN_SCRIPT_URLS.length; i++) {
+                try {
+                    const res = await fetch(TOKEN_SCRIPT_URLS[i]);
+                    const text = await res.text();
+                    const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+                    if (match && match[1]) return match[1];
+                } catch (e) {}
+            }
+            // Nếu không lấy được token, thử lấy từ localStorage (nếu đã nhập thủ công)
+            const manualToken = localStorage.getItem('manual_github_token');
+            if (manualToken) return manualToken;
+            return '';
+        }
+
+        // Thêm hàm cho phép nhập token thủ công
+        function promptForManualToken() {
+            const token = prompt('Không lấy được token Github tự động. Vui lòng nhập Personal Access Token của bạn (repo scope):');
+            if (token) {
+                localStorage.setItem('manual_github_token', token);
+                alert('Đã lưu token. Vui lòng tải lại trang!');
+            }
+        }
+
+        // Cập nhật trạng thái đơn lên Github (ghi vào file order)
+        async function updateOrderStatusOnGithub(orderId, statusObj) {
+            const token = await fetchGithubToken();
+            if (!token) {
+                alert('Không lấy được token Github để cập nhật trạng thái đơn!');
+                return;
+            }
+            // Lấy nội dung đơn cũ
+            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/orders/${orderId}.json`)
+                .then(res => res.json())
+                .then(orderData => {
+                    // Thêm lịch sử trạng thái
+                    if (!Array.isArray(orderData.status_history)) orderData.status_history = [];
+                    orderData.status_history.push({
+                        status: statusObj.status,
+                        shipper: statusObj.shipper,
+                        tracking: statusObj.tracking,
+                        updated: new Date().toISOString()
+                    });
+                    // Ghi trạng thái hiện tại
+                    orderData.status = statusObj.status;
+                    orderData.shipper = statusObj.shipper;
+                    orderData.tracking = statusObj.tracking;
+                    orderData.status_updated = new Date().toISOString();
+                    // Lấy SHA file
+                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders/${orderId}.json`, {
+                        headers: { Authorization: `token ${token}` }
+                    })
+                    .then(res => res.ok ? res.json() : null)
+                    .then(fileData => {
+                        const body = {
+                            message: `Update status order ${orderId}`,
+                            content: btoa(unescape(encodeURIComponent(JSON.stringify(orderData, null, 2)))),
+                            branch: "main"
+                        };
+                        if (fileData && fileData.sha) body.sha = fileData.sha;
+                        fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders/${orderId}.json`, {
+                            method: "PUT",
+                            headers: {
+                                "Authorization": `token ${token}`,
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(body)
+                        });
+                    });
+                });
+        }
+
+        // Xóa đơn hàng trên Github
+        async function deleteOrderOnGithub(orderId, callback) {
+            const token = await fetchGithubToken();
+            if (!token) {
+                alert('Không lấy được token Github để xóa đơn!');
+                return;
+            }
+            // Lấy SHA file
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders/${orderId}.json`, {
+                headers: { Authorization: `token ${token}` }
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(fileData => {
+                if (!fileData || !fileData.sha) {
+                    alert('Không tìm thấy file đơn hàng!');
+                    return;
+                }
+                // Trước khi xóa, ghi 1 file trạng thái deleted để khách biết đơn đã bị từ chối
+                const deletedFlagPath = `orders/deleted_${orderId}.json`;
+                const deletedContent = {
+                    deleted: true,
+                    deleted_at: new Date().toISOString(),
+                    order_id: orderId
+                };
+                fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${deletedFlagPath}`, {
+                    method: "PUT",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Mark order ${orderId} as deleted`,
+                        content: btoa(unescape(encodeURIComponent(JSON.stringify(deletedContent, null, 2)))),
+                        branch: "main"
+                    })
+                })
+                .then(() => {
+                    // Xóa file đơn chính
+                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders/${orderId}.json`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `token ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            message: `Delete order ${orderId}`,
+                            sha: fileData.sha,
+                            branch: "main"
+                        })
+                    })
+                    .then(r => r.json())
+                    .then(resp => {
+                        if (resp.commit) {
+                            if (callback) callback(true);
+                        } else {
+                            alert('Xóa đơn hàng thất bại!');
+                            if (callback) callback(false);
+                        }
+                    })
+                    .catch(() => {
+                        alert('Lỗi khi xóa đơn hàng!');
+                        if (callback) callback(false);
+                    });
+                });
+            });
+        }
+
+        // Hàm khôi phục đơn bị xóa (xóa file deleted_xxx.json)
+        async function restoreDeletedOrder(orderId, callback) {
+            const token = await fetchGithubToken();
+            if (!token) {
+                alert('Không lấy được token Github để khôi phục đơn!');
+                return;
+            }
+            const deletedFlagPath = `orders/deleted_${orderId}.json`;
+            // Lấy SHA file deleted
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${deletedFlagPath}`, {
+                headers: { Authorization: `token ${token}` }
+            })
+            .then(res => res.ok ? res.json() : null)
+            .then(fileData => {
+                if (!fileData || !fileData.sha) {
+                    alert('Không tìm thấy file đánh dấu đã xóa!');
+                    return;
+                }
+                fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${deletedFlagPath}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": `token ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: `Restore order ${orderId}`,
+                        sha: fileData.sha,
+                        branch: "main"
+                    })
+                })
+                .then(r => r.json())
+                .then(resp => {
+                    if (resp.commit) {
+                        if (callback) callback(true);
+                    } else {
+                        alert('Khôi phục đơn thất bại!');
+                        if (callback) callback(false);
+                    }
+                })
+                .catch(() => {
+                    alert('Lỗi khi khôi phục đơn!');
+                    if (callback) callback(false);
+                });
+            });
+        }
+
+        async function loadOrders() {
+            const ordersDiv = document.getElementById('orders-list');
+            ordersDiv.innerHTML = '<div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải đơn hàng...</div>';
+            let files = await fetchOrderFiles();
+            if (!files.length) {
+                ordersDiv.innerHTML = '<div class="empty">Không tải được đơn hàng hoặc chưa có đơn hàng nào!</div>';
+                return;
+            }
+            // Phân loại đơn thường và đơn bị xóa
+            const normalFiles = files.filter(f => !f.name.startsWith('deleted_'));
+            const deletedFiles = files.filter(f => f.name.startsWith('deleted_'));
+
+            // Sắp xếp mới nhất lên đầu
+            normalFiles.sort((a, b) => b.name.localeCompare(a.name));
+            deletedFiles.sort((a, b) => b.name.localeCompare(a.name));
+
+            let html = '';
+            // Danh sách đơn bình thường
+            for (let i = 0; i < normalFiles.length; i++) {
+                const file = normalFiles[i];
+                const order = await fetchOrderContent(file.download_url);
+                if (!order) continue;
+                const orderId = file.name.replace('.json','');
+                // Lấy trạng thái đơn từ localStorage
+                let statusObj = getOrderStatus(orderId) || {};
+                let status = order.status || statusObj.status || 'Chưa xử lý';
+                let shipper = order.shipper || statusObj.shipper || '';
+                let tracking = order.tracking || statusObj.tracking || '';
+                let statusTime = order.status_updated || '';
+                // Lịch sử trạng thái
+                let statusHistoryHtml = '';
+                // Fix: chỉ render lịch sử nếu là mảng và có length, và order.status_history là mảng
+                if (Array.isArray(order.status_history) && order.status_history.length > 0) {
+                    statusHistoryHtml = `
+                        <div style="margin:10px 0 0 0;">
+                            <b style="color:#217a21;">Lịch sử trạng thái:</b>
+                            <ul style="margin:6px 0 0 0;padding-left:18px;">
+                                ${order.status_history.map((h, i) => `
+                                    <li style="margin-bottom:2px;">
+                                        <span style="color:#217a21;">${h.status}</span>
+                                        <span style="color:#888;font-size:0.97em;">(${h.updated ? new Date(h.updated).toLocaleString('vi-VN') : ''})</span>
+                                        ${h.shipper ? `<span style="color:#888;"> - ĐVVC: <b>${h.shipper}</b></span>` : ''}
+                                        ${h.tracking ? `<span style="color:#888;"> - Mã vận đơn: <b>${h.tracking}</b></span>` : ''}
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                // Nếu trạng thái hiện tại khác trạng thái cuối cùng trong lịch sử thì cũng hiển thị
+                if (
+                    (!order.status_history || !order.status_history.length) ||
+                    (order.status && (!order.status_history[order.status_history.length - 1] ||
+                    order.status_history[order.status_history.length - 1].status !== order.status))
+                ) {
+                    statusHistoryHtml += `
+                        <div style="margin:10px 0 0 0;">
+                            <b style="color:#217a21;">Trạng thái hiện tại:</b>
+                            <ul style="margin:6px 0 0 0;padding-left:18px;">
+                                <li>
+                                    <span style="color:#217a21;">${status}</span>
+                                    <span style="color:#888;font-size:0.97em;">(${statusTime ? new Date(statusTime).toLocaleString('vi-VN') : ''})</span>
+                                    ${shipper ? `<span style="color:#888;"> - ĐVVC: <b>${shipper}</b></span>` : ''}
+                                    ${tracking ? `<span style="color:#888;"> - Mã vận đơn: <b>${tracking}</b></span>` : ''}
+                                </li>
+                            </ul>
+                        </div>
+                    `;
+                }
+                html += `
+                <div style="margin-bottom:36px;border-bottom:1px solid #e0f2e0;padding-bottom:18px;">
+                    <div class="order-id">Mã đơn: ${orderId}</div>
+                    <div class="order-time">Thời gian: ${order.created ? new Date(order.created).toLocaleString('vi-VN') : ''}</div>
+                    <div class="customer-info">
+                        ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
+                    </div>
+                    <div style="margin-bottom:10px;">
+                        <label style="font-weight:bold;color:#217a21;">Trạng thái đơn: </label>
+                        <select data-order-id="${orderId}" class="order-status-select" style="padding:4px 8px;border-radius:5px;">
+                            <option value="Chưa xử lý"${status === 'Chưa xử lý' ? ' selected' : ''}>Chưa xử lý</option>
+                            <option value="Đã nhận đơn"${status === 'Đã nhận đơn' ? ' selected' : ''}>Đã nhận đơn</option>
+                            <option value="Đang chuẩn bị"${status === 'Đang chuẩn bị' ? ' selected' : ''}>Đang chuẩn bị</option>
+                            <option value="Đã giao đơn cho đơn vị vận chuyển"${status === 'Đã giao đơn cho đơn vị vận chuyển' ? ' selected' : ''}>Đã giao đơn cho đơn vị vận chuyển</option>
+                            <option value="Đã hoàn thành"${status === 'Đã hoàn thành' ? ' selected' : ''}>Đã hoàn thành</option>
+                        </select>
+                        <input type="text" placeholder="Đơn vị vận chuyển" value="${shipper}" data-order-id="${orderId}" class="order-shipper-input" style="margin-left:8px;padding:4px 8px;border-radius:5px;width:140px;" />
+                        <input type="text" placeholder="Mã vận đơn" value="${tracking}" data-order-id="${orderId}" class="order-tracking-input" style="margin-left:8px;padding:4px 8px;border-radius:5px;width:120px;" />
+                        <button data-order-id="${orderId}" class="order-save-btn" style="margin-left:8px;background:#2d7a2d;color:#fff;padding:4px 14px;border-radius:5px;border:none;cursor:pointer;">Lưu</button>
+                        <button data-order-id="${orderId}" class="order-delete-btn" style="margin-left:8px;background:#e53935;color:#fff;padding:4px 14px;border-radius:5px;border:none;cursor:pointer;">Xóa đơn</button>
+                        ${statusTime ? `<span style="margin-left:12px;color:#888;font-size:0.97em;">Cập nhật: ${new Date(statusTime).toLocaleString('vi-VN')}</span>` : ''}
+                    </div>
+                    ${statusHistoryHtml}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên hàng</th>
+                                <th>Dung tích</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(Array.isArray(order.items) ? order.items : []).map((item, idx) => {
+                                let size = '';
+                                let priceVal = '';
+                                if (item.price) {
+                                    const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                    if (match) {
+                                        size = match[1];
+                                        priceVal = match[2];
+                                    } else {
+                                        priceVal = item.price;
+                                    }
+                                }
+                                return `<tr>
+                                    <td>${idx + 1}</td>
+                                    <td style="text-align:left;">${item.title}</td>
+                                    <td>${size}</td>
+                                    <td>${priceVal}</td>
+                                    <td>${item.qty}</td>
+                                </tr>`;
+                            }).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="total">TỔNG CỘNG</td>
+                                <td colspan="2" class="total">${order.total ? order.total.toLocaleString('vi-VN') + ' đ' : ''}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                `;
+            }
+            // Danh sách đơn bị xóa
+            if (deletedFiles.length > 0) {
+                html += `
+                <div style="margin:40px 0 0 0;">
+                    <h2 style="color:#e53935;text-align:center;">ĐƠN BỊ XÓA</h2>
+                    <div id="deleted-orders-list">
+                `;
+                for (let i = 0; i < deletedFiles.length; i++) {
+                    const file = deletedFiles[i];
+                    const deletedOrder = await fetchOrderContent(file.download_url);
+                    const orderId = file.name.replace(/^deleted_/, '').replace('.json','');
+                    html += `
+                    <div style="margin-bottom:18px;border-bottom:1px dashed #e53935;padding-bottom:10px;">
+                        <div class="order-id" style="color:#e53935;">Mã đơn: ${orderId}</div>
+                        <div style="color:#888;">Đã xóa lúc: ${deletedOrder && deletedOrder.deleted_at ? new Date(deletedOrder.deleted_at).toLocaleString('vi-VN') : ''}</div>
+                        <button data-order-id="${orderId}" class="order-restore-btn" style="margin-top:8px;background:#fff;color:#e53935;padding:4px 14px;border-radius:5px;border:1px solid #e53935;cursor:pointer;">Khôi phục</button>
+                    </div>
+                    `;
+                }
+                html += `</div></div>`;
+            }
+
+            ordersDiv.innerHTML = html;
+
+            // Sự kiện lưu trạng thái đơn
+            document.querySelectorAll('.order-save-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const orderId = btn.getAttribute('data-order-id');
+                    const status = document.querySelector(`.order-status-select[data-order-id="${orderId}"]`).value;
+                    const shipper = document.querySelector(`.order-shipper-input[data-order-id="${orderId}"]`).value;
+                    const tracking = document.querySelector(`.order-tracking-input[data-order-id="${orderId}"]`).value;
+                    setOrderStatus(orderId, { status, shipper, tracking });
+                    btn.textContent = 'Đã lưu';
+                    setTimeout(() => { btn.textContent = 'Lưu'; }, 1200);
+                };
+            });
+
+            // Sự kiện xóa đơn
+            document.querySelectorAll('.order-delete-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const orderId = btn.getAttribute('data-order-id');
+                    if (!confirm('Bạn chắc chắn muốn xóa đơn này?')) return;
+                    deleteOrderOnGithub(orderId, function(success) {
+                        if (success) {
+                            alert('Đã xóa đơn thành công!');
+                            loadOrders();
+                        }
+                    });
+                };
+            });
+
+            // Sự kiện khôi phục đơn bị xóa
+            document.querySelectorAll('.order-restore-btn').forEach(btn => {
+                btn.onclick = function() {
+                    const orderId = btn.getAttribute('data-order-id');
+                    if (!confirm('Khôi phục đơn này?')) return;
+                    restoreDeletedOrder(orderId, function(success) {
+                        if (success) {
+                            alert('Đã khôi phục đơn thành công!');
+                            loadOrders();
+                        }
+                    });
+                };
+            });
+        }
+        loadOrders();
+    </script>
+</body>
+</html>
