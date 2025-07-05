@@ -98,71 +98,6 @@
     ]
   },
   {
-    "title": "MẬT ONG NGÂM KỲ TỬ H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamkytu.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG NGÂM LÁ HẸ H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamlahe.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG NGÂM RỪNG H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamrung.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG NGÂM TIM SEN H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtimsen.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG NGÂM TỎI H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG NGÂM TỎI LÝ SƠN H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html",
-    "category": "MẬT ONG NGÂM",
-    "note": ""
-  },
-  {
-    "title": "MẬT ONG RỪNG NGUYÊN CHẤT H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongrungnguyenchat.html",
-    "category": "MẬT ONG & SÁP ONG RỪNG",
-    "note": ""
-  },
-  {
-    "title": "SÁP ONG RỪNG HFARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html",
-    "category": "MẬT ONG & SÁP ONG RỪNG"
-  },
-  {
-    "title": "NẤM LIM XANH RỪNG H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html",
-    "category": "NẤM & TIÊU",
-    "note": ""
-  },
-  {
-    "title": "NẤM LINH CHI RỪNG QUẢNG NAM H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html",
-    "category": "NẤM & TIÊU",
-    "note": ""
-  },
-  {
-    "title": "TIÊU RỪNG QUẢNG NAM H-FARM",
-    "link": "https://minhkhoa0611.github.io/H-FARM/posts/tieurungquangnam.html",
-    "category": "NẤM & TIÊU",
-    "note": ""
-  },
-  {
     "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
     "link": "https://minhkhoa0611.github.io/H-FARM/posts/mangrungngamot.html",
     "category": "MĂNG RỪNG NGÂM ỚT",
@@ -200,6 +135,26 @@
     "prices": [
       {
         "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "180.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "320.000 VNĐ"
+      }
+    ]
+  },
+  {
+    "title": "MẬT ONG NGÂM LÁ HẸ H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamlahe.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/matongngamlahe_image1.jpeg",
+    "prices": [
+      {
+        "size": " Chai 100ml",
         "price": "90.000 VNĐ"
       },
       {
