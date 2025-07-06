@@ -182,5 +182,21 @@
         "price": "1.200.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "NẤM LIM XANH RỪNG H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlimxanhrung.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751777362424_647.jpeg",
+    "prices": [
+      {
+        "size": "200g",
+        "price": "520.000 VNĐ"
+      },
+      {
+        "size": "1kg",
+        "price": "2.600.000 VNĐ"
+      }
+    ]
   }
 ]
