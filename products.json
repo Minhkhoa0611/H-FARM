@@ -318,5 +318,17 @@
         "price": "350.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT MÍA NGUYÊN CHẤT H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matmianguyenchat.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751778267379_5445.jpeg",
+    "prices": [
+      {
+        "size": "1 lít",
+        "price": "46.000 VNĐ"
+      }
+    ]
   }
 ]
