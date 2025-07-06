@@ -154,5 +154,21 @@
         "price": "150.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "🐝 SÁP ONG RỪNG NGUYÊN CHẤT H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/sapongrunghfarm.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/sapongrunghfarm_image1.jpeg",
+    "prices": [
+      {
+        "size": "500g",
+        "price": "50.000 VNĐ"
+      },
+      {
+        "size": "1kg",
+        "price": "135.000 VNĐ"
+      }
+    ]
   }
 ]
