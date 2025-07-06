@@ -238,5 +238,25 @@
         "price": "390.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG NGÂM GỪNG H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamrung.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/matongngamrung_image1.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "180.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "320.000 VNĐ"
+      }
+    ]
   }
 ]
