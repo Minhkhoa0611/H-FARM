@@ -17,5 +17,16 @@
   "total": 70000000,
   "created": "2025-07-06T06:57:51.634Z",
   "orderId": "ORDER_1751785051664_7736",
-  "deviceId": "dev_ua9h36amhf_1751782528649"
+  "deviceId": "dev_ua9h36amhf_1751782528649",
+  "status_history": [
+    {
+      "status": "Đã giao đơn cho đơn vị vận chuyển",
+      "shipper": "ViettelPost",
+      "tracking": "123321123",
+      "updated": "2025-07-06T06:58:45.509Z"
+    }
+  ],
+  "status": "Đã giao đơn cho đơn vị vận chuyển",
+  "tracking": "123321123",
+  "status_updated": "2025-07-06T06:58:45.510Z"
 }
