@@ -198,5 +198,25 @@
         "price": "2.600.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG NGÂM TỎI LÝ SƠN H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoilyson.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751777437223_1486.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "265.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "333.000 VNĐ"
+      }
+    ]
   }
 ]
