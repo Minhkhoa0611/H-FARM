@@ -454,8 +454,24 @@
                     let cart = getCart();
                     if (!cart.length) return;
                     let customer = getCustomerInfo();
-                    function doOrder() {
-                        customer = getCustomerInfo();
+                    let total = cart.reduce((sum, item) => {
+                        let priceVal = '';
+                        if (item.price) {
+                            const match = item.price.match(/^(.+?):\s*(.+)$/);
+                            if (match) priceVal = match[2];
+                            else priceVal = item.price;
+                        }
+                        let priceNum = 0;
+                        let priceStr = priceVal.replace(/[^\d]/g, '');
+                        if (priceStr) priceNum = parseInt(priceStr, 10);
+                        return sum + priceNum * (item.qty || 1);
+                    }, 0);
+
+                    showOrderConfirmPopup(cart, customer, function(newCustomer) {
+                        // Sau khi xác nhận, tiến hành đặt hàng
+                        // Hiện popup tiến trình đặt hàng
+                        showOrderProgressPopup();
+
                         let msg = 'ĐƠN HÀNG H-FARM%0A';
                         msg += cart.map((item, idx) => {
                             let size = '';
@@ -485,28 +501,29 @@
                             total += priceNum * (item.qty || 1);
                         });
                         msg += `%0A--------------------%0ATổng cộng: ${total.toLocaleString('vi-VN')} đ`;
-                        msg += `%0A--------------------%0A${customer.name} - ${customer.phone}${customer.address ? ' - ' + customer.address : ''}`;
+                        msg += `%0A--------------------%0A${newCustomer.name} - ${newCustomer.phone}${newCustomer.address ? ' - ' + newCustomer.address : ''}`;
                         // Lưu đơn lên Github
                         saveOrderToGithub({
-                            customer,
+                            customer: {
+                                name: newCustomer.name,
+                                phone: newCustomer.phone,
+                                address: newCustomer.address
+                            },
+                            payment: newCustomer.payment,
+                            shipper: newCustomer.shipper,
                             items: cart,
                             total,
-                            created: new Date().toISOString()
+                            created: new Date().toISOString(),
+                            orderId: newCustomer.orderId
                         }, function(success, orderId) {
+                            // Đóng popup tiến trình và báo kết quả trên popup
+                            updateOrderProgressPopup(success);
                             if (success) {
-                                let zaloUrl = `https://zalo.me/0867544809?text=${msg}%0A(Mã đơn: ${orderId})`;
-                                window.open(zaloUrl, '_blank');
-                                // Xóa giỏ hàng sau khi đặt
                                 setCart([]);
                                 renderCartPopup();
                             }
                         });
-                    }
-                    if (!customer || !customer.name || !customer.phone) {
-                        showCustomerInfoPopup(doOrder);
-                    } else {
-                        doOrder();
-                    }
+                    }, total);
                 };
             }
         }
@@ -665,211 +682,194 @@
             };
         }
 
-        // Lưu đơn hàng lên Github
-        function saveOrderToGithub(order, callback) {
-            // Lấy token từ Google Apps Script
-            fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
-                .then(res => res.text())
-                .then(text => {
-                    let token = '';
-                    const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
-                    if (match) token = match[1];
-                    if (!token) {
-                        alert('Không lấy được token Github để lưu đơn!');
-                        if (callback) callback(false);
-                        return;
-                    }
-                    const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
-                    const githubPath = `orders/${orderId}.json`;
-                    const body = {
-                        message: `Add order ${orderId}`,
-                        content: btoa(unescape(encodeURIComponent(JSON.stringify(order, null, 2)))),
-                        branch: "main"
-                    };
-                    fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
-                        method: "PUT",
-                        headers: {
-                            "Authorization": `token ${token}`,
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(body)
-                    })
-                    .then(r => r.json())
-                    .then(resp => {
-                        if (resp.content && resp.content.download_url) {
-                            if (callback) callback(true, orderId);
-                        } else {
-                            alert('Lưu đơn hàng thất bại!');
-                            if (callback) callback(false);
-                        }
-                    })
-                    .catch(() => {
-                        alert('Lỗi khi lưu đơn hàng!');
-                        if (callback) callback(false);
-                    });
-                });
-        }
+        // Tạo hoặc lấy deviceId duy nhất cho thiết bị
+function getDeviceId() {
+    let id = localStorage.getItem('hfarm_device_id');
+    if (!id) {
+        id = 'dev_' + Math.random().toString(36).substr(2, 12) + '_' + Date.now();
+        localStorage.setItem('hfarm_device_id', id);
+    }
+    return id;
+}
 
-        // Hiển thị đơn đã đặt của khách (tìm theo số điện thoại đã lưu)
-        document.getElementById('view-my-orders-btn').onclick = function() {
-            let customer = getCustomerInfo();
-            if (!customer || !customer.phone) {
-                alert('Bạn cần đặt hàng và lưu thông tin trước khi xem đơn!');
+// Lưu đơn hàng lên Github
+function saveOrderToGithub(order, callback) {
+    // Thêm deviceId vào order (nếu chưa có)
+    order.deviceId = getDeviceId();
+    // Lấy token từ Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+        .then(res => res.text())
+        .then(text => {
+            let token = '';
+            const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+            if (match) token = match[1];
+            if (!token) {
+                alert('Không lấy được token Github để lưu đơn!');
+                if (callback) callback(false);
                 return;
             }
-            const popup = document.getElementById('my-orders-popup');
-            const listDiv = document.getElementById('my-orders-list');
-            listDiv.innerHTML = '<div style="color:#388e3c;text-align:center;">Đang tải đơn hàng...</div>';
-            popup.style.display = 'flex';
+            const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+            const githubPath = `orders/${orderId}.json`;
+            const body = {
+                message: `Add order ${orderId}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(order, null, 2)))),
+                branch: "main"
+            };
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.content && resp.content.download_url) {
+                    // Lưu orderId vào localStorage để debug/truy vết nếu cần
+                    let myOrderIds = JSON.parse(localStorage.getItem('hfarm_my_order_ids') || '[]');
+                    myOrderIds.push(orderId);
+                    localStorage.setItem('hfarm_my_order_ids', JSON.stringify(myOrderIds));
+                    if (callback) callback(true, orderId);
+                } else {
+                    alert('Lưu đơn hàng thất bại!');
+                    if (callback) callback(false);
+                }
+            })
+            .catch(() => {
+                alert('Lỗi khi lưu đơn hàng!');
+                if (callback) callback(false);
+            });
+        });
+}
 
-            (async () => {
-                let token = await fetchGithubToken();
-                let headers = {};
-                if (token) headers['Authorization'] = `token ${token}`;
-                fetch('https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders?nocache=' + Date.now(), { headers })
-                    .then(res => {
-                        if (res.status === 403) {
-                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
-                            return Promise.reject();
-                        }
-                        return res.json();
-                    })
-                    .then(files => {
-                        files = Array.isArray(files) ? files.filter(f => f.name.endsWith('.json')) : [];
-                        if (!files.length) {
-                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Chưa có đơn hàng nào!</div>';
-                            return;
-                        }
-                        let loaded = 0, found = 0, html = '';
-                        files = files.sort((a, b) => b.name.localeCompare(a.name));
-                        files.forEach(file => {
-                            fetch(file.download_url + '?nocache=' + Date.now())
-                                .then(r => r.json())
-                                .then(order => {
-                                    loaded++;
-                                    // Kiểm tra đơn bị xóa
-                                    if (file.name.startsWith('deleted_') && order.deleted && order.order_id) {
-                                        // Nếu là deleted, thử tìm lại file đơn gốc để lấy số điện thoại
-                                        if (order.order_id && order.order_id.startsWith('ORDER_')) {
-                                            fetch(`https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/orders/${order.order_id}.json?nocache=${Date.now()}`)
-                                                .then(res => res.ok ? res.json() : null)
-                                                .then(orderGoc => {
-                                                    // Nếu tìm được file gốc và đúng số điện thoại thì hiển thị
-                                                    if (orderGoc && orderGoc.customer && orderGoc.customer.phone === customer.phone) {
-                                                        found++;
-                                                        html += `
-                                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
-                                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${order.order_id}</div>
-                                                            <div style="color:#e53935;font-weight:bold;">ĐƠN HÀNG ĐÃ BỊ TỪ CHỐI/XÓA</div>
-                                                            <div style="color:#888;font-size:0.98em;">Thời gian xóa: ${order.deleted_at ? new Date(order.deleted_at).toLocaleString('vi-VN') : ''}</div>
-                                                        </div>
-                                                        `;
+// Khi hiển thị đơn đã đặt, chỉ hiển thị đơn có deviceId trùng thiết bị
+document.getElementById('view-my-orders-btn').onclick = function() {
+    let customer = getCustomerInfo();
+    if (!customer || !customer.phone) {
+        alert('Bạn cần đặt hàng và lưu thông tin trước khi xem đơn!');
+        return;
+    }
+    const deviceId = getDeviceId();
+    const popup = document.getElementById('my-orders-popup');
+    const listDiv = document.getElementById('my-orders-list');
+    listDiv.innerHTML = '<div style="color:#388e3c;text-align:center;">Đang tải đơn hàng...</div>';
+    popup.style.display = 'flex';
+
+    (async () => {
+        let token = await fetchGithubToken();
+        let headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+        fetch('https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders?nocache=' + Date.now(), { headers })
+            .then(res => {
+                if (res.status === 403) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                    return Promise.reject();
+                }
+                return res.json();
+            })
+            .then(files => {
+                files = Array.isArray(files) ? files.filter(f => f.name.endsWith('.json')) : [];
+                if (!files.length) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Chưa có đơn hàng nào!</div>';
+                    return;
+                }
+                let loaded = 0, found = 0, html = '';
+                files = files.sort((a, b) => b.name.localeCompare(a.name));
+                files.forEach(file => {
+                    fetch(file.download_url + '?nocache=' + Date.now())
+                        .then(r => r.json())
+                        .then(order => {
+                            loaded++;
+                            // Đơn thường: kiểm tra cả số điện thoại và deviceId
+                            if (
+                                order.customer && order.customer.phone === customer.phone &&
+                                order.deviceId && order.deviceId === deviceId
+                            ) {
+                                found++;
+                                let trangThai = order.status || 'Chưa xử lý';
+                                let thoiGianTrangThai = order.status_updated
+                                    ? new Date(order.status_updated).toLocaleString('vi-VN')
+                                    : (order.created ? new Date(order.created).toLocaleString('vi-VN') : '');
+                                html += `
+                                <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
+                                    <div style="color:#888;font-size:0.98em;">Mã đơn: ${file.name.replace('.json','')}</div>
+                                    <div style="color:#888;font-size:0.98em;">Thời gian: ${order.created ? new Date(order.created).toLocaleString('vi-VN') : ''}</div>
+                                    <div style="margin-bottom:8px;color:#217a21;font-weight:bold;">
+                                        ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
+                                    </div>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">STT</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Số lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${order.items.map((item, idx) => {
+                                                let size = '';
+                                                let priceVal = '';
+                                                if (item.price) {
+                                                    const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                                    if (match) {
+                                                        size = match[1];
+                                                        priceVal = match[2];
+                                                    } else {
+                                                        priceVal = item.price;
                                                     }
-                                                    // Nếu không tìm được file gốc (bị xóa hoàn toàn), vẫn hiển thị đơn bị xóa cho khách
-                                                    if (!orderGoc) {
-                                                        found++;
-                                                        html += `
-                                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
-                                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${order.order_id}</div>
-                                                            <div style="color:#e53935;font-weight:bold;">ĐƠN HÀNG ĐÃ BỊ TỪ CHỐI/XÓA</div>
-                                                            <div style="color:#888;font-size:0.98em;">Thời gian xóa: ${order.deleted_at ? new Date(order.deleted_at).toLocaleString('vi-VN') : ''}</div>
-                                                            <div style="color:#e53935;font-size:0.95em;">Không thể kiểm tra chi tiết đơn do đã bị xóa hoàn toàn.</div>
-                                                        </div>
-                                                        `;
-                                                    }
-                                                    if (loaded === files.length) {
-                                                        listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
-                                                    }
-                                                });
-                                        } else {
-                                            // Không có order_id hợp lệ
-                                            if (loaded === files.length && !found) {
-                                                listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
-                                            }
-                                        }
-                                        return;
-                                    }
-                                    // Đơn thường
-                                    if (order.customer && order.customer.phone === customer.phone) {
-                                        found++;
-                                        let trangThai = order.status || 'Chưa xử lý';
-                                        let thoiGianTrangThai = order.status_updated
-                                            ? new Date(order.status_updated).toLocaleString('vi-VN')
-                                            : (order.created ? new Date(order.created).toLocaleString('vi-VN') : '');
-                                        html += `
-                                        <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
-                                            <div style="color:#888;font-size:0.98em;">Mã đơn: ${file.name.replace('.json','')}</div>
-                                            <div style="color:#888;font-size:0.98em;">Thời gian: ${order.created ? new Date(order.created).toLocaleString('vi-VN') : ''}</div>
-                                            <div style="margin-bottom:8px;color:#217a21;font-weight:bold;">
-                                                ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
-                                            </div>
-                                            <table style="width:100%;border-collapse:collapse;">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="border:1px solid #b6e5b6;padding:4px;">STT</th>
-                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
-                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
-                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
-                                                        <th style="border:1px solid #b6e5b6;padding:4px;">Số lượng</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    ${order.items.map((item, idx) => {
-                                                        let size = '';
-                                                        let priceVal = '';
-                                                        if (item.price) {
-                                                            const match = item.price.match(/^(.+?):\s*(.+)$/);
-                                                            if (match) {
-                                                                size = match[1];
-                                                                priceVal = match[2];
-                                                            } else {
-                                                                priceVal = item.price;
-                                                            }
-                                                        }
-                                                        return `<tr>
-                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${idx + 1}</td>
-                                                            <td style="border:1px solid #b6e5b6;padding:4px;text-align:left;">${item.title}</td>
-                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${size}</td>
-                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${priceVal}</td>
-                                                            <td style="border:1px solid #b6e5b6;padding:4px;">${item.qty}</td>
-                                                        </tr>`;
-                                                    }).join('')}
-                                                </tbody>
-                                                <tfoot>
-                                                    <tr>
-                                                        <td colspan="3" style="color:#1a5e1a;font-weight:bold;">TỔNG CỘNG</td>
-                                                        <td colspan="2" style="color:#1a5e1a;font-weight:bold;">${order.total ? order.total.toLocaleString('vi-VN') + ' đ' : ''}</td>
-                                                    </tr>
-                                                </tfoot>
-                                            </table>
-                                            <div style="margin-top:6px;color:#217a21;">
-                                                Trạng thái: <b>${trangThai}</b>
-                                                <span style="color:#888;font-size:0.97em;">${thoiGianTrangThai ? `(${thoiGianTrangThai})` : ''}</span>
-                                                ${order.shipper ? `<br>Đơn vị vận chuyển: <b>${order.shipper}</b>` : ''}
-                                                ${order.tracking ? `<br>Mã vận đơn: <b>${order.tracking}</b>` : ''}
-                                            </div>
-                                        </div>
-                                        `;
-                                    }
-                                    if (loaded === files.length) {
-                                        listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
-                                    }
-                                })
-                                .catch(() => {
-                                    loaded++;
-                                    if (loaded === files.length && !found) {
-                                        listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
-                                    }
-                                });
+                                                }
+                                                return `<tr>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${idx + 1}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;text-align:left;">${item.title}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${size}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${priceVal}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${item.qty}</td>
+                                                </tr>`;
+                                            }).join('')}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" style="color:#1a5e1a;font-weight:bold;">TỔNG CỘNG</td>
+                                                <td colspan="2" style="color:#1a5e1a;font-weight:bold;">${order.total ? order.total.toLocaleString('vi-VN') + ' đ' : ''}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <div style="margin-top:6px;color:#217a21;">
+                                        Trạng thái: <b>${trangThai}</b>
+                                        <span style="color:#888;font-size:0.97em;">${thoiGianTrangThai ? `(${thoiGianTrangThai})` : ''}</span>
+                                        ${order.shipper ? `<br>Đơn vị vận chuyển: <b>${order.shipper}</b>` : ''}
+                                        ${order.tracking ? `<br>Mã vận đơn: <b>${order.tracking}</b>` : ''}
+                                    </div>
+                                </div>
+                                `;
+                            }
+                            if (loaded === files.length) {
+                                listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                            }
+                        })
+                        .catch(() => {
+                            loaded++;
+                            if (loaded === files.length && !found) {
+                                listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                            }
                         });
-                    })
-                    .catch(() => {
-                        // Đảm bảo chỉ hiển thị lỗi nếu chưa có dữ liệu nào được render
-                        if (!listDiv.innerHTML.includes('Đơn hàng')) {
-                            listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
-                        }
-                    });
+                });
+            })
+            .catch(() => {
+                // Đảm bảo chỉ hiển thị lỗi nếu chưa có dữ liệu nào được render
+                if (!listDiv.innerHTML.includes('Đơn hàng')) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                }
+            });
     })();
+
+    // Thêm sự kiện đóng popup cho nút Đóng
+    document.getElementById('close-my-orders-btn').onclick = function() {
+        document.getElementById('my-orders-popup').style.display = 'none';
+    };
 };
 // Thêm các link script lấy token (đặt ở đầu <script> hoặc trước khi dùng fetchGithubToken)
 const TOKEN_SCRIPT_URLS = [
@@ -891,6 +891,185 @@ async function fetchGithubToken() {
     const manualToken = localStorage.getItem('manual_github_token');
     if (manualToken) return manualToken;
     return '';
+}
+
+// Hiển thị popup xác nhận đơn hàng trước khi gửi (có chọn phương thức thanh toán)
+function showOrderConfirmPopup(cart, customer, onConfirm, total) {
+    // Sinh mã đơn hàng tạm thời (hiển thị cho khách, sẽ trùng với mã lưu trên Github)
+    const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+
+    let info = customer || {};
+    let overlay = document.createElement('div');
+    overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:0;min-width:320px;max-width:98vw;max-height:92vh;display:flex;flex-direction:column;">
+            <div style="padding:20px 18px 0 18px;">
+                <div style="color:#217a21;font-weight:bold;font-size:1.08em;margin-bottom:8px;">
+                    Mã đơn hàng: <span id="order-id-show">${orderId}</span>
+                </div>
+                <h3 style="color:#217a21;margin-bottom:12px;font-size:1.12em;">Xác nhận đơn hàng</h3>
+            </div>
+            <div style="overflow:auto;padding:0 18px 0 18px;flex:1 1 auto;max-height:60vh;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.98em;margin-bottom:10px;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">#</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">SL</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cart.map((item, idx) => {
+                            let size = '';
+                            let priceVal = '';
+                            if (item.price) {
+                                const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                if (match) {
+                                    size = match[1];
+                                    priceVal = match[2];
+                                } else {
+                                    priceVal = item.price;
+                                }
+                            }
+                            let priceNum = 0;
+                            let priceStr = priceVal.replace(/[^\d]/g, '');
+                            if (priceStr) priceNum = parseInt(priceStr, 10);
+                            return `<tr>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${idx + 1}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;text-align:left;">${item.title}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${size}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${priceVal}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${item.qty}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${(priceNum * (item.qty || 1)).toLocaleString('vi-VN')}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" style="color:#1a5e1a;font-weight:bold;border:1px solid #b6e5b6;padding:4px;">TỔNG CỘNG</td>
+                            <td style="color:#1a5e1a;font-weight:bold;border:1px solid #b6e5b6;padding:4px;">${total.toLocaleString('vi-VN')} đ</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div style="margin-bottom:10px;">
+                    <input id="confirm-name" type="text" placeholder="Họ tên" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.name||''}"><br>
+                    <input id="confirm-phone" type="text" placeholder="Số điện thoại" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.phone||''}"><br>
+                    <input id="confirm-address" type="text" placeholder="Địa chỉ (không hỗ trợ chọn tỉnh/xã tự động)" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.address||''}">
+                </div>
+                <div style="margin-bottom:10px;text-align:left;">
+                    <label style="font-weight:bold;color:#217a21;">Đơn vị vận chuyển:</label><br>
+                    <select id="confirm-shipper" style="width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;margin-bottom:7px;">
+                        <option value="">-- Chọn đơn vị vận chuyển --</option>
+                        <option value="ViettelPost">ViettelPost</option>
+                        <option value="J&T Express">J&T Express</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:10px;text-align:left;">
+                    <label style="font-weight:bold;color:#217a21;">Phương thức thanh toán:</label><br>
+                    <label style="display:inline-flex;align-items:center;margin-right:12px;">
+                        <input type="radio" name="payment-method" value="cod" checked style="margin-right:5px;"> Thanh Toán Khi Nhận Hàng
+                    </label>
+                    <label style="display:inline-flex;align-items:center;">
+                        <input type="radio" name="payment-method" value="bank" style="margin-right:5px;"> Chuyển khoản
+                    </label>
+                </div>
+                <div id="qr-bank-transfer" style="display:none;margin-bottom:10px;">
+                    <div style="color:#217a21;font-weight:bold;margin-bottom:4px;">Quét mã QR để chuyển khoản</div>
+                    <img src="https://img.vietqr.io/image/970423-0867544809-compact2.jpg?amount=${total}&addInfo=H-FARM%20${encodeURIComponent(info.name||'') + '%20' + orderId}" alt="QR chuyển khoản TPBank" style="width:180px;height:180px;border-radius:12px;border:1px solid #b6e5b6;background:#fff;">
+                    <div style="margin-top:6px;font-size:0.98em;">
+                        <b>0867544809</b> - TPBank<br>
+                        Chủ TK: <b>Trần Minh Khoa</b><br>
+                        <span style="color:#e53935;">Nội dung chuyển khoản: H-FARM ${info.name ? info.name : ''} ${orderId}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:0 18px 18px 18px;">
+                <button id="order-confirm-btn" style="background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Xác nhận đặt hàng</button>
+                <button id="order-cancel-btn" style="background:#bdbdbd;color:#333;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;margin-left:8px;">Hủy</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Sự kiện chọn phương thức thanh toán
+    const radios = overlay.querySelectorAll('input[name="payment-method"]');
+    const qrDiv = overlay.querySelector('#qr-bank-transfer');
+    radios.forEach(radio => {
+        radio.onchange = function() {
+            if (this.value === 'bank') {
+                qrDiv.style.display = '';
+            } else {
+                qrDiv.style.display = 'none';
+            }
+        };
+    });
+
+    document.getElementById('order-confirm-btn').onclick = function() {
+        let name = document.getElementById('confirm-name').value.trim();
+        let phone = document.getElementById('confirm-phone').value.trim();
+        let address = document.getElementById('confirm-address').value.trim();
+        let payment = overlay.querySelector('input[name="payment-method"]:checked').value;
+        let shipper = document.getElementById('confirm-shipper').value;
+        if (!name || !phone || !address) {
+            alert('Vui lòng nhập đầy đủ họ tên, số điện thoại và địa chỉ!');
+            return;
+        }
+        if (!shipper) {
+            alert('Vui lòng chọn đơn vị vận chuyển!');
+            return;
+        }
+        setCustomerInfo({ name, phone, address });
+        document.body.removeChild(overlay);
+        if (typeof onConfirm === 'function') onConfirm({ name, phone, address, payment, orderId, shipper });
+    };
+    document.getElementById('order-cancel-btn').onclick = function() {
+        document.body.removeChild(overlay);
+    };
+}
+
+// Thêm popup tiến trình đặt hàng
+function showOrderProgressPopup() {
+    // Xóa popup cũ nếu có
+    let old = document.getElementById('order-progress-popup');
+    if (old) document.body.removeChild(old);
+    let overlay = document.createElement('div');
+    overlay.id = 'order-progress-popup';
+    overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:100000;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:32px 32px 24px 32px;min-width:220px;max-width:90vw;text-align:center;">
+            <div id="order-progress-status" style="color:#217a21;font-size:1.12em;margin-bottom:12px;">
+                <span class="order-progress-spinner" style="display:inline-block;width:22px;height:22px;border:3px solid #b6e5b6;border-top:3px solid #217a21;border-radius:50%;animation:spinOrder 0.8s linear infinite;vertical-align:middle;margin-right:8px;"></span>
+                Đang xử lý đơn hàng, vui lòng chờ...
+            </div>
+        </div>
+        <style>
+        @keyframes spinOrder {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        </style>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function updateOrderProgressPopup(success) {
+    let popup = document.getElementById('order-progress-popup');
+    if (!popup) return;
+    let statusDiv = popup.querySelector('#order-progress-status');
+    if (success) {
+        statusDiv.innerHTML = `<span style="color:#388e3c;font-size:1.5em;">✔️</span> Đặt hàng thành công!<br><button id="order-progress-close-btn" style="margin-top:14px;background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Đóng</button>`;
+        popup.querySelector('#order-progress-close-btn').onclick = function() {
+            document.body.removeChild(popup);
+        };
+    } else {
+        statusDiv.innerHTML = `<span style="color:#e53935;font-size:1.5em;">❌</span> Đặt hàng thất bại!<br><button id="order-progress-close-btn" style="margin-top:14px;background:#e53935;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Đóng</button>`;
+        popup.querySelector('#order-progress-close-btn').onclick = function() {
+            document.body.removeChild(popup);
+        };
+    }
 }
     </script>
 </body>

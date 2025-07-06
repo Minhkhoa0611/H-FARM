@@ -341,6 +341,12 @@
                     <div class="customer-info">
                         ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
                     </div>
+                    <div style="margin-bottom:8px;">
+                        <b style="color:#217a21;">Phương thức thanh toán:</b>
+                        <span style="color:#1a5e1a;font-weight:bold;">
+                            ${order.payment === 'bank' ? 'Chuyển khoản' : (order.payment === 'cod' ? 'Thanh toán khi nhận hàng' : (order.payment || ''))}
+                        </span>
+                    </div>
                     <div style="margin-bottom:10px;">
                         <label style="font-weight:bold;color:#217a21;">Trạng thái đơn: </label>
                         <select data-order-id="${orderId}" class="order-status-select" style="padding:4px 8px;border-radius:5px;">
