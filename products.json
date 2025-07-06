@@ -218,5 +218,25 @@
         "price": "320.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG NGÂM TIM SEN H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtimsen.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/matongngamtimsen_image1.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "130.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "260.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "390.000 VNĐ"
+      }
+    ]
   }
 ]
