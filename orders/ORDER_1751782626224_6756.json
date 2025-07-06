@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "DU_M_NGUYN_CHT_HFARM_0",
+      "title": "DẦU MÈ NGUYÊN CHẤT H’FARM",
+      "price": "400.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 400000,
+  "created": "2025-07-06T06:16:58.632Z"
+}

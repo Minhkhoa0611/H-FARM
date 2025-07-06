@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "DU_PHNG_P_NGUYN_CHT_HFARM_1",
+      "title": "DẦU PHỘNG ÉP NGUYÊN CHẤT H'FARM",
+      "price": "180.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 180000,
+  "created": "2025-07-06T06:19:22.307Z"
+}

@@ -1,0 +1,18 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Ninh Hòa"
+  },
+  "items": [
+    {
+      "id": "MNG_RNG_NGM_T_HFARM_2",
+      "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+      "price": "70.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 70000,
+  "created": "2025-07-06T06:30:09.885Z",
+  "deviceId": "dev_ua9h36amhf_1751782528649"
+}

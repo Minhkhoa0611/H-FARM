@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "Khoa",
+    "phone": "0867544809",
+    "address": "Ninh hoat"
+  },
+  "items": [
+    {
+      "id": "MNG_RNG_NGM_T_HFARM_2",
+      "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+      "price": "135.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 135000,
+  "created": "2025-07-06T05:26:27.966Z"
+}

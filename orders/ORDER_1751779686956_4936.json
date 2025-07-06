@@ -1,0 +1,17 @@
+{
+  "customer": {
+    "name": "G",
+    "phone": "0867544809",
+    "address": "Ninh hoat"
+  },
+  "items": [
+    {
+      "id": "DU_M_NGUYN_CHT_HFARM_0",
+      "title": "DẦU MÈ NGUYÊN CHẤT H’FARM",
+      "price": "400.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 400000,
+  "created": "2025-07-06T05:28:01.685Z"
+}
