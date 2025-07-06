@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "Trần Minh Khoa",
+    "phone": "0867544809",
+    "address": "Thôn Bình Trị, xã Tân Định Tính Khánh Hòa"
+  },
+  "payment": "cod",
+  "shipper": "ViettelPost",
+  "items": [
+    {
+      "id": "MNG_RNG_NGM_T_HFARM_2",
+      "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+      "price": "70.000 VNĐ",
+      "qty": 1000
+    }
+  ],
+  "total": 70000000,
+  "created": "2025-07-06T06:57:51.634Z",
+  "orderId": "ORDER_1751785051664_7736",
+  "deviceId": "dev_ua9h36amhf_1751782528649"
+}
