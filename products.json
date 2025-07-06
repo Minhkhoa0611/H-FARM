@@ -82,5 +82,21 @@
         "price": "400.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/mangrungngamot.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751775989466_2303.jpeg",
+    "prices": [
+      {
+        "size": "Hủ nhỏ 800ml",
+        "price": "70.000 VNĐ"
+      },
+      {
+        "size": "Hủ lớn 1.6 lít",
+        "price": "135.000 VNĐ"
+      }
+    ]
   }
 ]
