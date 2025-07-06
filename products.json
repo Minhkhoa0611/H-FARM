@@ -198,5 +198,25 @@
         "price": "333.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG NGÂM TỎI H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamtoi.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751777563071_3567.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "90.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "190.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "320.000 VNĐ"
+      }
+    ]
   }
 ]
