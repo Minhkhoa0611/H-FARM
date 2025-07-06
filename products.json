@@ -170,5 +170,17 @@
         "price": "135.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "NẤM LINH CHI RỪNG QUẢNG NAM  H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/namlinhchirungquangnam.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/namlinhchirungquangnam_image1.jpeg",
+    "prices": [
+      {
+        "size": "1kg",
+        "price": "1.200.000 VNĐ"
+      }
+    ]
   }
 ]
