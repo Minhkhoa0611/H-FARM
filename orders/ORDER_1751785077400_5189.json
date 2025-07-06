@@ -24,9 +24,15 @@
       "shipper": "ViettelPost",
       "tracking": "123321123",
       "updated": "2025-07-06T06:58:45.509Z"
+    },
+    {
+      "status": "Đã hoàn thành",
+      "shipper": "ViettelPost",
+      "tracking": "123321123",
+      "updated": "2025-07-06T07:06:20.603Z"
     }
   ],
-  "status": "Đã giao đơn cho đơn vị vận chuyển",
+  "status": "Đã hoàn thành",
   "tracking": "123321123",
-  "status_updated": "2025-07-06T06:58:45.510Z"
+  "status_updated": "2025-07-06T07:06:20.603Z"
 }
