@@ -298,5 +298,25 @@
         "price": "350.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "MẬT ONG RỪNG NGÂM HOA ĐU ĐỦ ĐỰC H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/matongngamhoadududuc.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751778146192_2782.jpeg",
+    "prices": [
+      {
+        "size": "Chai 100ml",
+        "price": "100.000 VNĐ"
+      },
+      {
+        "size": "Chai 200ml",
+        "price": "200.000 VNĐ"
+      },
+      {
+        "size": "Chai 350ml",
+        "price": "350.000 VNĐ"
+      }
+    ]
   }
 ]
