@@ -66,5 +66,21 @@
         "price": "30.000 VNĐ"
       }
     ]
+  },
+  {
+    "title": "🌼 HOA ĐU ĐỦ ĐỰC KHÔ – H’FARM",
+    "link": "https://minhkhoa0611.github.io/H-FARM/posts/hoadududuchfarm.html",
+    "note": "",
+    "image": "https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/posts/images/img_1751775704856_5785.jpeg",
+    "prices": [
+      {
+        "size": "500g",
+        "price": "200.000 VNĐ"
+      },
+      {
+        "size": "1kg",
+        "price": "400.000 VNĐ"
+      }
+    ]
   }
 ]
