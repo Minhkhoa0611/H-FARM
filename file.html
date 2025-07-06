@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lấy danh sách file HTML</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 30px auto; padding: 20px; line-height: 1.6; }
+    input, button, textarea { width: 100%; padding: 10px; margin-top: 10px; font-size: 16px; }
+    button { cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>🗂️ Lấy danh sách file HTML từ GitHub</h2>
+  <!-- Ẩn ô nhập URL -->
+  <input type="text" id="url" style="display:none" value="https://github.com/Minhkhoa0611/H-FARM/tree/main/posts">
+  <!-- Ẩn nút lấy danh sách -->
+  <button onclick="fetchFiles()" style="display:none">Lấy danh sách</button>
+  <textarea id="output" rows="15" placeholder="Kết quả sẽ hiển thị ở đây..."></textarea>
+  <div id="edit-links"></div>
+
+  <script>
+    // Tự động lấy danh sách khi tải trang
+    window.onload = function() {
+      fetchFiles();
+    };
+
+    async function fetchFiles() {
+      const url = "https://github.com/Minhkhoa0611/H-FARM/tree/main/posts";
+      const output = document.getElementById("output");
+      const editLinksDiv = document.getElementById("edit-links");
+      output.value = "Đang lấy dữ liệu...";
+      editLinksDiv.innerHTML = "";
+
+      // Parse GitHub folder URL
+      const regex = /^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/tree\/([^\/]+)\/(.+)$/;
+      const match = url.match(regex);
+      if (!match) {
+        output.value = "URL không hợp lệ. Hãy nhập đúng định dạng.";
+        return;
+      }
+      const [, owner, repo, branch, path] = match;
+
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`;
+
+      try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) {
+          output.value = "Không thể lấy dữ liệu từ GitHub API.";
+          return;
+        }
+        const data = await res.json();
+        const filenames = data
+          .filter(item => item.type === "file" && item.name.endsWith(".html"))
+          .map(item => item.name.replace(/\.html$/, ''));
+        output.value = filenames.length > 0 ? filenames.join('\n') : "Không tìm thấy file .html nào.";
+
+        // Hiển thị link edit
+        if (filenames.length > 0) {
+          editLinksDiv.innerHTML = "<b>Mở trang chỉnh sửa:</b><br>" +
+            filenames.map(name =>
+              `<a href="https://github.com/${owner}/${repo}/edit/${branch}/${path}/${name}.html" target="_blank">${name}.html</a>`
+            ).join("<br>");
+        }
+      } catch (err) {
+        output.value = "Lỗi khi tải dữ liệu: " + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
