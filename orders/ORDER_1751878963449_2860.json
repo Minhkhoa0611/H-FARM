@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "trần minh khoa",
+    "phone": "0867544809",
+    "address": "Thôn Bình Trị, xã Tân Định Tính Khánh Hòa"
+  },
+  "payment": "cod",
+  "shipper": "J&T Express",
+  "items": [
+    {
+      "id": "MNG_RNG_NGM_T_HFARM_2",
+      "title": "MĂNG RỪNG NGÂM ỚT H'FARM",
+      "price": "70.000 VNĐ",
+      "qty": 2
+    }
+  ],
+  "total": 140000,
+  "created": "2025-07-07T09:02:40.420Z",
+  "orderId": "ORDER_1751878952256_287",
+  "deviceId": "dev_wx7thpgddme_1751786114100"
+}
