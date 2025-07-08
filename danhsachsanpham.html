@@ -1175,22 +1175,33 @@ function updateOrderProgressPopup(success) {
         };
     }
 }
-// PWA install prompt logic
+// PWA install prompt logic: luôn hiển thị nút, xử lý cho Android/iOS
 let deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+});
 const pwaBtn = document.getElementById('pwa-install-btn');
 if (pwaBtn) {
-    pwaBtn.style.display = 'none';
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        pwaBtn.style.display = '';
-    });
+    pwaBtn.style.display = ''; // luôn hiển thị
+
     pwaBtn.addEventListener('click', async () => {
+        // Kiểm tra nếu là iOS
+        const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+        const isInStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+        if (isIOS && !isInStandalone) {
+            // Hiện popup hướng dẫn thêm vào MH chính
+            showIOSInstallGuide();
+            return;
+        }
+        // Android/Chrome
         if (deferredPrompt) {
             deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
+            await deferredPrompt.userChoice;
             deferredPrompt = null;
-            pwaBtn.style.display = 'none';
+        } else {
+            // Nếu không có prompt, hướng dẫn thủ công
+            alert('Nếu trình duyệt không hiện cửa sổ cài đặt, hãy dùng menu trình duyệt để "Thêm vào màn hình chính".');
         }
     });
     // Nếu đã cài app thì ẩn nút
@@ -1198,6 +1209,29 @@ if (pwaBtn) {
         pwaBtn.style.display = 'none';
     });
 }
+
+// Hướng dẫn iOS popup
+function showIOSInstallGuide() {
+    // Xóa popup cũ nếu có
+    let old = document.getElementById('ios-install-guide');
+    if (old) document.body.removeChild(old);
+    let overlay = document.createElement('div');
+    overlay.id = 'ios-install-guide';
+    overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:100000;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:28px 22px 18px 22px;min-width:260px;max-width:90vw;text-align:center;">
+            <div style="font-size:1.25em;color:#217a21;margin-bottom:10px;">Thêm ứng dụng vào màn hình chính</div>
+            <div style="font-size:1em;color:#333;margin-bottom:12px;">
+                <b>Bước 1:</b> Nhấn vào biểu tượng <img src="https://upload.wikimedia.org/wikipedia/commons/5/5f/IOS_Share_icon.png" style="height:22px;vertical-align:middle;margin:0 2px;"> ở dưới trình duyệt Safari.<br>
+                <b>Bước 2:</b> Chọn <b>"Thêm vào MH chính"</b> (<i>Add to Home Screen</i>).<br>
+                <b>Bước 3:</b> Xác nhận "Thêm".
+            </div>
+            <button onclick="document.body.removeChild(this.parentNode.parentNode)" style="background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Đóng</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
 // Đăng ký service worker nếu hỗ trợ
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
