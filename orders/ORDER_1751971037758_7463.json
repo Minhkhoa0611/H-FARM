@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "Trần Minh Khoa",
+    "phone": "0867544809",
+    "address": "Thôn Bình Trị, xã Tân Định Tính Khánh Hòa"
+  },
+  "payment": "bank",
+  "shipper": "J&T Express",
+  "items": [
+    {
+      "id": "MCH_NHA_THIN_BT__C_SN_TRUYN_THNG_QUNG_NAM_3",
+      "title": "MẠCH NHA THIÊN BÚT – ĐẶC SẢN TRUYỀN THỐNG QUẢNG NAM",
+      "price": "30.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 30000,
+  "created": "2025-07-08T10:37:15.192Z",
+  "orderId": "ORDER_1751971025609_3651",
+  "deviceId": "dev_ua9h36amhf_1751782528649"
+}
