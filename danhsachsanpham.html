@@ -28,8 +28,8 @@
         }
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 50px 30px; /* 38px giữa các hàng, 22px giữa các cột */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 50px 30px;
             margin: 25px 0;
         }
         .product-card {
@@ -195,24 +195,30 @@
             cursor: pointer;
         }
         /* Responsive styles */
+        @media (max-width: 1200px) {
+            .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
         @media (max-width: 900px) {
             .product-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
                 gap: 32px 14px; /* tăng khoảng cách hàng trên mobile/tablet */
             }
             .container {
                 max-width: 99vw;
             }
         }
-        @media (max-width: 600px) {
-            nav > div, nav > div > div {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 6px !important;
+        @media (max-width: 700px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 22px 8px;
             }
+        }
+        @media (max-width: 480px) {
             .product-grid {
                 grid-template-columns: 1fr;
-                gap: 22px;
+                gap: 18px;
             }
             .product-card {
                 padding: 12px 7px 12px 7px;
@@ -257,39 +263,128 @@
             color: #2d7a2d;
             letter-spacing: 1px;
         }
+        /* --- NAV RESPONSIVE --- */
+        @media (max-width: 900px) {
+            nav {
+                padding: 7px 0 6px 0 !important;
+            }
+            nav > div {
+                max-width: 99vw !important;
+                gap: 6px !important;
+            }
+            nav a, nav button#view-my-orders-btn {
+                font-size: 0.98em !important;
+                padding: 5px 10px !important;
+            }
+        }
+        @media (max-width: 700px) {
+            nav {
+                padding: 4px 0 3px 0 !important;
+            }
+            nav > div {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 4px !important;
+            }
+            nav > div > div {
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+            }
+            nav a, nav button#view-my-orders-btn {
+                font-size: 0.93em !important;
+                padding: 4px 7px !important;
+                margin-bottom: 2px !important;
+            }
+            #cart-count {
+                font-size: 0.85em !important;
+                padding: 1px 5px !important;
+                top: 1px !important;
+                right: 1px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            nav {
+                padding: 2px 0 2px 0 !important;
+            }
+            nav a, nav button#view-my-orders-btn {
+                font-size: 0.89em !important;
+                padding: 3px 4px !important;
+            }
+        }
     </style>
 
 </head>
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
-        <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
-            <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                DANH MỤC SẢN PHẨM
-            </a>
-            <div style="max-width:900px;margin:0 auto;display:flex;align-items:center;justify-content:flex-end;gap:12px;">
-                <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    TẠO SẢN PHẨM
+        <div style="max-width:950px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+            <!-- Logo bên trái -->
+            <div style="display:flex;align-items:center;gap:8px;">
+                <img src="image.png" alt="H'FARM Logo" style="height:38px;width:auto;border-radius:8px;box-shadow:0 1px 4px #b6e5b6;">
+                <span style="font-weight:bold;color:#217a21;font-size:1.18em;letter-spacing:1px;">H'FARM</span>
+            </div>
+            <!-- Menu bên phải -->
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#d6f5d6;">
+                    DANH MỤC SẢN PHẨM
                 </a>
-                <a href="taodanhmuc.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    TẠO DANH MỤC
-                </a>
-                <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    QR SCANNER
-                </a>
-                <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
-                   style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    CANVA THIẾT KẾ
-                </a>
-                <!-- Nút xem đơn đã đặt và icon giỏ hàng -->
-                <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;">
+
+                <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;transition:background 0.2s;border-radius:6px;">
                     <span style="font-size:1.35em;vertical-align:middle;">🚚</span>
                     <span style="color:#217a21;font-weight:bold;font-size:1.08em;">Đơn của tôi</span>
                 </button>
-                <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#c6eec6;">
                     🛒 <span id="cart-count" style="background:#2d7a2d;color:#fff;border-radius:50%;padding:2px 7px;font-size:0.9em;position:absolute;top:2px;right:2px;">0</span>
+                </a>
+                <!-- Liên hệ Zalo -->
+                <a href="https://zalo.me/0867544809" target="_blank" style="display:flex;align-items:center;gap:4px;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 14px;border-radius:6px;transition:background 0.2s;background:#e0f7fa;">
+                    <img src="https://stc-zaloprofile.zdn.vn/pc/v1/images/zalo_sharelogo.png" alt="Zalo" style="height:22px;width:22px;border-radius:4px;">
+                    Zalo
                 </a>
             </div>
         </div>
+        <style>
+            nav a, nav button#view-my-orders-btn {
+                transition: background 0.18s, color 0.18s;
+            }
+            nav a:hover, nav button#view-my-orders-btn:hover {
+                background: #b6e5b6 !important;
+                color: #145214 !important;
+            }
+            nav a:active, nav button#view-my-orders-btn:active {
+                background: #a0dca0 !important;
+            }
+            @media (max-width: 900px) {
+                nav > div {
+                    flex-wrap: wrap !important;
+                    gap: 6px !important;
+                    justify-content: center !important;
+                }
+            }
+            @media (max-width: 700px) {
+                nav > div {
+                    flex-direction: column !important;
+                    align-items: stretch !important;
+                    gap: 4px !important;
+                }
+                nav a, nav button#view-my-orders-btn {
+                    font-size: 0.93em !important;
+                    padding: 4px 7px !important;
+                    margin-bottom: 2px !important;
+                }
+                #cart-count {
+                    font-size: 0.85em !important;
+                    padding: 1px 5px !important;
+                    top: 1px !important;
+                    right: 1px !important;
+                }
+            }
+            @media (max-width: 480px) {
+                nav a, nav button#view-my-orders-btn {
+                    font-size: 0.89em !important;
+                    padding: 3px 4px !important;
+                }
+            }
+        </style>
     </nav>
     <!-- Cart Popup -->
     <div id="cart-popup" style="display:none;position:fixed;top:70px;right:20px;z-index:9999;background:#fff;border-radius:10px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:18px 18px 10px 18px;min-width:270px;max-width:90vw;">
