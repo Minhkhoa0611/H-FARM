@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Danh Sách Sản Phẩm</title>
-    <link rel="icon" type="image/x-icon" href="image.png">
-    <link rel="manifest" href="manifest.json">
+       <link rel="icon" type="image/x-icon" href="image.png">
+
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
         body {
@@ -263,69 +263,30 @@
             color: #2d7a2d;
             letter-spacing: 1px;
         }
-        /* --- NAV RESPONSIVE --- */
-        @media (max-width: 900px) {
-            nav {
-                padding: 7px 0 6px 0 !important;
-            }
-            nav > div {
-                max-width: 99vw !important;
-                gap: 6px !important;
-            }
-            nav a, nav button#view-my-orders-btn {
-                font-size: 0.98em !important;
-                padding: 5px 10px !important;
-            }
-        }
-        @media (max-width: 700px) {
-            nav {
-                padding: 4px 0 3px 0 !important;
-            }
-            nav > div {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 4px !important;
-            }
-            nav > div > div {
-                justify-content: center !important;
-                flex-wrap: wrap !important;
-            }
-            nav a, nav button#view-my-orders-btn {
-                font-size: 0.93em !important;
-                padding: 4px 7px !important;
-                margin-bottom: 2px !important;
-            }
-            #cart-count {
-                font-size: 0.85em !important;
-                padding: 1px 5px !important;
-                top: 1px !important;
-                right: 1px !important;
-            }
-        }
-        @media (max-width: 480px) {
-            nav {
-                padding: 2px 0 2px 0 !important;
-            }
-            nav a, nav button#view-my-orders-btn {
-                font-size: 0.89em !important;
-                padding: 3px 4px !important;
-            }
-        }
     </style>
 
 </head>
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
         <div style="max-width:950px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <!-- Logo bên trái -->
-            <div style="display:flex;align-items:center;gap:8px;">
-                <img src="image.png" alt="H'FARM Logo" style="height:38px;width:auto;border-radius:8px;box-shadow:0 1px 4px #b6e5b6;">
-                <span style="font-weight:bold;color:#217a21;font-size:1.18em;letter-spacing:1px;">H'FARM</span>
-            </div>
-            <!-- Menu bên phải -->
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div style="display:flex;align-items:center;gap:10px;">
                 <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#d6f5d6;">
                     DANH MỤC SẢN PHẨM
+                </a>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    TẠO SẢN PHẨM
+                </a>
+                <a href="taodanhmuc.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    TẠO DANH MỤC
+                </a>
+                <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    QR SCANNER
+                </a>
+                <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
+                   style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
+                    CANVA THIẾT KẾ
                 </a>
                 <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;transition:background 0.2s;border-radius:6px;">
                     <span style="font-size:1.35em;vertical-align:middle;">🚚</span>
@@ -334,12 +295,6 @@
                 <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#c6eec6;">
                     🛒 <span id="cart-count" style="background:#2d7a2d;color:#fff;border-radius:50%;padding:2px 7px;font-size:0.9em;position:absolute;top:2px;right:2px;">0</span>
                 </a>
-                <!-- Liên hệ Zalo -->
-                <a href="https://zalo.me/0867544809" target="_blank" style="display:flex;align-items:center;gap:4px;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 14px;border-radius:6px;transition:background 0.2s;background:#e0f7fa;">
-                    <img src="https://stc-zaloprofile.zdn.vn/pc/v1/images/zalo_sharelogo.png" alt="Zalo" style="height:22px;width:22px;border-radius:4px;">
-                    Zalo
-                </a>
-                <!-- Bỏ nút tải app PWA -->
             </div>
         </div>
         <style>
@@ -353,38 +308,15 @@
             nav a:active, nav button#view-my-orders-btn:active {
                 background: #a0dca0 !important;
             }
-            @media (max-width: 900px) {
-                nav > div {
-                    flex-wrap: wrap !important;
-                    gap: 6px !important;
-                    justify-content: center !important;
-                }
-            }
             @media (max-width: 700px) {
                 nav > div {
-                    flex-direction: column !important;
-                    align-items: stretch !important;
-                    gap: 4px !important;
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 8px;
                 }
-                nav a, nav button#view-my-orders-btn {
-                    font-size: 0.93em !important;
-                    padding: 4px 7px !important;
-                    margin-bottom: 2px !important;
-                }
-                #cart-count {
-                    font-size: 0.85em !important;
-                    padding: 1px 5px !important;
-                    top: 1px !important;
-                    right: 1px !important;
-                }
-            }
-            @media (max-width: 480px) {
-                nav {
-                    padding: 2px 0 2px 0 !important;
-                }
-                nav a, nav button#view-my-orders-btn {
-                    font-size: 0.89em !important;
-                    padding: 3px 4px !important;
+                nav > div > div {
+                    justify-content: center;
+                    flex-wrap: wrap;
                 }
             }
         </style>
@@ -396,16 +328,7 @@
         <button id="close-cart" style="margin-top:10px;background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;">Đóng</button>
     </div>
     <div class="container">
-        <!-- Khung header sản phẩm gồm logo, tìm kiếm, tiêu đề -->
-        <div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px #b6e5b6;padding:18px 12px 18px 12px;max-width:700px;margin:0 auto 24px auto;display:flex;flex-direction:column;align-items:center;">
-            <img src="logo.jpg" alt="H'FARM Logo" style="width:100%;max-width:100%;height:auto;display:block;margin:0 auto 12px auto;border-radius:12px;box-shadow:0 1px 8px #b6e5b6;">
-            <div style="width:100%;display:flex;justify-content:center;align-items:center;margin-bottom:14px;position:relative;">
-                <input id="product-search-input" type="text" placeholder="🔍 Tìm kiếm sản phẩm..." autocomplete="off"
-                    style="width:100%;max-width:420px;padding:10px 14px;border-radius:8px;border:1.5px solid #b6e5b6;font-size:1.08em;outline:none;box-sizing:border-box;">
-                <div id="search-suggestions" style="position:absolute;top:110%;left:0;right:0;z-index:100;background:#fff;border-radius:0 0 8px 8px;box-shadow:0 2px 12px #b6e5b633;max-width:420px;margin:0 auto;display:none;"></div>
-            </div>
-            <h1 style="margin:0 0 0 0;">Danh Sách Sản Phẩm</h1>
-        </div>
+        <h1>Danh Sách Sản Phẩm</h1>
         <div id="product-list">
             <div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải dữ liệu...</div>
         </div>
@@ -646,10 +569,6 @@
         updateCartCount();
         // --- END CART LOGIC ---
 
-        let allProducts = [];
-        let lastSearch = '';
-        let lastSearchResults = [];
-
         fetch('https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/products.json')
             .then(res => res.json())
             .then(data => {
@@ -662,8 +581,45 @@
                     if (ta > tb) return 1;
                     return 0;
                 });
-                allProducts = data;
-                renderProductList('');
+                // Tạo HTML
+                let html = '<div class="product-grid">';
+                data.forEach((prod, idx) => {
+                    const prodId = prod.id || (prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                    const safeImage = prod.image ? prod.image : '';
+                    const safeLink = prod.link ? prod.link : '';
+                    const safeTitle = prod.title ? prod.title : '';
+                    let priceHtml = '';
+                    if (Array.isArray(prod.prices) && prod.prices.length) {
+                        priceHtml = `<div class="product-price-list">` +
+                            prod.prices.map(p =>
+                                `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
+                            ).join('') +
+                            `</div>`;
+                    }
+                    html += `
+                        <div class="product-card">
+                            ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
+                            <div class="product-card-content">
+                                <div class="product-title">${safeTitle}</div>
+                                ${priceHtml}
+                                ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
+                                <a class="product-detail-link" href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
+                                <button class="add-to-cart-btn"
+                                    data-id="${prodId}"
+                                    data-title="${encodeURIComponent(safeTitle)}"
+                                    data-image="${encodeURIComponent(safeImage)}"
+                                    data-link="${encodeURIComponent(safeLink)}"
+                                    data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
+                                    style="background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
+                                    Thêm vào giỏ
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                document.getElementById('product-list').innerHTML = html;
+
                 // Gán sự kiện cho nút Thêm vào giỏ
                 document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -717,117 +673,436 @@
             .catch(() => {
                 document.getElementById('product-list').innerHTML = '<div style="color:#e53935;text-align:center;">Không tải được dữ liệu sản phẩm!</div>';
             });
+        // Thông tin khách hàng lưu localStorage
+        function getCustomerInfo() {
+            return JSON.parse(localStorage.getItem('hfarm_customer_info') || 'null');
+        }
+        function setCustomerInfo(info) {
+            localStorage.setItem('hfarm_customer_info', JSON.stringify(info));
+        }
 
-        // --- Tìm kiếm sản phẩm ---
-        const searchInput = document.getElementById('product-search-input');
-        const suggestionBox = document.getElementById('search-suggestions');
-        searchInput.addEventListener('input', function() {
-            const keyword = this.value.trim().toLowerCase();
-            if (!keyword) {
-                suggestionBox.style.display = 'none';
-                renderProductList('');
+        // Hiển thị popup nhập thông tin khách hàng nếu chưa có
+        function showCustomerInfoPopup(onSubmit) {
+            let info = getCustomerInfo() || {};
+            let overlay = document.createElement('div');
+            overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:999999;display:flex;align-items:center;justify-content:center;';
+            overlay.innerHTML = `
+                <div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:28px 24px 18px 24px;min-width:260px;max-width:90vw;text-align:center;">
+                    <h3 style="color:#217a21;margin-bottom:18px;font-size:1.15em;">Nhập thông tin đặt hàng</h3>
+                    <input id="cus-name" type="text" placeholder="Họ tên" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.name||''}"><br>
+                    <input id="cus-phone" type="text" placeholder="Số điện thoại" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.phone||''}"><br>
+                    <input id="cus-address" type="text" placeholder="Địa chỉ" style="margin-bottom:10px;width:90%;padding:8px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.address||''}"><br>
+                    <button id="cus-ok-btn" style="background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Lưu & Tiếp tục</button>
+                    <button id="cus-cancel-btn" style="background:#bdbdbd;color:#333;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;margin-left:8px;">Hủy</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            document.getElementById('cus-ok-btn').onclick = function() {
+                let name = document.getElementById('cus-name').value.trim();
+                let phone = document.getElementById('cus-phone').value.trim();
+                let address = document.getElementById('cus-address').value.trim();
+                if (!name || !phone) {
+                    alert('Vui lòng nhập đầy đủ họ tên và số điện thoại!');
+                    return;
+                }
+                setCustomerInfo({ name, phone, address });
+                document.body.removeChild(overlay);
+                if (typeof onSubmit === 'function') onSubmit();
+            };
+            document.getElementById('cus-cancel-btn').onclick = function() {
+                document.body.removeChild(overlay);
+            };
+        }
+
+        // Tạo hoặc lấy deviceId duy nhất cho thiết bị
+function getDeviceId() {
+    let id = localStorage.getItem('hfarm_device_id');
+    if (!id) {
+        id = 'dev_' + Math.random().toString(36).substr(2, 12) + '_' + Date.now();
+        localStorage.setItem('hfarm_device_id', id);
+    }
+    return id;
+}
+
+// Lưu đơn hàng lên Github
+function saveOrderToGithub(order, callback) {
+    // Thêm deviceId vào order (nếu chưa có)
+    order.deviceId = getDeviceId();
+    // Lấy token từ Google Apps Script
+    fetch('https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec')
+        .then(res => res.text())
+        .then(text => {
+            let token = '';
+            const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+            if (match) token = match[1];
+            if (!token) {
+                alert('Không lấy được token Github để lưu đơn!');
+                if (callback) callback(false);
                 return;
             }
-            // Gợi ý autocomplete
-            const suggestions = allProducts
-                .filter(p => (p.title || '').toLowerCase().includes(keyword))
-                .slice(0, 8);
-            if (suggestions.length) {
-                suggestionBox.innerHTML = suggestions.map(p =>
-                    `<div class="search-suggestion-item" style="padding:8px 14px;cursor:pointer;border-bottom:1px solid #f2f8f2;" data-title="${p.title.replace(/"/g,'&quot;')}">${p.title}</div>`
-                ).join('');
-                suggestionBox.style.display = '';
-            } else {
-                suggestionBox.innerHTML = '<div style="padding:8px 14px;color:#888;">Không tìm thấy sản phẩm</div>';
-                suggestionBox.style.display = '';
-            }
-            // Hiển thị sản phẩm khớp lên đầu
-            renderProductList(keyword);
-        });
-        // Ẩn gợi ý khi blur (trễ để click chọn)
-        searchInput.addEventListener('blur', function() {
-            setTimeout(()=>{ suggestionBox.style.display = 'none'; }, 180);
-        });
-        // Chọn gợi ý
-        suggestionBox.addEventListener('mousedown', function(e) {
-            if (e.target.classList.contains('search-suggestion-item')) {
-                searchInput.value = e.target.getAttribute('data-title');
-                suggestionBox.style.display = 'none';
-                renderProductList(searchInput.value.trim().toLowerCase());
-            }
-        });
-
-        // Hàm render danh sách sản phẩm theo từ khóa
-        function renderProductList(keyword) {
-            let data = allProducts.slice();
-            let matched = [], others = [];
-            if (keyword) {
-                data.forEach(prod => {
-                    if ((prod.title || '').toLowerCase().includes(keyword)) matched.push(prod);
-                    else others.push(prod);
-                });
-                data = matched.concat(others);
-            }
-            let html = '<div class="product-grid">';
-            data.forEach((prod, idx) => {
-                const prodId = prod.id || (prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                const safeImage = prod.image ? prod.image : '';
-                const safeLink = prod.link ? prod.link : '';
-                const safeTitle = prod.title ? prod.title : '';
-                let priceHtml = '';
-                if (Array.isArray(prod.prices) && prod.prices.length) {
-                    priceHtml = `<div class="product-price-list">` +
-                        prod.prices.map(p =>
-                            `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
-                        ).join('') +
-                        `</div>`;
+            const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+            const githubPath = `orders/${orderId}.json`;
+            const body = {
+                message: `Add order ${orderId}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(order, null, 2)))),
+                branch: "main"
+            };
+            fetch(`https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/${githubPath}`, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            .then(r => r.json())
+            .then(resp => {
+                if (resp.content && resp.content.download_url) {
+                    // Lưu orderId vào localStorage để debug/truy vết nếu cần
+                    let myOrderIds = JSON.parse(localStorage.getItem('hfarm_my_order_ids') || '[]');
+                    myOrderIds.push(orderId);
+                    localStorage.setItem('hfarm_my_order_ids', JSON.stringify(myOrderIds));
+                    if (callback) callback(true, orderId);
+                } else {
+                    alert('Lưu đơn hàng thất bại!');
+                    if (callback) callback(false);
                 }
-                html += `
-                    <div class="product-card">
-                        ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
-                        <div class="product-card-content">
-                            <div class="product-title">${safeTitle}</div>
-                            ${priceHtml}
-                            ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
-                            <a class="product-detail-link" href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
-                            <button class="add-to-cart-btn"
-                                data-id="${prodId}"
-                                data-title="${encodeURIComponent(safeTitle)}"
-                                data-image="${encodeURIComponent(safeImage)}"
-                                data-link="${encodeURIComponent(safeLink)}"
-                                data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
-                                style="background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
-                                Thêm vào giỏ
-                            </button>
-                        </div>
-                    </div>
-                `;
+            })
+            .catch(() => {
+                alert('Lỗi khi lưu đơn hàng!');
+                if (callback) callback(false);
             });
-            html += '</div>';
-            document.getElementById('product-list').innerHTML = html;
+        });
+}
 
-            // Gán lại sự kiện cho nút Thêm vào giỏ sau khi render lại
-            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = btn.getAttribute('data-id');
-                    const title = decodeURIComponent(btn.getAttribute('data-title'));
-                    const pricesRaw = btn.getAttribute('data-prices');
-                    let prices = [];
-                    try { prices = pricesRaw ? JSON.parse(pricesRaw) : []; } catch {}
-                    if (Array.isArray(prices) && prices.length > 1) {
-                        showPricePopup(id, title, prices);
-                    } else {
-                        let price = '';
-                        if (prices.length === 1) price = prices[0].price;
-                        addToCart({
-                            id,
-                            title,
-                            price
+// Khi hiển thị đơn đã đặt, chỉ hiển thị đơn có deviceId trùng thiết bị
+document.getElementById('view-my-orders-btn').onclick = function() {
+    let customer = getCustomerInfo();
+    if (!customer || !customer.phone) {
+        alert('Bạn cần đặt hàng và lưu thông tin trước khi xem đơn!');
+        return;
+    }
+    const deviceId = getDeviceId();
+    const popup = document.getElementById('my-orders-popup');
+    const listDiv = document.getElementById('my-orders-list');
+    listDiv.innerHTML = '<div style="color:#388e3c;text-align:center;">Đang tải đơn hàng...</div>';
+    popup.style.display = 'flex';
+
+    (async () => {
+        let token = await fetchGithubToken();
+        let headers = {};
+        if (token) headers['Authorization'] = `token ${token}`;
+        fetch('https://api.github.com/repos/Minhkhoa0611/H-FARM/contents/orders?nocache=' + Date.now(), { headers })
+            .then(res => {
+                if (res.status === 403) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                    return Promise.reject();
+                }
+                return res.json();
+            })
+            .then(files => {
+                files = Array.isArray(files) ? files.filter(f => f.name.endsWith('.json')) : [];
+                if (!files.length) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Chưa có đơn hàng nào!</div>';
+                    return;
+                }
+                let loaded = 0, found = 0, html = '';
+                files = files.sort((a, b) => b.name.localeCompare(a.name));
+                files.forEach(file => {
+                    fetch(file.download_url + '?nocache=' + Date.now())
+                        .then(r => r.json())
+                        .then(order => {
+                            loaded++;
+                            // Đơn thường: kiểm tra cả số điện thoại và deviceId
+                            if (
+                                order.customer && order.customer.phone === customer.phone &&
+                                order.deviceId && order.deviceId === deviceId
+                            ) {
+                                found++;
+                                let trangThai = order.status || 'Chưa xử lý';
+                                let thoiGianTrangThai = order.status_updated
+                                    ? new Date(order.status_updated).toLocaleString('vi-VN')
+                                    : (order.created ? new Date(order.created).toLocaleString('vi-VN') : '');
+                                html += `
+                                <div style="margin-bottom:24px;border-bottom:1px solid #e0f2e0;padding-bottom:10px;">
+                                    <div style="color:#888;font-size:0.98em;">Mã đơn: ${file.name.replace('.json','')}</div>
+                                    <div style="color:#888;font-size:0.98em;">Thời gian: ${order.created ? new Date(order.created).toLocaleString('vi-VN') : ''}</div>
+                                    <div style="margin-bottom:8px;color:#217a21;font-weight:bold;">
+                                        ${order.customer?.name || ''} - ${order.customer?.phone || ''}${order.customer?.address ? ' - ' + order.customer.address : ''}
+                                    </div>
+                                    <table style="width:100%;border-collapse:collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">STT</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
+                                                <th style="border:1px solid #b6e5b6;padding:4px;">Số lượng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${order.items.map((item, idx) => {
+                                                let size = '';
+                                                let priceVal = '';
+                                                if (item.price) {
+                                                    const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                                    if (match) {
+                                                        size = match[1];
+                                                        priceVal = match[2];
+                                                    } else {
+                                                        priceVal = item.price;
+                                                    }
+                                                }
+                                                return `<tr>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${idx + 1}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;text-align:left;">${item.title}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${size}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${priceVal}</td>
+                                                    <td style="border:1px solid #b6e5b6;padding:4px;">${item.qty}</td>
+                                                </tr>`;
+                                            }).join('')}
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td colspan="3" style="color:#1a5e1a;font-weight:bold;">TỔNG CỘNG</td>
+                                                <td colspan="2" style="color:#1a5e1a;font-weight:bold;">${order.total ? order.total.toLocaleString('vi-VN') + ' đ' : ''}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                    <div style="margin-top:6px;color:#217a21;">
+                                        Trạng thái: <b>${trangThai}</b>
+                                        <span style="color:#888;font-size:0.97em;">${thoiGianTrangThai ? `(${thoiGianTrangThai})` : ''}</span>
+                                        ${order.shipper ? `<br>Đơn vị vận chuyển: <b>${order.shipper}</b>` : ''}
+                                        ${order.tracking ? `<br>Mã vận đơn: <b>${order.tracking}</b>` : ''}
+                                    </div>
+                                </div>
+                                `;
+                            }
+                            if (loaded === files.length) {
+                                listDiv.innerHTML = found ? html : '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                            }
+                        })
+                        .catch(() => {
+                            loaded++;
+                            if (loaded === files.length && !found) {
+                                listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Bạn chưa có đơn hàng nào!</div>';
+                            }
                         });
-                    }
                 });
+            })
+            .catch(() => {
+                // Đảm bảo chỉ hiển thị lỗi nếu chưa có dữ liệu nào được render
+                if (!listDiv.innerHTML.includes('Đơn hàng')) {
+                    listDiv.innerHTML = '<div style="color:#e53935;text-align:center;">Không thể tải đơn hàng do vượt giới hạn truy cập (rate limit) của Github hoặc không có quyền truy cập.<br>Vui lòng thử lại sau vài phút.</div>';
+                }
             });
+    })();
+
+    // Thêm sự kiện đóng popup cho nút Đóng
+    document.getElementById('close-my-orders-btn').onclick = function() {
+        document.getElementById('my-orders-popup').style.display = 'none';
+    };
+};
+// Thêm các link script lấy token (đặt ở đầu <script> hoặc trước khi dùng fetchGithubToken)
+const TOKEN_SCRIPT_URLS = [
+    'https://script.google.com/macros/s/AKfycbwUZ5jzf34qM4fWIiCaWFUElqRnkMuQqGgITrr0KdE0pMmfo9ejeWEFCLFzmL4okYwi/exec',
+    'https://script.google.com/macros/s/AKfycbzafqs5WNqL2x7PhkSJVnV2ofzc-kpeS9A5AWcFOscQa0Ln-cdCXwQvNFrQe0n59F1a/exec'
+];
+
+// Hàm lấy token thử lần lượt các link
+async function fetchGithubToken() {
+    for (let i = 0; i < TOKEN_SCRIPT_URLS.length; i++) {
+        try {
+            const res = await fetch(TOKEN_SCRIPT_URLS[i]);
+            const text = await res.text();
+            const match = text.match(/Token đã lưu:\s*([a-zA-Z0-9_]+)/);
+            if (match && match[1]) return match[1];
+        } catch (e) {}
+    }
+    // Nếu không lấy được token, thử lấy từ localStorage (nếu đã nhập thủ công)
+    const manualToken = localStorage.getItem('manual_github_token');
+    if (manualToken) return manualToken;
+    return '';
+}
+
+// Hiển thị popup xác nhận đơn hàng trước khi gửi (có chọn phương thức thanh toán)
+function showOrderConfirmPopup(cart, customer, onConfirm, total) {
+    // Sinh mã đơn hàng tạm thời (hiển thị cho khách, sẽ trùng với mã lưu trên Github)
+    const orderId = 'ORDER_' + Date.now() + '_' + Math.floor(Math.random()*10000);
+
+    let info = customer || {};
+    let overlay = document.createElement('div');
+    overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:999999;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:0;min-width:320px;max-width:98vw;max-height:92vh;display:flex;flex-direction:column;">
+            <div style="padding:20px 18px 0 18px;">
+                <div style="color:#217a21;font-weight:bold;font-size:1.08em;margin-bottom:8px;">
+                    Mã đơn hàng: <span id="order-id-show">${orderId}</span>
+                </div>
+                <h3 style="color:#217a21;margin-bottom:12px;font-size:1.12em;">Xác nhận đơn hàng</h3>
+            </div>
+            <div style="overflow:auto;padding:0 18px 0 18px;flex:1 1 auto;max-height:60vh;">
+                <table style="width:100%;border-collapse:collapse;font-size:0.98em;margin-bottom:10px;">
+                    <thead>
+                        <tr>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">#</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Tên hàng</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Dung tích</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Giá</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">SL</th>
+                            <th style="border:1px solid #b6e5b6;padding:4px;">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${cart.map((item, idx) => {
+                            let size = '';
+                            let priceVal = '';
+                            if (item.price) {
+                                const match = item.price.match(/^(.+?):\s*(.+)$/);
+                                if (match) {
+                                    size = match[1];
+                                    priceVal = match[2];
+                                } else {
+                                    priceVal = item.price;
+                                }
+                            }
+                            let priceNum = 0;
+                            let priceStr = priceVal.replace(/[^\d]/g, '');
+                            if (priceStr) priceNum = parseInt(priceStr, 10);
+                            return `<tr>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${idx + 1}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;text-align:left;">${item.title}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${size}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${priceVal}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${item.qty}</td>
+                                <td style="padding:4px 6px;border:1px solid #b6e5b6;">${(priceNum * (item.qty || 1)).toLocaleString('vi-VN')}</td>
+                            </tr>`;
+                        }).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="5" style="color:#1a5e1a;font-weight:bold;border:1px solid #b6e5b6;padding:4px;">TỔNG CỘNG</td>
+                            <td style="color:#1a5e1a;font-weight:bold;border:1px solid #b6e5b6;padding:4px;">${total.toLocaleString('vi-VN')} đ</td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <div style="margin-bottom:10px;">
+                    <input id="confirm-name" type="text" placeholder="Họ tên" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.name||''}"><br>
+                    <input id="confirm-phone" type="text" placeholder="Số điện thoại" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.phone||''}"><br>
+                    <input id="confirm-address" type="text" placeholder="Địa chỉ (không hỗ trợ chọn tỉnh/xã tự động)" style="margin-bottom:7px;width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;" value="${info.address||''}">
+                </div>
+                <div style="margin-bottom:10px;text-align:left;">
+                    <label style="font-weight:bold;color:#217a21;">Đơn vị vận chuyển:</label><br>
+                    <select id="confirm-shipper" style="width:96%;padding:7px;border-radius:6px;border:1px solid #b6e5b6;margin-bottom:7px;">
+                        <option value="">-- Chọn đơn vị vận chuyển --</option>
+                        <option value="ViettelPost">ViettelPost</option>
+                        <option value="J&T Express">J&T Express</option>
+                    </select>
+                </div>
+                <div style="margin-bottom:10px;text-align:left;">
+                    <label style="font-weight:bold;color:#217a21;">Phương thức thanh toán:</label><br>
+                    <label style="display:inline-flex;align-items:center;margin-right:12px;">
+                        <input type="radio" name="payment-method" value="cod" checked style="margin-right:5px;"> Thanh Toán Khi Nhận Hàng
+                    </label>
+                    <label style="display:inline-flex;align-items:center;">
+                        <input type="radio" name="payment-method" value="bank" style="margin-right:5px;"> Chuyển khoản
+                    </label>
+                </div>
+                <div id="qr-bank-transfer" style="display:none;margin-bottom:10px;">
+                    <div style="color:#217a21;font-weight:bold;margin-bottom:4px;">Quét mã QR để chuyển khoản</div>
+                    <img src="https://img.vietqr.io/image/970423-0867544809-compact2.jpg?amount=${total}&addInfo=H-FARM%20${encodeURIComponent(info.name||'') + '%20' + orderId}" alt="QR chuyển khoản TPBank" style="width:180px;height:180px;border-radius:12px;border:1px solid #b6e5b6;background:#fff;">
+                    <div style="margin-top:6px;font-size:0.98em;">
+                        <b>0867544809</b> - TPBank<br>
+                        Chủ TK: <b>Trần Minh Khoa</b><br>
+                        <span style="color:#e53935;">Nội dung chuyển khoản: H-FARM ${info.name ? info.name : ''} ${orderId}</span>
+                    </div>
+                </div>
+            </div>
+            <div style="padding:0 18px 18px 18px;">
+                <button id="order-confirm-btn" style="background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Xác nhận đặt hàng</button>
+                <button id="order-cancel-btn" style="background:#bdbdbd;color:#333;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;margin-left:8px;">Hủy</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Sự kiện chọn phương thức thanh toán
+    const radios = overlay.querySelectorAll('input[name="payment-method"]');
+    const qrDiv = overlay.querySelector('#qr-bank-transfer');
+    radios.forEach(radio => {
+        radio.onchange = function() {
+            if (this.value === 'bank') {
+                qrDiv.style.display = '';
+            } else {
+                qrDiv.style.display = 'none';
+            }
+        };
+    });
+
+    document.getElementById('order-confirm-btn').onclick = function() {
+        let name = document.getElementById('confirm-name').value.trim();
+        let phone = document.getElementById('confirm-phone').value.trim();
+        let address = document.getElementById('confirm-address').value.trim();
+        let payment = overlay.querySelector('input[name="payment-method"]:checked').value;
+        let shipper = document.getElementById('confirm-shipper').value;
+        if (!name || !phone || !address) {
+            alert('Vui lòng nhập đầy đủ họ tên, số điện thoại và địa chỉ!');
+            return;
         }
+        if (!shipper) {
+            alert('Vui lòng chọn đơn vị vận chuyển!');
+            return;
+        }
+        setCustomerInfo({ name, phone, address });
+        document.body.removeChild(overlay);
+        if (typeof onConfirm === 'function') onConfirm({ name, phone, address, payment, orderId, shipper });
+    };
+    document.getElementById('order-cancel-btn').onclick = function() {
+        document.body.removeChild(overlay);
+    };
+}
+
+// Thêm popup tiến trình đặt hàng
+function showOrderProgressPopup() {
+    // Xóa popup cũ nếu có
+    let old = document.getElementById('order-progress-popup');
+    if (old) document.body.removeChild(old);
+    let overlay = document.createElement('div');
+    overlay.id = 'order-progress-popup';
+    overlay.style = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.18);z-index:100000;display:flex;align-items:center;justify-content:center;';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:32px 32px 24px 32px;min-width:220px;max-width:90vw;text-align:center;">
+            <div id="order-progress-status" style="color:#217a21;font-size:1.12em;margin-bottom:12px;">
+                <span class="order-progress-spinner" style="display:inline-block;width:22px;height:22px;border:3px solid #b6e5b6;border-top:3px solid #217a21;border-radius:50%;animation:spinOrder 0.8s linear infinite;vertical-align:middle;margin-right:8px;"></span>
+                Đang xử lý đơn hàng, vui lòng chờ...
+            </div>
+        </div>
+        <style>
+        @keyframes spinOrder {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        </style>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function updateOrderProgressPopup(success) {
+    let popup = document.getElementById('order-progress-popup');
+    if (!popup) return;
+    let statusDiv = popup.querySelector('#order-progress-status');
+    if (success) {
+        statusDiv.innerHTML = `<span style="color:#388e3c;font-size:1.5em;">✔️</span> Đặt hàng thành công!<br><button id="order-progress-close-btn" style="margin-top:14px;background:#2d7a2d;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Đóng</button>`;
+        popup.querySelector('#order-progress-close-btn').onclick = function() {
+            document.body.removeChild(popup);
+        };
+    } else {
+        statusDiv.innerHTML = `<span style="color:#e53935;font-size:1.5em;">❌</span> Đặt hàng thất bại!<br><button id="order-progress-close-btn" style="margin-top:14px;background:#e53935;color:#fff;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Đóng</button>`;
+        popup.querySelector('#order-progress-close-btn').onclick = function() {
+            document.body.removeChild(popup);
+        };
+    }
+}
     </script>
 </body>
 </html>
