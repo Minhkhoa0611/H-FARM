@@ -340,6 +340,13 @@
                     <img src="https://stc-zaloprofile.zdn.vn/pc/v1/images/zalo_sharelogo.png" alt="Zalo" style="height:22px;width:22px;border-radius:4px;">
                     Zalo
                 </a>
+                <!-- Nút tải app PWA -->
+                <button id="pwa-install-btn" title="Tải ứng dụng về máy" style="display:flex;align-items:center;gap:5px;background:#fff;border:1px solid #b6e5b6;color:#217a21;font-weight:bold;font-size:1.08em;padding:7px 14px;border-radius:6px;cursor:pointer;transition:background 0.2s;">
+                    <svg xmlns="http://www.w3.org/2000/svg" style="height:20px;width:20px;vertical-align:middle;" fill="none" viewBox="0 0 24 24" stroke="#217a21" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+                    </svg>
+                    <span>Tải App</span>
+                </button>
             </div>
         </div>
         <style>
@@ -1167,6 +1174,35 @@ function updateOrderProgressPopup(success) {
             document.body.removeChild(popup);
         };
     }
+}
+// PWA install prompt logic
+let deferredPrompt = null;
+const pwaBtn = document.getElementById('pwa-install-btn');
+if (pwaBtn) {
+    pwaBtn.style.display = 'none';
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        pwaBtn.style.display = '';
+    });
+    pwaBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            pwaBtn.style.display = 'none';
+        }
+    });
+    // Nếu đã cài app thì ẩn nút
+    window.addEventListener('appinstalled', () => {
+        pwaBtn.style.display = 'none';
+    });
+}
+// Đăng ký service worker nếu hỗ trợ
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
 }
     </script>
 </body>
