@@ -1,0 +1,22 @@
+{
+  "name": "H'FARM - Danh Sách Sản Phẩm",
+  "short_name": "H'FARM",
+  "start_url": "danhsachsanpham.html",
+  "display": "standalone",
+  "background_color": "#f7fcf6",
+  "theme_color": "#217a21",
+  "description": "Xem và đặt hàng các sản phẩm của H'FARM.",
+  "icons": [
+    {
+      "src": "image.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "image.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "lang": "vi"
+}
