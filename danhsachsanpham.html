@@ -439,7 +439,15 @@
         </span><br>
         <span class="footer-copy">H'FARM - © 2025 NO COPYRIGHT</span>
     </footer>
-    <script>
+    <!-- Nút cài app PWA góc phải bên dưới -->
+<button id="pwa-install-btn" style="display:none;position:fixed;bottom:22px;right:22px;z-index:99999;background:#217a21;color:#fff;font-weight:bold;border:none;border-radius:50px;padding:13px 22px;box-shadow:0 2px 12px rgba(45,122,45,0.18);font-size:1.08em;cursor:pointer;">
+    + Cài ứng dụng H'FARM
+</button>
+<script>
+    // Fallback: Nếu không hỗ trợ PWA thì ẩn nút
+    if (!('onbeforeinstallprompt' in window)) {
+        document.getElementById('pwa-install-btn').style.display = 'none';
+    }
         // --- CART LOGIC ---
         function getCart() {
             return JSON.parse(localStorage.getItem('cart') || '[]');
@@ -1287,8 +1295,28 @@ function updateOrderProgressPopup(success) {
         };
     }
 }
-    </script>
 
-        
+// PWA install logic
+    let deferredPrompt = null;
+    const pwaBtn = document.getElementById('pwa-install-btn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        pwaBtn.style.display = 'block';
+    });
+    pwaBtn.addEventListener('click', async function() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                pwaBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        }
+    });
+    window.addEventListener('appinstalled', () => {
+        pwaBtn.style.display = 'none';
+    });
+</script>
 </body>
 </html>
