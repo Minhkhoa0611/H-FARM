@@ -1,6 +1,7 @@
+
 <!DOCTYPE html>
 <html lang="vi">
-<head>
+<head><script type="text/javascript" src="/___vscode_livepreview_injected_script"></script>
     <meta charset="UTF-8">
     <title>Danh Sách Sản Phẩm</title>
        <link rel="icon" type="image/x-icon" href="image.png">
@@ -12,6 +13,9 @@
             background: #f7fcf6;
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         h1 {
             color: #217a21;
@@ -25,6 +29,8 @@
             max-width: 950px;
             margin: 0 auto;
             padding: 0 12px;
+            flex: 1 1 auto; /* Sửa lại để container chiếm hết chiều cao còn lại */
+            width: 100%;
         }
         .product-grid {
             display: grid;
@@ -262,37 +268,65 @@
             font-size: 1em;
             color: #2d7a2d;
             letter-spacing: 1px;
+            text-align: center;
+            background: linear-gradient(90deg, #eafbe7 0%, #d6f5d6 100%);
+            border-top: 2px solid #b6e5b6;
+            box-shadow: 0 -2px 12px rgba(45,122,45,0.06);
+            padding: 18px 0 10px 0;
+            border-radius: 18px 18px 0 0;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+        footer .footer-title {
+            font-weight: bold;
+            color: #217a21;
+            font-size: 1.08em;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+            display: block;
+        }
+        footer .footer-contact {
+            color: #145214;
+            font-size: 0.98em;
+            margin-bottom: 2px;
+        }
+        footer .footer-copy {
+            color: #388e3c;
+            font-size: 0.97em;
+            margin-top: 6px;
+        }
+        @media (max-width: 700px) {
+            footer {
+                font-size: 0.98em;
+                padding: 12px 0 8px 0;
+                border-radius: 12px 12px 0 0;
+            }
         }
     </style>
 
 </head>
 <body>
     <nav style="width:100%;background:#eafbe7;padding:12px 0 10px 0;box-shadow:0 2px 8px rgba(45,122,45,0.04);margin-bottom:12px;">
-        <div style="max-width:950px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
-            <div style="display:flex;align-items:center;gap:10px;">
-                <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#d6f5d6;">
+        <div style="max-width:950px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+                <a href="danhsachsanpham.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#d6f5d6;white-space:nowrap;">
                     DANH MỤC SẢN PHẨM
                 </a>
             </div>
-            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                <a href="index.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    TẠO SẢN PHẨM
-                </a>
-                <a href="taodanhmuc.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    TẠO DANH MỤC
-                </a>
-                <a href="https://minhkhoa0611.github.io/quanlynhansu/QRSCANNER/qr-scanner.html" style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    QR SCANNER
-                </a>
-                <a href="https://www.canva.com/design/DAGr5jzmJAw/ZmChp88aCMXM8vCpzuS4_A/edit?utm_content=DAGr5jzmJAw&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton"
-                   style="color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;">
-                    CANVA THIẾT KẾ
-                </a>
-                <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;transition:background 0.2s;border-radius:6px;">
+            <div style="display:flex;align-items:center;gap:18px;justify-content:center;flex-wrap:nowrap;overflow-x:auto;">
+                <!-- Bỏ nút Thông tin -->
+                <!--
+                <button id="info-btn" title="Thông tin" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;transition:background 0.2s;border-radius:6px;white-space:nowrap;">
+                    <span style="font-size:1.35em;vertical-align:middle;">ℹ️</span>
+                    <span style="color:#217a21;font-weight:bold;font-size:1.08em;">Thông tin</span>
+                </button>
+                -->
+                <button id="view-my-orders-btn" title="Xem đơn hàng đã đặt" style="background:none;border:none;outline:none;cursor:pointer;display:flex;align-items:center;gap:4px;padding:0 8px;transition:background 0.2s;border-radius:6px;white-space:nowrap;">
                     <span style="font-size:1.35em;vertical-align:middle;">🚚</span>
                     <span style="color:#217a21;font-weight:bold;font-size:1.08em;">Đơn của tôi</span>
                 </button>
-                <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#c6eec6;">
+                <a href="javascript:void(0)" id="cart-btn" style="position:relative;color:#217a21;font-weight:bold;text-decoration:none;font-size:1.08em;padding:7px 18px;border-radius:6px;transition:background 0.2s;background:#c6eec6;white-space:nowrap;">
                     🛒 <span id="cart-count" style="background:#2d7a2d;color:#fff;border-radius:50%;padding:2px 7px;font-size:0.9em;position:absolute;top:2px;right:2px;">0</span>
                 </a>
             </div>
@@ -308,6 +342,15 @@
             nav a:active, nav button#view-my-orders-btn:active {
                 background: #a0dca0 !important;
             }
+            @media (max-width: 1100px) {
+                nav > div {
+                    flex-wrap: wrap !important;
+                }
+                nav > div > div {
+                    flex-wrap: nowrap !important;
+                    overflow-x: auto;
+                }
+            }
             @media (max-width: 700px) {
                 nav > div {
                     flex-direction: column;
@@ -315,8 +358,9 @@
                     gap: 8px;
                 }
                 nav > div > div {
-                    justify-content: center;
-                    flex-wrap: wrap;
+                    justify-content: flex-start;
+                    flex-wrap: nowrap !important;
+                    overflow-x: auto;
                 }
             }
         </style>
@@ -329,6 +373,14 @@
     </div>
     <div class="container">
         <h1>Danh Sách Sản Phẩm</h1>
+        <!-- Thanh tìm kiếm sản phẩm -->
+        <div id="search-bar" style="display:inline-flex;flex-direction:column;align-items:center;position:relative;width:100%;margin-bottom:18px;gap:8px;">
+            <div style="width:320px;max-width:90vw;position:relative;">
+                <input id="product-search-input" type="text" placeholder="Tìm kiếm sản phẩm..." style="width:100%;padding:8px 32px 8px 12px;border-radius:6px;border:1px solid #b6e5b6;font-size:1em;outline:none;">
+                <button id="clear-search-btn" title="Xóa tìm kiếm" style="display:none;position:absolute;top:50%;right:8px;transform:translateY(-50%);background:none;border:none;font-size:1.3em;cursor:pointer;color:#e53935;">&#10006;</button>
+                <div id="search-suggestions" style="display:none;position:absolute;top:110%;left:0;right:0;width:100%;min-width:220px;background:#fff;border:1px solid #b6e5b6;border-radius:0 0 8px 8px;box-shadow:0 2px 12px rgba(45,122,45,0.08);z-index:1000;max-height:220px;overflow-y:auto;"></div>
+            </div>
+        </div>
         <div id="product-list">
             <div style="text-align:center;color:#388e3c;font-size:1.1em;">Đang tải dữ liệu...</div>
         </div>
@@ -345,6 +397,17 @@
             </div>
         </div>
     </div>
+    <!-- Popup chọn số lượng -->
+    <div id="qty-popup-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100000;background:rgba(0,0,0,0.18);align-items:center;justify-content:center;">
+        <div style="background:#fff;border-radius:12px;box-shadow:0 4px 24px rgba(45,122,45,0.18);padding:24px 22px 16px 22px;min-width:220px;max-width:90vw;text-align:center;">
+            <h3 style="color:#217a21;margin-bottom:12px;font-size:1.08em;">Chọn số lượng</h3>
+            <input id="qty-popup-input" type="number" min="1" value="1" style="width:80px;padding:7px;border-radius:6px;border:1px solid #b6e5b6;font-size:1em;text-align:center;">
+            <div style="margin-top:10px;">
+                <button id="qty-popup-ok-btn" style="background:#217a21;color:#fff;border:none;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;margin-right:8px;">Đồng ý</button>
+                <button id="qty-popup-cancel-btn" style="background:#bdbdbd;color:#333;border:none;padding:7px 22px;border-radius:6px;font-size:1em;cursor:pointer;">Hủy</button>
+            </div>
+        </div>
+    </div>
     <!-- Popup xem đơn đã đặt -->
     <div id="my-orders-popup" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:99999;background:rgba(0,0,0,0.22);align-items:center;justify-content:center;">
         <div style="background:#fff;padding:32px 22px 18px 22px;border-radius:16px;box-shadow:0 4px 32px #b6e5b6;min-width:340px;max-width:98vw;max-height:92vh;overflow:auto;position:relative;">
@@ -355,9 +418,23 @@
             <button id="close-my-orders-btn" style="margin-top:16px;background:#e53935;color:#fff;border:none;padding:8px 28px;border-radius:8px;cursor:pointer;font-size:1.08em;display:block;margin-left:auto;margin-right:auto;">Đóng</button>
         </div>
     </div>
-    <footer style="text-align:center; color:#2d7a2d; font-size:1em; margin:28px 0 12px 0; letter-spacing:1px;">
-        H'FARM 95 QUẢNG ĐỨC - NHA TRANG  - KHÁNH HÒA<br>
-        &copy; 2025 BY Minh Khoa
+    
+    <footer>
+        <div style="margin-bottom:8px;">
+            <img src="image.png" alt="H'FARM Logo" style="height:44px;width:auto;vertical-align:middle;margin-bottom:4px;display:block;margin-left:auto;margin-right:auto;">
+            <span class="footer-title" style="font-size:1.18em;display:block;letter-spacing:2px;">H'FARM</span>
+            <span style="color:#217a21;font-weight:bold;display:block;margin-bottom:2px;">
+                CHUYÊN SẢN PHẨM 100% TỪ THIÊN NHIÊN – Đặc Sản Quảng Nam
+            </span>
+            <span style="color:#145214;display:block;font-size:0.98em;">
+                • CAFÉ, TRÀ, MẬT ONG RỪNG<br>
+                • YẾN SÀO, MẬT MÍA, DẦU ÉP, MẠCH NHA, NGŨ CỐC<br>
+                • SÂM NGỌC LINH, NẤM LINH CHI, NẤM LIM XANH RỪNG
+            </span>
+        </div>
+        <span class="footer-title">H'FARM 95 QUẢNG ĐỨC - NHA TRANG - KHÁNH HÒA</span>
+        <span class="footer-contact">Hotline: <a href="tel:0969167555" style="color:#217a21;text-decoration:underline;">0969 167 555</a></span><br>
+        <span class="footer-copy">H'FARM - © 2025 NO COPYRIGHT</span>
     </footer>
     <script>
         // --- CART LOGIC ---
@@ -376,14 +453,15 @@
                 }
             }
         }
-        function addToCart(product) {
+        function addToCart(product, qty = 1) {
             let cart = getCart();
+            // So sánh id và price đúng kiểu, không encode/decode
             let cartId = product.id + (product.price ? '_' + product.price : '');
             let idx = cart.findIndex(p => (p.id + (p.price ? '_' + p.price : '')) === cartId);
             if (idx > -1) {
-                cart[idx].qty += 1;
+                cart[idx].qty += qty;
             } else {
-                cart.push({...product, qty: 1});
+                cart.push({...product, qty});
             }
             setCart(cart);
             if (document.getElementById('cart-popup').style.display === 'block') {
@@ -391,8 +469,9 @@
             }
         }
         function removeFromCart(id) {
+            // Không encodeURIComponent ở đây, chỉ so sánh đúng kiểu đã lưu
             let cart = getCart().filter(p => {
-                let cartId = p.id + (p.price ? '_' + encodeURIComponent(p.price) : '');
+                let cartId = p.id + (p.price ? '_' + p.price : '');
                 return cartId !== id;
             });
             setCart(cart);
@@ -439,17 +518,17 @@
                     total += priceNum * (item.qty || 1);
 
                     html += `<tr>
-                        <td>${idx + 1}</td>
-                        <td style="text-align:left;">${item.title}</td>
-                        <td>${size}</td>
-                        <td>${priceVal ? `<span class="cart-item-price">${priceVal}</span>` : ''}</td>
-                        <td>
-                            <input type="number" min="1" value="${item.qty}" style="width:48px;text-align:center;" data-cart-idx="${idx}" class="cart-qty-input">
-                        </td>
-                        <td>
-                            <button onclick="removeFromCart('${item.id}${item.price ? '_' + encodeURIComponent(item.price) : ''}')" style="background:#e53935;color:#fff;border:none;padding:2px 8px;border-radius:4px;cursor:pointer;">Xóa</button>
-                        </td>
-                    </tr>`;
+    <td>${idx + 1}</td>
+    <td style="text-align:left;">${item.title}</td>
+    <td>${size}</td>
+    <td>${priceVal ? `<span class="cart-item-price">${priceVal}</span>` : ''}</td>
+    <td>
+        <input type="number" min="1" value="${item.qty}" style="width:48px;text-align:center;" data-cart-idx="${idx}" class="cart-qty-input">
+    </td>
+    <td>
+        <button onclick="removeFromCart('${item.id}${item.price ? '_' + item.price : ''}')" style="background:#e53935;color:#fff;border:none;padding:2px 8px;border-radius:4px;cursor:pointer;">Xóa</button>
+    </td>
+</tr>`;
                 });
                 html += `</tbody>
                     <tfoot>
@@ -569,6 +648,119 @@
         updateCartCount();
         // --- END CART LOGIC ---
 
+        let allProductsData = [];
+        let lastSearchValue = "";
+
+        // Hàm render danh sách sản phẩm với tùy chọn sắp xếp theo kết quả tìm kiếm
+        function renderProductList(products, searchValue = "") {
+            let html = '<div class="product-grid">';
+            products.forEach((prod, idx) => {
+                const prodId = prod.id || (prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                const safeImage = prod.image ? prod.image : '';
+                const safeLink = prod.link ? prod.link : '';
+                const safeTitle = prod.title ? prod.title : '';
+                let priceHtml = '';
+                if (Array.isArray(prod.prices) && prod.prices.length) {
+                    priceHtml = `<div class="product-price-list">` +
+                        prod.prices.map(p =>
+                            `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
+                        ).join('') +
+                        `</div>`;
+                }
+                html += `
+                    <div class="product-card">
+                        ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
+                        <div class="product-card-content">
+                            <div class="product-title">${safeTitle}</div>
+                            ${priceHtml}
+                            ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
+                            <a class="product-detail-link" href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
+                            <button class="add-to-cart-btn"
+                                data-id="${prodId}"
+                                data-title="${encodeURIComponent(safeTitle)}"
+                                data-image="${encodeURIComponent(safeImage)}"
+                                data-link="${encodeURIComponent(safeLink)}"
+                                data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
+                                style="background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
+                                Thêm vào giỏ
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            document.getElementById('product-list').innerHTML = html;
+
+            // Gán lại sự kiện cho nút Thêm vào giỏ
+            document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = btn.getAttribute('data-id');
+                    const title = decodeURIComponent(btn.getAttribute('data-title'));
+                    const pricesRaw = btn.getAttribute('data-prices');
+                    let prices = [];
+                    try { prices = pricesRaw ? JSON.parse(pricesRaw) : []; } catch {}
+                    if (Array.isArray(prices) && prices.length > 1) {
+                        // Nếu có nhiều giá, hiện popup chọn giá trước, sau đó mới chọn số lượng
+                        showPricePopup(id, title, prices);
+                    } else {
+                        let price = '';
+                        if (prices.length === 1) price = prices[0].price;
+                        showQtyPopup({ id, title, price });
+                    }
+                });
+            });
+        }
+
+        // Đặt ngoài fetch, chỉ định nghĩa 1 lần
+        function showPricePopup(id, title, prices) {
+            const overlay = document.getElementById('price-popup-overlay');
+            const select = document.getElementById('popup-price-select');
+            select.innerHTML = `<option value="">-- Chọn dung tích/giá --</option>` +
+                prices.map(p =>
+                    `<option value="${p.price.replace(/"/g, '&quot;')}">${p.size ? p.size + ': ' : ''}${p.price}</option>`
+                ).join('');
+            overlay.style.display = 'flex';
+            const addBtn = document.getElementById('popup-add-cart-btn');
+            const cancelBtn = document.getElementById('popup-cancel-btn');
+            addBtn.onclick = null;
+            cancelBtn.onclick = null;
+            addBtn.onclick = function() {
+                const price = select.value;
+                if (!price) {
+                    select.style.border = '2px solid #e53935';
+                    select.focus();
+                    setTimeout(() => { select.style.border = ''; }, 1200);
+                    return;
+                }
+                overlay.style.display = 'none';
+                showQtyPopup({ id, title, price });
+            };
+            cancelBtn.onclick = function() {
+                overlay.style.display = 'none';
+            };
+        }
+
+        // Hàm popup chọn số lượng
+        function showQtyPopup(product) {
+            const overlay = document.getElementById('qty-popup-overlay');
+            const input = document.getElementById('qty-popup-input');
+            input.value = 1;
+            overlay.style.display = 'flex';
+            const okBtn = document.getElementById('qty-popup-ok-btn');
+            const cancelBtn = document.getElementById('qty-popup-cancel-btn');
+            okBtn.onclick = null;
+            cancelBtn.onclick = null;
+            okBtn.onclick = function() {
+                let qty = parseInt(input.value, 10);
+                if (isNaN(qty) || qty < 1) qty = 1;
+                overlay.style.display = 'none';
+                addToCart(product, qty);
+            };
+            cancelBtn.onclick = function() {
+                overlay.style.display = 'none';
+            };
+        }
+
         fetch('https://raw.githubusercontent.com/Minhkhoa0611/H-FARM/main/products.json')
             .then(res => res.json())
             .then(data => {
@@ -581,98 +773,87 @@
                     if (ta > tb) return 1;
                     return 0;
                 });
-                // Tạo HTML
-                let html = '<div class="product-grid">';
-                data.forEach((prod, idx) => {
-                    const prodId = prod.id || (prod.title + '_' + idx).replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                    const safeImage = prod.image ? prod.image : '';
-                    const safeLink = prod.link ? prod.link : '';
-                    const safeTitle = prod.title ? prod.title : '';
-                    let priceHtml = '';
-                    if (Array.isArray(prod.prices) && prod.prices.length) {
-                        priceHtml = `<div class="product-price-list">` +
-                            prod.prices.map(p =>
-                                `<div class="price-row">${p.size ? `<span>${p.size}:</span>` : ''} <span style="font-weight:bold;color:#1a5e1a">${p.price}</span></div>`
-                            ).join('') +
-                            `</div>`;
-                    }
-                    html += `
-                        <div class="product-card">
-                            ${safeImage ? `<img class="product-img" src="${safeImage}" alt="${safeTitle}">` : ''}
-                            <div class="product-card-content">
-                                <div class="product-title">${safeTitle}</div>
-                                ${priceHtml}
-                                ${prod.note ? `<div class="product-note">${prod.note}</div>` : ''}
-                                <a class="product-detail-link" href="${safeLink}" target="_blank" style="color:#217a21;text-decoration:underline;font-size:0.98em;">Xem chi tiết</a>
-                                <button class="add-to-cart-btn"
-                                    data-id="${prodId}"
-                                    data-title="${encodeURIComponent(safeTitle)}"
-                                    data-image="${encodeURIComponent(safeImage)}"
-                                    data-link="${encodeURIComponent(safeLink)}"
-                                    data-prices='${prod.prices ? JSON.stringify(prod.prices) : ""}'
-                                    style="background:#2d7a2d;color:#fff;border:none;padding:6px 18px;border-radius:6px;cursor:pointer;font-size:1em;">
-                                    Thêm vào giỏ
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                document.getElementById('product-list').innerHTML = html;
-
-                // Gán sự kiện cho nút Thêm vào giỏ
-                document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = btn.getAttribute('data-id');
-                        const title = decodeURIComponent(btn.getAttribute('data-title'));
-                        const pricesRaw = btn.getAttribute('data-prices');
-                        let prices = [];
-                        try { prices = pricesRaw ? JSON.parse(pricesRaw) : []; } catch {}
-                        if (Array.isArray(prices) && prices.length > 1) {
-                            // Hiện popup chọn giá
-                            showPricePopup(id, title, prices);
-                        } else {
-                            // 1 giá hoặc không có giá
-                            let price = '';
-                            if (prices.length === 1) price = prices[0].price;
-                            addToCart({
-                                id,
-                                title,
-                                price
-                            });
-                        }
-                    });
-                });
-
-                // Popup chọn giá logic
-                function showPricePopup(id, title, prices) {
-                    const overlay = document.getElementById('price-popup-overlay');
-                    const select = document.getElementById('popup-price-select');
-                    select.innerHTML = `<option value="">-- Chọn dung tích/giá --</option>` +
-                        prices.map(p =>
-                            `<option value="${p.price.replace(/"/g, '&quot;')}">${p.size ? p.size + ': ' : ''}${p.price}</option>`
-                        ).join('');
-                    overlay.style.display = 'flex';
-                    // Sự kiện nút thêm vào giỏ
-                    document.getElementById('popup-add-cart-btn').onclick = function() {
-                        const price = select.value;
-                        if (!price) {
-                            select.style.border = '2px solid #e53935';
-                            select.focus();
-                            setTimeout(() => { select.style.border = ''; }, 1200);
-                            return;
-                        }
-                        addToCart({ id, title, price });
-                        overlay.style.display = 'none';
-                    };
-                    document.getElementById('popup-cancel-btn').onclick = function() {
-                        overlay.style.display = 'none';
-                    };
-                }
+                allProductsData = data;
+                renderProductList(allProductsData);
             })
             .catch(() => {
                 document.getElementById('product-list').innerHTML = '<div style="color:#e53935;text-align:center;">Không tải được dữ liệu sản phẩm!</div>';
             });
+
+    // --- Tìm kiếm sản phẩm ---
+    const searchInput = document.getElementById('product-search-input');
+    const clearBtn = document.getElementById('clear-search-btn');
+    const suggestionsDiv = document.getElementById('search-suggestions');
+    searchInput.addEventListener('input', function() {
+        const val = searchInput.value.trim().toLowerCase();
+        lastSearchValue = val;
+        // Gợi ý sản phẩm
+        if (val) {
+            clearBtn.style.display = '';
+            // Lấy danh sách gợi ý
+            let suggestions = allProductsData.filter(prod => {
+                const title = (prod.title || '').toLowerCase();
+                const note = (prod.note || '').toLowerCase();
+                return title.includes(val) || note.includes(val);
+            }).slice(0, 8);
+            if (suggestions.length) {
+                suggestionsDiv.innerHTML = suggestions.map(prod =>
+                    `<div class="suggestion-item" style="padding:7px 12px;cursor:pointer;border-bottom:1px solid #f2f8f2;" data-title="${encodeURIComponent(prod.title)}">${prod.title}</div>`
+                ).join('');
+                suggestionsDiv.style.display = '';
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        } else {
+            clearBtn.style.display = 'none';
+            suggestionsDiv.style.display = 'none';
+        }
+        // Tìm sản phẩm khớp
+        let matched = [];
+        let others = [];
+        allProductsData.forEach(prod => {
+            const title = (prod.title || '').toLowerCase();
+            const note = (prod.note || '').toLowerCase();
+            if (title.includes(val) || note.includes(val)) {
+                matched.push(prod);
+            } else {
+                others.push(prod);
+            }
+        });
+        renderProductList([...matched, ...others], val);
+    });
+    // Gán sự kiện click cho gợi ý
+    suggestionsDiv.addEventListener('mousedown', function(e) {
+        if (e.target.classList.contains('suggestion-item')) {
+            const title = decodeURIComponent(e.target.getAttribute('data-title'));
+            searchInput.value = title;
+            suggestionsDiv.style.display = 'none';
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    });
+    // Ẩn gợi ý khi blur khỏi input (delay để bắt sự kiện click)
+    searchInput.addEventListener('blur', function() {
+        setTimeout(() => { suggestionsDiv.style.display = 'none'; }, 120);
+    });
+    searchInput.addEventListener('focus', function() {
+        if (searchInput.value.trim()) searchInput.dispatchEvent(new Event('input'));
+    });
+    clearBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        suggestionsDiv.style.display = 'none';
+        lastSearchValue = '';
+        renderProductList(allProductsData);
+        searchInput.focus();
+    });
+
+    // Khi load lại trang, giữ lại tìm kiếm nếu có
+    window.addEventListener('DOMContentLoaded', function() {
+        if (searchInput.value) {
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    });
+
         // Thông tin khách hàng lưu localStorage
         function getCustomerInfo() {
             return JSON.parse(localStorage.getItem('hfarm_customer_info') || 'null');
@@ -1104,5 +1285,7 @@ function updateOrderProgressPopup(success) {
     }
 }
     </script>
+
+        
 </body>
 </html>
