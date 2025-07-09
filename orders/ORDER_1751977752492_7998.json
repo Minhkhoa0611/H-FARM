@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "0867544809",
+    "phone": "0867544808",
+    "address": "Tân đjbhj"
+  },
+  "payment": "cod",
+  "shipper": "J&T Express",
+  "items": [
+    {
+      "id": "DU_M_NGUYN_CHT_HFARM_0",
+      "title": "DẦU MÈ NGUYÊN CHẤT H’FARM",
+      "price": "400.000 VNĐ",
+      "qty": 2
+    }
+  ],
+  "total": 800000,
+  "created": "2025-07-08T12:28:58.748Z",
+  "orderId": "ORDER_1751977715055_9537",
+  "deviceId": "dev_p8d067aryom_1751977738754"
+}
