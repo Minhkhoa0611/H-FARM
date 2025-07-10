@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "0867544809",
+    "phone": "0867544808",
+    "address": "Tân đjbhj"
+  },
+  "payment": "bank",
+  "shipper": "J&T Express",
+  "items": [
+    {
+      "id": "_SP_ONG_RNG_NGUYN_CHT_HFARM_19",
+      "title": "🐝 SÁP ONG RỪNG NGUYÊN CHẤT H’FARM",
+      "price": "135.000 VNĐ",
+      "qty": 1
+    }
+  ],
+  "total": 135000,
+  "created": "2025-07-10T14:02:53.315Z",
+  "orderId": "ORDER_1752156148164_7707",
+  "deviceId": "dev_3a2c55mxhwr_1752156173333"
+}
