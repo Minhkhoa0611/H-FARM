@@ -1,0 +1,21 @@
+{
+  "customer": {
+    "name": "0867544809",
+    "phone": "0867544808",
+    "address": "Tân đjbhj"
+  },
+  "payment": "bank",
+  "shipper": "ViettelPost",
+  "items": [
+    {
+      "id": "MT_ONG_NGM_C_NN_HFARM_5",
+      "title": "MẬT ONG NGÂM CỦ NÉN H’FARM",
+      "price": "320.000 VNĐ",
+      "qty": 100000
+    }
+  ],
+  "total": 32000000000,
+  "created": "2025-07-10T14:03:23.260Z",
+  "orderId": "ORDER_1752156196256_8200",
+  "deviceId": "dev_3a2c55mxhwr_1752156173333"
+}
