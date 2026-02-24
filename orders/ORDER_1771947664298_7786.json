@@ -17,5 +17,16 @@
   "total": 400000,
   "created": "2026-02-24T15:41:00.835Z",
   "orderId": "ORDER_1771947619091_8738",
-  "deviceId": "dev_32bilw6wuzj_1771947660836"
+  "deviceId": "dev_32bilw6wuzj_1771947660836",
+  "status_history": [
+    {
+      "status": "Đã nhận đơn",
+      "shipper": "J&T Express",
+      "tracking": "32323232",
+      "updated": "2026-02-24T15:58:37.714Z"
+    }
+  ],
+  "status": "Đã nhận đơn",
+  "tracking": "32323232",
+  "status_updated": "2026-02-24T15:58:37.714Z"
 }
